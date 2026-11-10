@@ -21,7 +21,7 @@ await W(300);await tap(150,640);await W(300);await shot('05b_list');await tap(19
 await tap(195,531);
 await W(300);await shot('05f_call');
 await brief();
-await tap(66,557);await W(1200);await shot('05g_ad');await W(2400);await shot('05h_hint');
+await W(2500);await p.evaluate(()=>{__G.O.idleT=13;__G.S.masterFree=1;});await W(100);await shot('05g0_ready');await tap(66,557);await W(1200);await shot('05g_ad');await W(2400);await shot('05h_hint');await W(1500);await shot('05i_hl');await W(2000);
 await drag([[85,734],[195,390]]);await plunge();await shot('06_splash');console.log('splash',JSON.stringify(await st()));
 await scoop();await scoop();console.log('scooped',JSON.stringify(await st()));
 await drag([[85,734],[195,390]]);await pump();

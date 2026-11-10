@@ -66,7 +66,8 @@ function buildOrders(c,n){CFG=c;NAR=n;ORDERS=c.orders.map((o,i)=>{const no=n.ord
  line:nline(o.id,'arrive')||o.customerLine,
  water:o.waterLevel,clog:o.fault,hp:o.clogHp!=null?o.clogHp:(o.fault==='hard'?1:3),base:o.basePay,tip:o.tipMax,hurry:!!o.urgent,obj:o.object==='rubber_duck'?'duck':null,
  tools:i===0?['plunger']:i===1?['plunger','scoop']:['plunger','scoop','snake']};});}
-Promise.all(['data/orders.json','data/narrative.json'].map(u=>fetch(u).then(r=>r.json()))).then(([c,n])=>buildOrders(c,n));
+let ECO=null;
+Promise.all(['data/orders.json','data/narrative.json','data/economy.json'].map(u=>fetch(u).then(r=>r.json()))).then(([c,n,e])=>{ECO=e;buildOrders(c,n);});
 // 皮搋子节奏：以 rebounceMs 为中心，windowMs 内拉起算“按准”，其中 perfectWindowMs 内显示“完美”
 function rhythm(up){return CFG.tools[up?'plunger_pro':'plunger'].rhythm;}
 function win(up){const r=rhythm(up);return {ws:(r.rebounceMs-r.windowMs/2)/1000,wl:r.windowMs/1000,ps:(r.rebounceMs-r.perfectWindowMs/2)/1000,pl:r.perfectWindowMs/1000};}
@@ -86,15 +87,21 @@ function chatTitle(ch){return ch==='family_group'?((NAR.app&&NAR.app.family_grou
 function canOpenPhone(){return S.screen!=='play'&&S.screen!=='title'&&!S.dexCard;}
 function openPhone(view){if(!canOpenPhone())return;PH.open=true;PH.view=view||'list';PH.toastT=0;SFX.click();if(PH.view.startsWith('chat:'))readChat(PH.view.slice(5));}
 function readChat(ch){const c=PH.chats[ch];if(c){PH.unread-=c.unread;c.unread=0;}}
-// ---------- 问老师傅（激励广告占位） ----------
-function masterHint(){const d=O.d,h=held;
- if(O.phase==='observe')return '老师傅：“先冲一下水，看看水怎么走。”';
- if(O.phase==='verify')return '老师傅：“通了就再冲一次，验一下。”';
- if(O.water>splashAbove()&&!O.usedScoop)return '老师傅：“水太满别急着压，先拿水瓢舀到桶里。”';
- if(d.clog==='hard'&&!O.usedSnake)return '老师傅：“咚咚响、水不动，是硬东西卡住了，换弹簧的，转到底再往上拉。”';
- if(d.clog==='hard')return '老师傅：“转到底，钩住了就往上拉。”';
- return '老师傅：“皮搋子压到底，别急着拉，等圈变绿那一下再提。”';}
-function askMaster(){S.ad={t:0,dur:3};SFX.ad();}
+// ---------- 打电话问老钱（规则 economy.json callMaster，台词 narrative.json call_master） ----------
+function CM(){return (ECO&&ECO.rewardedAds.callMaster)||{showWhen:{wrongToolCount:2,idleMs:12000,patienceAtOrBelow:.5},freePerDay:1,maxPerOrder:1};}
+function pick(a){return a&&a.length?a[Math.floor(Math.random()*a.length)]:'';}
+function masterFault(){if(O.water>splashAbove()&&!O.usedScoop)return 'high_water';return O.d.clog==='hard'?'hard':'soft';}
+function masterTool(){const f=masterFault();return f==='high_water'?'scoop':f==='hard'?'snake':'plunger';}
+function masterLine(){const c=(NAR&&NAR.call_master)||{};return [pick(c.opener),pick((c.hints||{})[masterFault()]),pick(c.closer)].filter(Boolean).join(' ');}
+function masterReady(){if(!O||O.phase!=='work'||O.anim)return false;const w=CM().showWhen;
+ return (O.wrong||0)>=w.wrongToolCount||(O.idleT||0)*1000>=w.idleMs||O.tip/O.d.tip<=w.patienceAtOrBelow;}
+function masterFree(){return (S.masterFree||0)<CM().freePerDay;}
+function askMaster(){if(!masterReady()||(O.masterCalls||0)>=CM().maxPerOrder||S.ad)return;O.masterCalls=(O.masterCalls||0)+1;
+ const after=ok=>{if(!O)return;if(!ok){say('（电话没打通）',1.6);return;}
+  S.callUI={t:0,dur:4.5,line:masterLine()};O.hlTool=masterTool();O.hlT=3;O.reveal=3;SFX.notify();};
+ if(masterFree()){S.masterFree=(S.masterFree||0)+1;after(true);}else{Ads.rewarded('callMaster').then(after);}}
+// 网页假广告：画面上数 3 秒，期间暂停计时
+Ads.fakeUI=(placement,dur)=>new Promise(res=>{S.ad={t:0,dur,placement,res};SFX.ad();});
 const TOOLS={plunger:{name:'皮搋子'},scoop:{name:'水瓢'},snake:{name:'弹簧疏通器'}};
 
 // ---------- 布局常量 ----------
@@ -179,7 +186,7 @@ function plungerUpdate(dt){
  const {ws,wl,ps,pl}=win(S.upgraded);const R=rhythm(S.upgraded);
  if(O.water>splashAbove()&&p.comp>.45){ // 满水直接按：溅
   SFX.splash();buzz([40,30,60]);doShake(10);for(let i=0;i<40;i++)parts.push({x:BOWL.x+rnd(-90,90),y:WATER_Y-10,vx:rnd(-260,260),vy:rnd(-420,-150),life:rnd(.6,1.1),color:'#8fd3f4',r:rnd(3,7),g:900});
-  O.splashed++;if(O.splashed<=2)penalty(4,'splash');O.penalties.push('溅水');
+  O.wrong=(O.wrong||0)+1;O.splashed++;if(O.splashed<=2)penalty(4,'splash');O.penalties.push('溅水');
   if(O.d.id===1||!nline(O.d.key,'splash'))say('水太满了，一压就溅一地……');else say('“'+nline(O.d.key,'splash')+'”');held=null;p.comp=0;p.ctrl=false;O.face='😱';return;}
  if(p.comp>.86&&!p.bottom){p.bottom=true;p.bt=0;SFX.seal();buzz(12);}
  if(p.bottom){p.bt+=dt;}
@@ -188,7 +195,7 @@ function plungerUpdate(dt){
   if(bt<ws)q='early';else if(bt<=ws+wl)q=(bt>=ps&&bt<=ps+pl)?'perfect':'good';else q='late';
   if(O.d.clog==='hard'){
    SFX.thud();buzz([25,40,25]);doShake(3);burst(BOWL.x+rnd(-20,20),WATER_Y,4,'#e6f7ff',60,4);float('咚',BOWL.x+40,WATER_Y-60,'#ddd',24);
-   p.hardHits++;if(p.hardHits>=2&&!O.hardHint){O.hardHint=true;say('咚咚的……底下好像卡着硬东西');penalty(3);O.penalties.push('工具不对');}
+   p.hardHits++;O.wrong=(O.wrong||0)+1;if(p.hardHits>=2&&!O.hardHint){O.hardHint=true;const wl=nline(O.d.key,'wrong_tool');say(wl?'“'+wl+'”':'咚咚的……底下好像卡着硬东西');penalty(3);O.penalties.push('工具不对');}
    return;}
   const hit=q==='perfect'||q==='good';let dmg=hit?R.damagePerPerfect:R.damagePerOffBeat;
   if(hit){SFX.perfect();buzz(35);doShake(5);burst(BOWL.x,WATER_Y,16,'#cdeeff',200,5);float((q==='perfect'?'完美':'好')+(R.damagePerPerfect>1?' ×'+R.damagePerPerfect:'')+'!',BOWL.x+70,WATER_Y-80,'#7dffb0',q==='perfect'?26:22);
@@ -246,6 +253,7 @@ cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
 document.addEventListener('gesturestart',e=>e.preventDefault());
 
 function playDown(p){
+ if(O)O.idleT=0;
  if(!O||O.anim||hitstop>0)return;
  if(S.dexCard)return;
  if(dist(p.x,p.y,FLUSH.x,FLUSH.y)<FLUSH.r+16){
@@ -264,6 +272,7 @@ function playDown(p){
  }
 }
 function playMove(p){
+ if(O)O.idleT=0;
  if(!held||!O)return;
  if(!held.attached){held.x=p.x;held.y=p.y;if(held.id==='scoop')scoopMove();return;}
  if(held.id==='plunger'&&O.plunger.ctrl){O.plunger.comp=clamp((p.y-O.plunger.y0)/110,0,1);}
@@ -297,7 +306,9 @@ function update(dt){
   if(S.resultT>.4&&!r.paid&&r.coinsShown>=r.total){r.paid=true;S.money+=r.total;buzz(30);}
   if(S.resultT>1.4&&S.phoneQueue.length&&!S.phoneShown){S.phoneShown=true;PH.toastT=3.4;SFX.notify();buzz([15,60,15]);}}
  if(PH.toastT>0)PH.toastT-=dt;
- if(S.ad){S.ad.t+=dt;if(O&&O.startT!=null)O.startT+=dt;if(S.ad.t>=S.ad.dur){S.ad=null;if(O)say(masterHint(),5);SFX.notify();}return;}
+ if(S.ad){S.ad.t+=dt;if(O&&O.startT!=null)O.startT+=dt;if(S.ad.t>=S.ad.dur){const r=S.ad.res;S.ad=null;r&&r(true);}return;}
+ if(S.callUI){S.callUI.t+=dt;if(O&&O.startT!=null)O.startT+=dt;if(S.callUI.t>=S.callUI.dur)S.callUI=null;return;}
+ if(O&&S.screen==='play'){if(O.hlT>0)O.hlT-=dt;if(O.reveal>0)O.reveal-=dt;if(O.phase==='work'&&!O.anim&&!ptr.down)O.idleT=(O.idleT||0)+dt;}
  if(!O||S.screen!=='play')return;
  if(O.hintT>0)O.hintT-=dt;
  if(O.ghost>0)O.ghost-=dt;
@@ -407,6 +418,9 @@ function drawWater(){
  // 硬物剪影
  if(O.d.clog==='hard'&&O.hp>0&&O.observed&&!O.objOut){g.globalAlpha=.3+.1*Math.sin(S.t*2);drawDuck(BOWL.x+8,cy+6,.7,'#2F5570');g.globalAlpha=1;
   if(Math.random()<.01)parts.push({x:BOWL.x+rnd(-10,10),y:cy,vx:0,vy:-40,life:.5,color:'#E6F7FF',r:4,g:-50});}
+ if(O.reveal>0){const a=Math.min(1,O.reveal)*(.6+.4*Math.sin(S.t*10));g.setLineDash([6,5]);g.lineWidth=3;g.strokeStyle=`rgba(255,226,120,${a})`;
+  if(masterFault()==='high_water'){const l2=splashAbove();g.beginPath();g.ellipse(BOWL.x,WATER_Y-(l2-.35)*14,INNER.rx*(.32+.66*l2),INNER.ry*(.32+.66*l2),0,0,7);g.stroke();}
+  else{g.beginPath();g.ellipse(BOWL.x+8,cy+6,O.d.clog==='hard'?32:46,O.d.clog==='hard'?20:26,0,0,7);g.stroke();}g.setLineDash([]);}
  g.restore();
  // 满水高光边
  if(l>.8){g.beginPath();g.ellipse(BOWL.x,BOWL.y+4,INNER.rx,INNER.ry,0,0,7);g.strokeStyle=`rgba(79,168,218,${.45+.3*Math.sin(S.t*8)})`;g.lineWidth=4;g.stroke();}
@@ -503,6 +517,7 @@ function drawTray(){
   if(avail){const inUse=held&&held.id===id;g.globalAlpha=inUse?.3:1;
    if(id==='plunger')drawPlunger(x,y+22,0,S.upgraded,.5);if(id==='scoop')drawScoop(x-10,y-4,false,1.05);if(id==='snake')drawSnake(x,y+16,0,.82);g.globalAlpha=1;
    txt(TOOLS[id].name,x,y+30,13,INK);
+   if(O.hlT>0&&O.hlTool===id){rr(x-50,y-40,100,84,16);g.strokeStyle=`rgba(255,207,63,${.6+.4*Math.sin(S.t*14)})`;g.lineWidth=5;g.stroke();}
    if(id==='snake'&&O.d.id===3&&!O.usedSnake){rr(x+16,y-44,38,18,9);fs('#e0533f',2);txt('NEW',x+35,y-35,11,'#fff');}
    if(lockTools()){rr(x-46,y-36,92,76,14);g.fillStyle='rgba(60,40,30,.45)';g.fill();}}
   else{txt('?',x,y,30,'#5d4535');}
@@ -519,7 +534,7 @@ function drawHUD(){
  // 旧手机角
  rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#4a6a80';g.fill();g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1;g.beginPath();g.moveTo(344,640);g.lineTo(362,668);g.stroke();
  if(PH.unread>0){g.beginPath();g.arc(374,630,9,0,7);g.fillStyle='#e8453c';g.fill();txt(String(PH.unread),374,630,11,'#fff');}
- if(O&&S.screen==='play'&&O.phase==='work'&&!O.anim&&!S.ad)button('📞 问老师傅',14,540,104,34,askMaster,'#fff8eb');
+ if(O&&S.screen==='play'&&!S.ad&&!S.callUI)drawMasterBtn();
 }
 function drawHintBubble(){
  if(!O||O.hintT<=0||!O.hint)return;const a=Math.min(1,O.hintT*2);g.globalAlpha=a;
@@ -528,9 +543,18 @@ function drawHintBubble(){
  rr(W/2-w/2,640-h,w,h,18);fs('#fffdf6',2.5);L.forEach((l,i)=>txt(l,W/2,640-h+20+i*20,fsz,INK));g.globalAlpha=1;
 }
 function phoneBtn(){if(canOpenPhone()&&!PH.open)buttons.push({x:330,y:620,w:52,h:70,fn:()=>openPhone('list')});}
-function drawAd(){if(!S.ad)return;g.fillStyle='rgba(10,10,14,.88)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:()=>{}});
+function drawMasterBtn(){const used=(O.masterCalls||0)>=CM().maxPerOrder,ready=masterReady()&&!used;
+ const x=14,y=540,w=112,h=36,wob=ready?Math.sin(S.t*14)*Math.max(0,Math.sin(S.t*2.2))*3:0;g.save();g.translate(wob,0);
+ rr(x,y,w,h,14);fs(ready?'#fff8eb':'rgba(220,210,195,.75)',ready?3:2);txt('📞 问老钱',x+44,y+h/2+1,14,ready?INK:'#9a8a7a');
+ if(ready){const free=masterFree();rr(x+w-34,y-8,40,18,9);fs(free?'#4fc26f':'#ffb53d',2);txt(free?'免费':'▶广告',x+w-14,y+1,10,free?'#fff':INK);}
+ g.restore();if(ready)buttons.push({x,y,w,h,fn:()=>{audioInit();SFX.click();askMaster();}});}
+function drawAd(){if(S.callUI){const c=S.callUI;g.fillStyle='rgba(20,12,8,.55)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:()=>{if(c.t>1)S.callUI=null;}});
+  rr(30,190,W-60,200,20);fs('#2b2b33',2);avatar('lao_qian',W/2,240,28);txt(cname('lao_qian')+' · 通话中',W/2,286,14,'#bbb','center','600');
+  const L=bubbleText(c.line,W-120);L.forEach((l,i)=>txt(l,W/2,320+i*22,15,'#fff','center','600'));
+  if(c.t>1)txt('点击挂断',W/2,375,12,'#888','center','500');}
+ if(!S.ad)return;g.fillStyle='rgba(10,10,14,.88)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:()=>{}});
  rr(40,250,W-80,240,18);fs('#2b2b33',2);txt('广告占位',W/2,300,15,'#aaa');txt('（正式版这里播激励视频）',W/2,328,13,'#888','center','500');
- txt('📞 正在接通老师傅…',W/2,390,18,'#fff');otxt(String(Math.ceil(S.ad.dur-S.ad.t)),W/2,440,34,'#ffcf3f');}
+ txt('📞 正在接通'+cname('lao_qian')+'…',W/2,390,18,'#fff');otxt(String(Math.ceil(S.ad.dur-S.ad.t)),W/2,440,34,'#ffcf3f');}
 function avatar(id,x,y,r){const nm=cname(id);let hsh=0;for(const c of id)hsh=(hsh*31+c.charCodeAt(0))%360;g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=id==='hero'?'#7aa7c7':`hsl(${hsh},45%,62%)`;g.fill();
  txt(id==='hero'?'我':nm.slice(-1),x,y+1,r*.95,'#fff','center','700');}
 function bubbleText(t,maxW){g.font='500 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';const out=[];let cur='';for(const ch of t){if(g.measureText(cur+ch).width>maxW){out.push(cur);cur=ch;}else cur+=ch;}if(cur)out.push(cur);return out;}
@@ -610,7 +634,7 @@ function drawTitle(){
  otxt('重生之我在',W/2,170,30,'#fff8eb');otxt('澳洲修马桶',W/2,215,42,'#ffcf3f');
  txt('G1 玩法原型 · 占位美术',W/2,262,14,'#6b4a36','center','600');
  drawPlunger(W/2,470+Math.sin(S.t*3)*6,(Math.sin(S.t*3)+1)/2*.6,false,1.4);
- button('开 工',W/2-90,560,180,60,()=>{S.money=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();startOrder(0);},'#ffb53d');
+ button('开 工',W/2-90,560,180,60,()=>{S.money=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;startOrder(0);},'#ffb53d');
  txt('建议用手机竖屏打开，戴耳机体验更好',W/2,650,13,'#6b4a36','center','500');
  button(save.muted?'🔇 声音关':'🔊 声音开',W/2-120,690,110,36,()=>{save.muted=!save.muted;persist();},'#fff8eb');
  button(save.reduced?'减少动效：开':'减少动效：关',W/2+10,690,120,36,()=>{save.reduced=!save.reduced;persist();},'#fff8eb');
@@ -698,5 +722,5 @@ function drawEnd(){
 }
 
 // 调试/测试钩子
-window.__G={S,PH,openPhone,win,get CFG(){return CFG;},timesText,get save(){return save;},get O(){return O;},ORDERS,startOrder,setUpgraded:v=>S.upgraded=v};
+window.__G={S,askMaster,masterReady,PH,openPhone,win,get CFG(){return CFG;},timesText,get save(){return save;},get O(){return O;},ORDERS,startOrder,setUpgraded:v=>S.upgraded=v};
 requestAnimationFrame(loop);
