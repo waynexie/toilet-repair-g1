@@ -848,9 +848,12 @@
     }
   },
   "hints": {
-    "_note": "操作提示（无尖角，和台词气泡同位）。每句≤20字。",
+    "_note": "操作提示（无尖角，和台词气泡同位）。每句≤20字；locked_* ≤13字（ui-spec v1.5）。locked_tool_pro=点锁定的专业皮搋子；_ready=钱够时点；locked_tool_later=点后面单子自动解锁的工具。",
     "flush_first": "先冲一下，看看什么情况",
     "ring_match": "金圈套上绿圈时按下去",
-    "too_full_scoop": "水太满了，先用水瓢舀出来"
+    "too_full_scoop": "水太满了，先用水瓢舀出来",
+    "locked_tool_pro": "攒够 ¥100，换把好使的",
+    "locked_tool_pro_ready": "钱够了，换一把？",
+    "locked_tool_later": "这个后面用得上"
   }
 }
