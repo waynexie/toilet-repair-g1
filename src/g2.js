@@ -12,9 +12,9 @@ function G2build(g){G2.data=g;G2.ord={};
   const client=o.customer||no.client||null;const who=client?cname(client):'客户';
   const fee=(ECO&&ECO.laborFees&&ECO.laborFees[o.id])||{};const src=o.source||'message';
   const mult=src==='referral'?(((ECO&&ECO.orderSources&&ECO.orderSources.referral)||{}).payMultiplier||1):1;
-  const base=Math.round((fee.basePay!=null?fee.basePay:o.basePay||30)*mult),tip=fee.tipMax!=null?fee.tipMax:o.tipMax||10;
+  const base=Math.round((fee.basePay!=null?fee.basePay:o.basePay||30)*mult);
   const d={id:gid++,key:o.id,g2:true,client,who,place:PLACE[o.id]||'县城',face:FACE[client]||'🙂',boardHint:o.boardHint||(o.id==='lock_wang'?'门锁拧不动':''),src,payX:mult,
-   base,tip,label:o.target==='door_lock'?'门锁':'马桶',raw:o};
+   base,patMax:PAT().max,label:o.target==='door_lock'?'门锁':'马桶',raw:o};
   if(o.target==='door_lock'){d.lock=true;d.fault=o.fault;d.line=(hk.lines&&hk.lines.arrive&&hk.lines.arrive.text)||'';}
   else{Object.assign(d,{line:nline(o.id,'arrive')||o.boardHint,water:o.waterLevel,clog:o.fault,hp:o.clogHp!=null?o.clogHp:(o.fault==='hard'?1:3),hurry:false,
    obj:o.object&&o.fault==='hard'?o.object:null,objName:{toothbrush:'牙刷',rubber_duck:'小黄鸭'}[o.object]||null,tools:['plunger','scoop','snake']});}
@@ -22,7 +22,7 @@ function G2build(g){G2.data=g;G2.ord={};
 function G2reset(){Object.assign(G2,{day:1,board:[],done:[],pick:0,lockWangDone:false,referralUnlocked:false,screwdriver:false,offer:null});S.day=1;}
 function beats(k){((NAR.workday_beats||{})[k]||[]).forEach(m=>deliver({channel:m.channel,sender:m.sender,raw:m.text}));}
 function G2dayEnd(){beats('evening');}
-function G2nextDay(){Ads.interstitial('day_end');G2.day++;S.day=G2.day;S.masterFree=0;G2.dayStartMoney=S.money;G2.done=[];O=null;
+function G2nextDay(){Ads.interstitial('day_end');G2.day++;S.day=G2.day;S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2.dayStartMoney=S.money;G2.done=[];O=null;
  const dd=(G2.data.days||[]).find(x=>x.day===G2.day);
  if(!dd){S.screen='end';return;}
  let ids=(dd.board||[]).filter(id=>G2.ord[id]);
@@ -62,7 +62,7 @@ function drawOffer(){const f=G2.offer,dl=NAR.g2_hooks.lock_wang.dialogue,cur=Mat
  avatar('wang_ayi',W/2,230,30);let y=285;
  for(let i=0;i<=cur;i++){const l=dl[i],who=l.speaker==='hero'?'你':cname(l.speaker);const L=bubbleText(who+'：'+l.text,W-110);L.forEach(t=>{txt(t,50,y,14,i===cur?INK:'#a08878',l.speaker==='hero'?'left':'left','600');y+=20;});y+=6;}
  if(f.i<dl.length-1){buttons.push({x:0,y:0,w:W,h:H,fn:()=>{SFX.click();f.i++;}});txt('点一下继续',W/2,555,12,'#a08878','center','500');return;}
- const fee=ECO.laborFees.lock_wang;txt(`人工费 ¥${fee.basePay} · 小费最多 ¥${fee.tipMax}`,W/2,520,13,'#2f8a4a');
+ const fee=ECO.laborFees.lock_wang;txt(`人工费 ¥${fee.basePay}`,W/2,520,13,'#2f8a4a');
  button('试试看',W/2-130,540,120,46,()=>{startLock(G2.ord.lock_wang);},'#ffb53d');
  button('下次吧',W/2+10,540,120,46,()=>{G2.offer=null;G2afterResult({key:'lock_wang_declined'});},'#fff8eb');}
 
@@ -70,15 +70,15 @@ function drawOffer(){const f=G2.offer,dl=NAR.g2_hooks.lock_wang.dialogue,cur=Mat
 const LOCK={x:195,y:400},SCREWS=[{x:195,y:340},{x:195,y:470}],HANDLE={x:265,y:405};
 const LTOOLS={lube_spray:{name:'润滑喷剂'},turn_key:{name:'钥匙'},screwdriver:{name:'螺丝刀'}};
 function startLock(d){G2.offer=null;
- O={d,lock:true,phase:'observe',tip:d.tip,penalties:[],face:'😐',hint:null,hintT:0,startT:null,elapsed:0,anim:null,sel:null,
+ O={d,lock:true,phase:'observe',pat:d.patMax,penalties:[],face:'😐',hint:null,hintT:0,startT:null,elapsed:0,anim:null,sel:null,
   lubed:false,holdT:0,spraying:false,ang:0,lastA:null,screws:[0,0],cur:-1,wob:0,open:0,wrong:0};
  O.tools=d.fault==='stiff_cylinder'?['lube_spray','turn_key']:['screwdriver','lube_spray'];
  held=null;goReveal();}
 function lockSay(t,d=2.4){O.hint=t;O.hintT=d;}
-function lockPenalty(n,why){O.wrong++;O.tip=Math.max(0,O.tip-n);O.face='😟';float('-¥'+n+' 小费',LOCK.x,180,'#ff8a7a',18);O.penalties.push(why);}
+function lockPenalty(n,why){O.wrong++;patLose();O.face='😟';O.penalties.push(why);}
 function lockLine(k){const hk=NAR.g2_hooks[O.d.key]||{};const l=hk.lines&&hk.lines[k];return l?l.text:'';}
 function lockDown(p){if(!O||O.phase==='done')return;O.startT=O.startT??S.t;
- if(p.y>TRAY_Y){const i=SLOTS.findIndex(x=>Math.abs(p.x-x)<50);const id=O.tools[i];if(!id||O.phase==='observe')return;O.sel=O.sel===id?null:id;SFX.pick();buzz(8);return;}
+ if(p.y>TRAY_Y){const i=(ART.ok?TB.slots:SLOTS).findIndex(x=>Math.abs(p.x-x)<(ART.ok?35:50));const id=O.tools[i];if(!id||O.phase==='observe')return;O.sel=O.sel===id?null:id;SFX.pick();buzz(8);return;}
  if(O.phase==='observe'){
   if(O.d.fault==='stiff_cylinder'&&dist(p.x,p.y,LOCK.x,LOCK.y)<60){SFX.wrong();noise(.4,.2,500);O.wob=.4;O.phase='work';lockSay(O.d.raw.observe.clue,3.2);}
   else if(O.d.fault==='loose_handle'&&dist(p.x,p.y,HANDLE.x,HANDLE.y)<70){SFX.thud();O.wob=1.2;O.phase='work';lockSay(O.d.raw.observe.clue,3.2);}
@@ -111,7 +111,7 @@ function lockUpdate(dt){if(O.hintT>0)O.hintT-=dt;if(O.wob>0)O.wob=Math.max(0,O.w
 function lockFinish(){O.phase='done';O.elapsed=S.t-O.startT;SFX.success();buzz([30,40,60]);O.face='👍';O.open=Math.max(O.open,1);O.wob=0;
  burst(HANDLE.x,HANDLE.y,24,'#fff6a8',220,4);O.anim={t:0};}
 function lockResult(){const d=O.d,hk=NAR.g2_hooks[d.key]||{};const L=hk.lines||{};
- S.result={d,said:(L.done||{}).text,heroSaid:(L.done_hero||{}).text,base:d.base,tip:O.tip,total:d.base+O.tip,elapsed:O.elapsed,pen:O.penalties,prevBest:null,isBest:false,coinsShown:0,face:O.tip>=d.tip*.8?'👍':'🙂'};
+ const gift=rollGift(d,Math.max(1,O.pat));S.result={d,said:(L.done||{}).text,heroSaid:(L.done_hero||{}).text,base:d.base,stars:Math.max(1,O.pat),gift,total:d.base+(gift&&gift.cash||0),elapsed:O.elapsed,pen:O.penalties,prevBest:null,isBest:false,coinsShown:0,face:O.pat>=3?'👍':'🙂'};
  S.screen='result';S.resultT=0;S.phoneQueue=[];}
 function drawLockScene(){const d=O.d;
  g.fillStyle='#e9dcc0';g.fillRect(0,0,W,TRAY_Y);g.fillStyle='#d8c8a8';g.fillRect(0,560,W,TRAY_Y-560);
@@ -137,13 +137,19 @@ function drawLockScene(){const d=O.d;
  if(O.sel==='screwdriver'&&O.phase==='work')txt('↻ 在螺丝上转圈拧紧',W/2,610,14,INK);
  if(O.phase==='verify'){g.font='34px sans-serif';g.textAlign='center';g.fillText('👆',HANDLE.x+30,HANDLE.y+40+Math.sin(S.t*6)*6);}
  // 托盘
- g.fillStyle='#6b4a36';g.fillRect(0,TRAY_Y,W,H-TRAY_Y);g.fillStyle='#7d573f';g.fillRect(0,TRAY_Y,W,8);
+ if(ART.ok){A('ui_toolbox_lid_lv1',{x:TB.x+(TB.w-271)/2,y:TB.y-14});A('ui_toolbox_body_lv1',{x:TB.x,y:TB.y});const cy=(TB.slotTop+TB.slotBot)/2;
+  TB.slots.forEach((x,i)=>{const id=O.tools[i];if(!id){A('ui_toolbox_lockplate',{x,y:cy});txt('升级解锁',x,746,12,'#fff3d8','center','700');return;}
+   const sel=O.sel===id;g.font='30px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText({lube_spray:'🧴',turn_key:'🔑',screwdriver:'🪛'}[id],x,cy-(sel?8:0));txt(LTOOLS[id].name,x,746,12,'#fff3d8','center','700');
+   if(sel){rr(x-34,TB.slotTop-10,68,TB.slotBot-TB.slotTop+12,12);g.strokeStyle='#FFE27A';g.lineWidth=3;g.stroke();}
+   if(id==='screwdriver'){rr(x-4,TB.slotTop-8,40,16,8);fs('#4a90d9');txt('老钱的',x+16,TB.slotTop,10,'#fff','center','700');}
+   if(O.phase==='observe'){rr(x-32,TB.slotTop,64,TB.slotBot-TB.slotTop,8);g.fillStyle='rgba(60,40,30,.45)';g.fill();}});}
+ else{ g.fillStyle='#6b4a36';g.fillRect(0,TRAY_Y,W,H-TRAY_Y);g.fillStyle='#7d573f';g.fillRect(0,TRAY_Y,W,8);
  SLOTS.forEach((x,i)=>{const id=O.tools[i],y=TRAY_Y+44;rr(x-46,y-36,92,76,14);fs(id?'#f3e6cf':'#8a6a55',3);
   if(!id){txt('?',x,y,30,'#5d4535');return;}
   g.font='30px sans-serif';g.textAlign='center';g.fillText({lube_spray:'🧴',turn_key:'🔑',screwdriver:'🪛'}[id],x,y-6);txt(LTOOLS[id].name,x,y+26,13,INK);
   if(O.sel===id){rr(x-50,y-40,100,84,16);g.strokeStyle='#ffcf3f';g.lineWidth=5;g.stroke();}
   if(id==='screwdriver'){rr(x+6,y-44,48,18,9);fs('#4a90d9',2);txt('老钱的',x+30,y-35,10,'#fff');}
-  if(O.phase==='observe'){rr(x-46,y-36,92,76,14);g.fillStyle='rgba(60,40,30,.45)';g.fill();}});}
+  if(O.phase==='observe'){rr(x-46,y-36,92,76,14);g.fillStyle='rgba(60,40,30,.45)';g.fill();}});}}
 function G2draw(sx,sy){
  if(S.screen==='board'||(S.screen==='end'&&S.day>1)){drawBoardBg();if(S.screen==='board')drawBoard();return;}
  g.save();g.translate(sx,sy);drawLockScene();drawFX();g.restore();drawHUD();drawHintBubble();
@@ -161,7 +167,7 @@ function drawBoard(){const left=G2.pick-G2.done.filter(k=>G2.board.includes(k)).
   if(d.client)avatar(d.client,70,y+42,24);else{g.beginPath();g.arc(70,y+42,24,0,7);g.fillStyle='#c8b8a0';g.fill();}
   txt(d.client?cname(d.client):'新客户',108,y+28,17,INK,'left','800');txt(d.place,108,y+52,12,'#7a5a48','left','500');
   txt((d.lock?'🔒 ':'🚽 ')+d.boardHint,48,y+86,15,INK,'left','700');
-  txt(`¥${d.base} · 小费≤¥${d.tip}`,W-48,y+86,13,'#2f8a4a','right','700');
+  txt(`工钱 ¥${d.base}`,W-48,y+86,13,'#2f8a4a','right','700');
   if(d.src==='referral'){const by=(NAR.g2_hooks.lock_referral_1||{}).card_badge||'介绍';rr(W-160,y-10,128,24,12);fs('#4a90d9',2);txt('🤝 '+by,W-96,y+2,12,'#fff');}
   if(d.src==='call'){rr(W-110,y-10,78,24,12);fs('#f08a3c',2);txt('📞 急',W-71,y+2,12,'#fff');}
   if(d.key==='o5'){rr(W-120,y+14,88,20,10);fs('#ffcf3f',2);txt('老客户',W-76,y+24,11,INK);}
