@@ -29,7 +29,7 @@ css='''*{box-sizing:border-box;margin:0}body{background:#2b211b;font-family:"Not
 .oB .num{color:#FFE9A8;text-shadow:0 1px 0 rgba(0,0,0,.35)}.oB .lb{background:#4A3222;color:#E7CFA9}.oB .vv{color:#FFD45E;text-shadow:0 1px 0 rgba(0,0,0,.35)}
 .oB .av{box-shadow:inset 0 0 0 2px #FFF3DA}
 /* C */
-.oC .who,.oC .cc,.oC .tg,.oC .gr{border-color:rgba(255,240,215,.28);background:rgba(48,32,20,.6);box-shadow:0 2px 8px rgba(30,20,10,.25);backdrop-filter:blur(6px)}
+.oC .who,.oC .cc,.oC .tg,.oC .gr{border-color:rgba(255,240,215,.28);background:rgba(48,32,20,.6);box-shadow:0 2px 8px rgba(30,20,10,.25)}
 .oC .num{color:#fff}.oC .lb{background:rgba(255,255,255,.14);color:#E9D9C0}.oC .vv{color:#FFD45E}.oC .av{box-shadow:inset 0 0 0 2px rgba(255,255,255,.85)}
 /* annotation */
 .mk{position:absolute;z-index:50;background:#FF2D55}.mk.h{height:2px}.mk.v{width:2px}
@@ -42,7 +42,7 @@ def hud(k):
     return f'''<div class="who"><div class="av" style="background-image:url({A}characters/avatar_wang_ayi_p1@2x.png)"></div><div class="pat"><i></i><i></i><i></i><i></i></div></div>
 <div class="cc"><div class="coin">{COIN}</div><span class="num">128</span></div>
 <div class="tg"><span class="lb">本单</span><span class="vv">¥30</span></div>
-<div class="gr">{GEAR(*gfill)}</div>'''
+<div class="gr">{GEARM() if k=='C' else GEAR(*gfill)}</div>'''
 opts=[('A','方案 A · 奶油瓷面','和场景同色系，浅底深字，立体感靠顶部高光和底部硬投影',True),
       ('B','方案 B · 胡桃木牌','深色木纹底配浅色字，在亮色卫生间里最跳、最好读，但比较压画面',False),
       ('C','方案 C · 半透明暗底','轻、不挡画面，质感偏通用，和手绘场景有些疏离',False)]

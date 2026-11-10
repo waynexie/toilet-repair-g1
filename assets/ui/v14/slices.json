@@ -1,0 +1,142 @@
+{
+ "scale": 2,
+ "note": "数值都是 2x 像素。margin_2x 是投影外扩：组件 1x 位置为 (x,y,w,h) 时，贴图区域是 (x-margin/2, y-margin/2, w+margin, h+margin)。nine_slice_2x 是九宫格四边不拉伸的宽度。文字、耐心条由代码画，样式见 ui-spec「HUD 方案 C」。",
+ "slices": {
+  "hud_card_c": {
+   "file": "assets/ui/v14/hud_card_c@2x.png",
+   "size_2x": [
+    208,
+    256
+   ],
+   "margin_2x": 24,
+   "nine_slice_2x": {
+    "left": 56,
+    "top": 56,
+    "right": 56,
+    "bottom": 56
+   }
+  },
+  "hud_capsule_c": {
+   "file": "assets/ui/v14/hud_capsule_c@2x.png",
+   "size_2x": [
+    368,
+    144
+   ],
+   "margin_2x": 24,
+   "nine_slice_2x": {
+    "left": 72,
+    "top": 72,
+    "right": 72,
+    "bottom": 72
+   }
+  },
+  "hud_tag_c": {
+   "file": "assets/ui/v14/hud_tag_c@2x.png",
+   "size_2x": [
+    256,
+    144
+   ],
+   "margin_2x": 24,
+   "nine_slice_2x": {
+    "left": 56,
+    "top": 56,
+    "right": 56,
+    "bottom": 56
+   }
+  },
+  "hud_round_c_normal": {
+   "file": "assets/ui/v14/hud_round_c_normal@2x.png",
+   "size_2x": [
+    144,
+    144
+   ],
+   "margin_2x": 24,
+   "nine_slice_2x": {
+    "left": 72,
+    "top": 72,
+    "right": 72,
+    "bottom": 72
+   }
+  },
+  "hud_round_c_pressed": {
+   "file": "assets/ui/v14/hud_round_c_pressed@2x.png",
+   "size_2x": [
+    144,
+    144
+   ],
+   "margin_2x": 24,
+   "nine_slice_2x": {
+    "left": 72,
+    "top": 72,
+    "right": 72,
+    "bottom": 72
+   }
+  },
+  "hud_round_c_disabled": {
+   "file": "assets/ui/v14/hud_round_c_disabled@2x.png",
+   "size_2x": [
+    144,
+    144
+   ],
+   "margin_2x": 24,
+   "nine_slice_2x": {
+    "left": 72,
+    "top": 72,
+    "right": 72,
+    "bottom": 72
+   }
+  },
+  "hud_chip_c": {
+   "file": "assets/ui/v14/hud_chip_c@2x.png",
+   "size_2x": [
+    64,
+    48
+   ],
+   "margin_2x": 0,
+   "nine_slice_2x": {
+    "left": 16,
+    "top": 16,
+    "right": 16,
+    "bottom": 16
+   }
+  },
+  "hud_avatar_ring_c": {
+   "file": "assets/ui/v14/hud_avatar_ring_c@2x.png",
+   "size_2x": [
+    128,
+    128
+   ],
+   "margin_2x": 0,
+   "nine_slice_2x": {
+    "left": 16,
+    "top": 16,
+    "right": 16,
+    "bottom": 16
+   }
+  },
+  "icon_coin_32": {
+   "file": "assets/ui/v14/icon_coin_32@2x.png",
+   "size_2x": [
+    64,
+    64
+   ],
+   "margin_2x": 0
+  },
+  "icon_gear_c_24": {
+   "file": "assets/ui/v14/icon_gear_c_24@2x.png",
+   "size_2x": [
+    48,
+    48
+   ],
+   "margin_2x": 0
+  },
+  "icon_gear_c_24_disabled": {
+   "file": "assets/ui/v14/icon_gear_c_24_disabled@2x.png",
+   "size_2x": [
+    48,
+    48
+   ],
+   "margin_2x": 0
+  }
+ }
+}
