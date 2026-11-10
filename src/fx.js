@@ -26,22 +26,46 @@ function gearCircle(cx,cy){g.beginPath();g.arc(cx,cy,24,0,7);g.fillStyle='#FFF8E
  buttons.push({x:cx-24,y:cy-24,w:48,h:48,fn:()=>{audioInit();SFX.click();S.settings=true;}});}
 gearBtn=function(x,y){gearCircle(x+22,y+22);};
 
-// ---------- ① HUD ----------
-hudAvatar=function(){const id=custOf();const im=id&&portrait(id,patLevel(O.pat));const sh=O.patFlash>0?Math.sin(S.t*60)*3*O.patFlash:0;
- if(!im)return false;drawPortraitSq(im,24+sh,56,64,8);return true;};
+// ---------- ① HUD（ui-spec「HUD 方案 C 定稿」v1.4：切图 assets/ui/v14 + slices.json）----------
+const HUDC='assets/ui/v14/';
+['hud_card_c','hud_capsule_c','hud_tag_c','hud_chip_c','hud_avatar_ring_c','hud_round_c_normal','hud_round_c_pressed','hud_round_c_disabled','icon_coin_32','icon_gear_c_24','icon_gear_c_24_disabled'].forEach(n=>pimg(HUDC+n+'@2x.png'));
+function hc(n){return pimg(HUDC+n+'@2x.png');}
+// 贴切图：组件 1x 区域 (x,y,w,h)，m=投影外扩（1x）；尺寸和切图一致时整张贴，否则按九宫格拉伸
+function slice(n,x,y,w,h,m=0,ns=0){const im=hc(n);if(!im)return false;const X=x-m,Y=y-m,Wd=w+2*m,Ht=h+2*m;
+ if(!ns||(Math.abs(im.width-Wd*2)<1&&Math.abs(im.height-Ht*2)<1)){g.drawImage(im,X,Y,Wd,Ht);return true;}
+ const sc=ns,c=ns/2,sw=im.width,sh=im.height,xs=[0,sc,sw-sc,sw],ys=[0,sc,sh-sc,sh],dx=[X,X+c,X+Wd-c,X+Wd],dy=[Y,Y+c,Y+Ht-c,Y+Ht];
+ for(let i=0;i<3;i++)for(let j=0;j<3;j++)g.drawImage(im,xs[i],ys[j],xs[i+1]-xs[i],ys[j+1]-ys[j],dx[i],dy[j],dx[i+1]-dx[i],dy[j+1]-dy[j]);return true;}
+hudAvatar=function(){const id=custOf();const im=id&&portrait(id,patLevel(O.pat,O.d.patMax));const sh=O.patFlash>0?Math.sin(S.t*60)*3*O.patFlash:0;
+ if(!im)return false;drawPortraitSq(im,24+sh,56,64,8);slice('hud_avatar_ring_c',24+sh,56,64,64);return true;};
+// 耐心条：64×12 圆角 4，永远 4 段×16，2px 暖棕分隔与内描边；有=绿渐变，掉=#E5D6BD，锁（patMax<4）=135° 斜纹 3px #EFE4D1 / 2px #D9C9AE
+function patBar(x,y,pat,mx){g.save();rr(x,y,64,12,4);g.clip();
+ for(let i=0;i<4;i++){const sx=x+i*16;
+  if(i>=mx){const ox=sx+2;g.fillStyle='#EFE4D1';g.fillRect(sx,y,16,12);g.save();g.beginPath();g.rect(ox,y,14,12);g.clip();g.fillStyle='#D9C9AE';
+   for(let n=0;n<6;n++){const c1=(5*n+3)*Math.SQRT2,c2=(5*n+5)*Math.SQRT2;g.beginPath();g.moveTo(ox+c1,y);g.lineTo(ox+c2,y);g.lineTo(ox+c2-30,y+30);g.lineTo(ox+c1-30,y+30);g.closePath();g.fill();}g.restore();}
+  else if(i<pat){const gr=g.createLinearGradient(0,y,0,y+12);gr.addColorStop(0,'#7FD184');gr.addColorStop(1,'#4FAE56');g.fillStyle=gr;g.fillRect(sx,y,16,12);}
+  else{g.fillStyle='#E5D6BD';g.fillRect(sx,y,16,12);}
+  if(i>0){g.fillStyle=BROWN;g.fillRect(sx,y,2,12);}}
+ g.restore();}
+function hudGear(x,y,disabled){const hit=!disabled&&ptr.down&&ptr.x>x&&ptr.x<x+48&&ptr.y>y&&ptr.y<y+48;
+ if(!slice(disabled?'hud_round_c_disabled':hit?'hud_round_c_pressed':'hud_round_c_normal',x,y,48,48,12)){gearCircle(x+24,y+24);return;}
+ const ic=hc(disabled?'icon_gear_c_24_disabled':'icon_gear_c_24');if(ic)g.drawImage(ic,x+12,y+12,24,24);
+ if(!disabled)buttons.push({x,y,w:48,h:48,fn:()=>{audioInit();SFX.click();S.settings=true;}});}
+function payText(v){return v>=1000?String(v):'¥'+v;}
+// y 为 CSS 行盒中心；+0.5/+1 是 canvas middle 基线与 CSS 行高居中的差，按高保真实测校正
+function TC(t,x,y,px,color,align){g.font=`700 ${px}px ${FXF}`;g.textAlign=align;g.textBaseline='middle';g.fillStyle=color;g.fillText(t,x,y);}
 drawHUD=function(){
- if(O){rr(16,48,80,104,16);g.fillStyle='#FFF8EC';g.fill();g.strokeStyle=BROWN;g.lineWidth=2;g.stroke();
+ if(O){slice('hud_card_c',16,48,80,104,12)||(rr(16,48,80,104,16),g.fillStyle='rgba(48,32,20,.75)',g.fill());
   if(!hudAvatar()){avatar(custOf()||'hero',56,88,32);}
-  const mx=O.d.patMax||4,gp=4,sw=(64-gp*(mx-1))/mx;for(let i=0;i<mx;i++){rr(24+i*(sw+gp),132,sw,8,4);g.fillStyle=i<O.pat?(O.pat<=1?'#D9413A':'#5DBB63'):'#E6D9C3';g.fill();}
+  patBar(24,132,O.pat,O.d.patMax||4);
   if(O.patFlash>0)O.patFlash-=1/60;}
- // 金币胶囊 160×48
- const cx=W-16-160;rr(cx,48,160,48,24);g.fillStyle='#FFF8EC';g.fill();g.strokeStyle=BROWN;g.lineWidth=2;g.stroke();
- g.beginPath();g.arc(cx+8+16,72,16,0,7);g.fillStyle='#FFC83D';g.fill();g.stroke();T('¥',cx+24,73,4);
- T(String(S.money),W-16-16,73,2,BROWN,'right');
- // 第二行：本单 104×48 + ⚙ 48
- gearCircle(W-16-24,128);
- if(O){const tx=W-16-48-8-104;rr(tx,104,104,48,16);g.fillStyle='#FFF8EC';g.fill();g.strokeStyle=BROWN;g.lineWidth=2;g.stroke();
-  const a='本单',b='¥'+O.d.base,wa=TW(a,5),wb=TW(b,3),x0=tx+52-(wa+4+wb)/2;T(a,x0,128,5,'#8A6F5A','left');T(b,x0+wa+4,128,3,BROWN,'left');}
+ // 金币胶囊 160×48：金币 32（上下左 8），数字 T2 白，右对齐右留 16
+ const cx=W-16-160;slice('hud_capsule_c',cx,48,160,48,12);
+ const coin=hc('icon_coin_32');if(coin)g.drawImage(coin,cx+8,56,32,32);
+ TC(String(S.money),W-16-16,73,20,'#FFFFFF','right');
+ // 第二行：本单牌 104×48（四边 12）+ ⚙ 48
+ hudGear(W-16-48,104,false);
+ if(O){const tx=W-16-48-8-104;slice('hud_tag_c',tx,104,104,48,12);slice('hud_chip_c',tx+12,116,32,24);
+  TC('本单',tx+12+16,128.5,12,'#E9D9C0','center');TC(payText(O.d.base),tx+12+32+8+20,128.5,16,'#FFD45E','center');}
  if(O&&!O.lock&&S.screen==='play'&&!S.ad&&!S.callUI)drawMasterBtn();
 };
 // ---------- 气泡 / 操作提示 ----------

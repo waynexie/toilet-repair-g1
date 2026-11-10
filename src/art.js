@@ -39,12 +39,12 @@ const PIMG={};function pimg(src){if(!(src in PIMG)){PIMG[src]=null;const im=new 
 const PORTRAIT_IDS=['wang_ayi','xiao_xu','li_jie','zhao_jie'];
 function portrait(id,n,big){if(id==='lao_qian')return pimg('assets/characters/avatar_lao_qian'+(big?'_256.png':'@2x.png'));
  if(!PORTRAIT_IDS.includes(id))return null;n=Math.max(1,Math.min(4,n||1));return pimg(`assets/characters/avatar_${id}_p${n}`+(big?'_256.png':'@2x.png'));}
-function patLevel(pat){return Math.max(1,Math.min(4,5-pat));} // 剩余耐心 r → 第 5−r 张
+function patLevel(pat,max){max=max||4;return Math.max(1,Math.min(4,1+(max-pat)));} // 按掉的格数选表情：p(1+掉格数)，来电单开局也是 p1
 function drawPortraitSq(im,x,y,s,rad){g.save();rr(x,y,s,s,rad);g.clip();g.drawImage(im,x,y,s,s);g.restore();rr(x,y,s,s,rad);g.strokeStyle='#5A4030';g.lineWidth=2;g.stroke();}
 const _avatarFallback=avatar;
 avatar=function(id,x,y,r){const im=portrait(id,1);if(!im)return _avatarFallback(id,x,y,r);g.save();g.beginPath();g.arc(x,y,r,0,7);g.clip();g.drawImage(im,x-r,y-r,r*2,r*2);g.restore();};
-function hudAvatar(){const id=custOf();const im=id&&portrait(id,patLevel(O.pat));if(!im)return false;drawPortraitSq(im,26,56,60,8);return true;}
-function resultAvatar(r){const id=r.d.client||((NAR.orders||{})[r.d.key]||{}).client;const im=id&&portrait(id,patLevel(r.stars),true);if(!im)return false;drawPortraitSq(im,W/2-40,152,80,16);return true;}
+function hudAvatar(){const id=custOf();const im=id&&portrait(id,patLevel(O.pat,O.d.patMax));if(!im)return false;drawPortraitSq(im,26,56,60,8);return true;}
+function resultAvatar(r){const id=r.d.client||((NAR.orders||{})[r.d.key]||{}).client;const im=id&&portrait(id,patLevel(r.stars,r.d.patMax),true);if(!im)return false;drawPortraitSq(im,W/2-40,152,80,16);return true;}
 function masterBtnArt(cx,cy,ready){const im=pimg(ready&&ptr.down&&Math.hypot(ptr.x-cx,ptr.y-cy)<28?'assets/ui/btn_laoqian_pressed@2x.png':'assets/ui/btn_laoqian@2x.png')||pimg('assets/ui/btn_laoqian@2x.png');if(!im)return false;
  if(!ready)g.globalAlpha=.55;g.drawImage(im,cx-28,cy-28,56,56);g.globalAlpha=1;return true;}
 function phoneArt(){const im=pimg(PH.unread>0?'assets/ui/phone_floor_notify@2x.png':'assets/ui/phone_floor_idle@2x.png');if(!im)return false;

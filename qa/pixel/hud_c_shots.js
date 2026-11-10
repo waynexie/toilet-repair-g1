@@ -1,0 +1,15 @@
+const {chromium}=require('playwright');
+const OUT='/workspace/toilet-repair/qa/pixel/online/';const URL=process.argv[2]||'http://localhost:8787/';
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:780},deviceScaleFactor:2});const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.addInitScript(()=>{window.__noTrans=1;});
+await p.goto(URL+'?x='+Date.now());await p.waitForTimeout(2500);
+const E=f=>p.evaluate(f),W=ms=>p.waitForTimeout(ms);
+await E(()=>{startOrder(0);S.screen='play';S.money=0;O.hint=null;O.hintT=0;});await W(1500);
+await p.screenshot({path:OUT+'hifi_hud_c_o1.png'});
+await E(()=>{O.pat=2;});await W(400);await p.screenshot({path:OUT+'dev_hud_c_o1_pat2.png',clip:{x:0,y:0,width:390,height:172}});
+await p.mouse.move(350,128);await p.mouse.down();await W(200);await p.screenshot({path:OUT+'dev_hud_c_gear_pressed.png',clip:{x:0,y:0,width:390,height:172}});await p.mouse.up();await W(300);
+await E(()=>{S.settings=false;});
+const call=await E(()=>{const i=ORDERS.findIndex(o=>o.key==='o2');startOrder(i);S.screen='play';const d=O.d;if(!d.isCall){d.isCall=true;d.patMax=3;d.base=Math.round(d.base*1.5);}O.pat=d.patMax;S.money=30;O.hint=null;O.hintT=0;return [d.key,d.base,d.patMax,d.isCall];});
+await W(1200);await p.screenshot({path:OUT+'dev_hud_c_call_o2.png',clip:{x:0,y:0,width:390,height:172}});
+await E(()=>{O.pat=2;});await W(400);await p.screenshot({path:OUT+'dev_hud_c_call_o2_lost1.png',clip:{x:0,y:0,width:390,height:172}});
+console.log(call,errs);await b.close();})();
