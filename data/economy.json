@@ -133,7 +133,18 @@
       "o1"
     ],
     "display": "仅在有打赏时结算页单独显示一行",
-    "_iconNote": "图标以 narrative.json gifts 各条的 icon 字段为准"
+    "_iconNote": "图标以 narrative.json gifts 各条的 icon 字段为准",
+    "rules": {
+      "scriptedSkipsRandom": true,
+      "randomNeverOn": [
+        "o1",
+        "o2"
+      ],
+      "scriptedCountsTowardMaxPerDay": false,
+      "adDoubleApplies": false,
+      "rollAt": "order_settle_after_rating",
+      "_note": "有剧本打赏的单不再抽随机；随机每天最多 1 次，剧本不占名额；看广告翻倍只翻工钱，不翻打赏；评分算完后再抽。"
+    }
   },
   "maxOrderPayDisplay": 999,
   "_maxOrderPayNote": "单笔本单报酬（含来电/加急倍率）上限 ¥999，HUD 本单金额框按 3 位数设计；目前最高约 ¥126（o6 70×加急1.8）"
