@@ -1,14 +1,13 @@
 {
-  "_note": "G1 订单与数值配置（策划维护）。时间单位毫秒，金额单位元。数值为初版，待原型实测后调整。 clogHp=堵塞量；damagePer*=每下按压削减的堵塞量。",
+  "_note": "G1 订单与数值配置（策划维护）。取消小费：工钱固定，耐心只影响好评口碑与打赏概率。",
   "patience": {
-    "max": 3,
+    "max": 4,
     "wrongToolCost": 1,
     "splashCost": 1,
-    "tipByPatience": {
-      "3": 1.0,
-      "2": 0.5,
-      "1": 0.2,
-      "0": 0
+    "urgentDrainEveryMs": 7000,
+    "effects": {
+      "rating": "结算好评星数=剩余耐心(最少1星)，累计成口碑，影响转介绍出现",
+      "tipFreeNote": "耐心不再扣钱；耐心归零也照常付工钱，只是没有打赏机会、好评1星"
     }
   },
   "tools": {
@@ -71,7 +70,6 @@
       "object": "paper",
       "waterLevel": 0.5,
       "basePay": 30,
-      "tipMax": 10,
       "flushClue": "水位慢慢上涨，水面打旋往下渗",
       "customerLine": "师傅，冲不下去了，你看看。",
       "tutorial": true,
@@ -83,7 +81,6 @@
       "object": "paper",
       "waterLevel": 0.92,
       "basePay": 45,
-      "tipMax": 15,
       "urgent": true,
       "flushClue": "水快溢到马桶圈，水面晃荡",
       "customerLine": "快点啊，八点我得出车！",
@@ -100,7 +97,6 @@
       "object": "rubber_duck",
       "waterLevel": 0.6,
       "basePay": 60,
-      "tipMax": 20,
       "flushClue": "水完全不动，冒一个闷泡，水下隐约有异物轮廓",
       "customerLine": "孩子刚在厕所玩了半天……",
       "unlockCollection": "rubber_duck",
@@ -112,7 +108,6 @@
       "object": "paper",
       "waterLevel": 0.92,
       "basePay": 45,
-      "tipMax": 15,
       "urgent": true,
       "flushClue": "水快溢到马桶圈，水面晃荡",
       "customerLine": "又是你啊师傅！我得去高铁站接闺女。",

@@ -42,7 +42,6 @@
       "waterLevel": 0.7,
       "clogHp": 5,
       "basePay": 40,
-      "tipMax": 12,
       "boardHint": "马桶不走水",
       "followUp": "lock_wang"
     },
@@ -54,7 +53,6 @@
       "waterLevel": 0.9,
       "clogHp": 1,
       "basePay": 70,
-      "tipMax": 20,
       "boardHint": "马桶完全冲不动",
       "note": "满水+硬物复合：先舀水再用弹簧，第一次两种判断叠加",
       "unlockCollection": "toothbrush"
@@ -67,7 +65,6 @@
       "waterLevel": 0.5,
       "clogHp": 4,
       "basePay": 35,
-      "tipMax": 10,
       "distance": "far",
       "boardHint": "马桶有点堵",
       "note": "低难度远单，报酬低，用来制造挑单取舍"
@@ -79,7 +76,6 @@
       "target": "door_lock",
       "fault": "stiff_cylinder",
       "basePay": 25,
-      "tipMax": 10,
       "trigger": "after_o5_settlement",
       "declinable": true,
       "observe": {

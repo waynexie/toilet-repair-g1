@@ -8,13 +8,10 @@
     "firstAdFreeMinutes": 15
   },
   "rewardedAds": {
-    "doubleTip": {
-      "where": "settlement_secondary_button",
-      "multiplier": 2
-    },
     "retryKeepRating": {
       "trigger": "splash_or_patience_zero",
-      "maxPerOrder": 1
+      "maxPerOrder": 1,
+      "note": "保住的是好评星数，不是钱"
     },
     "tryUpgradeOnce": {
       "where": "shop_before_purchase",
@@ -41,6 +38,12 @@
       ],
       "neverBlocksProgress": true,
       "maxPerOrder": 1
+    },
+    "doublePay": {
+      "where": "settlement_secondary_button",
+      "target": "basePay",
+      "multiplier": 2,
+      "maxPerDay": 3
     }
   },
   "orderSources": {
@@ -51,7 +54,6 @@
     },
     "call": {
       "payMultiplier": 1.5,
-      "tipMultiplier": 1.5,
       "patienceMax": 2,
       "useFor": [
         "urgent",
@@ -70,14 +72,46 @@
   "laborFees": {
     "lock_wang": {
       "basePay": 25,
-      "tipMax": 10,
       "note": "顺手单人工费，比马桶单低，强调是额外收入"
     },
     "lock_referral_1": {
       "customer": "zhao_jie",
       "basePay": 35,
-      "tipMax": 12,
       "source": "referral"
     }
+  },
+  "gifts": {
+    "_note": "打赏：少见、随机或剧本触发，现金或实物。台词与物品由叙事在 narrative.json 的 gifts 里填。",
+    "random": {
+      "chance": 0.15,
+      "chanceIfRating4": 0.3,
+      "maxPerDay": 1,
+      "requiresRatingAtLeast": 3,
+      "cashRange": [
+        5,
+        10
+      ]
+    },
+    "scripted": [
+      {
+        "order": "o2",
+        "kind": "cash",
+        "amount": 5,
+        "lineKey": "gifts.xu_no_change",
+        "note": "徐哥：不用找了"
+      },
+      {
+        "order": "o5",
+        "kind": "item",
+        "item": "apple_x2",
+        "amount": 0,
+        "lineKey": "gifts.wang_apples",
+        "note": "王阿姨硬塞两个苹果，可进图鉴"
+      }
+    ],
+    "neverOn": [
+      "o1"
+    ],
+    "display": "仅在有打赏时结算页单独显示一行"
   }
 }
