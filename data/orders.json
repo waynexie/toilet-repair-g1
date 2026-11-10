@@ -91,7 +91,8 @@
         "scoop_to_below_0.6",
         "plunger"
       ],
-      "clogHp": 6
+      "clogHp": 6,
+      "source": "call"
     },
     {
       "id": "o3",
@@ -121,7 +122,8 @@
       ],
       "compareTimeWith": "o2",
       "requiresUpgrade": "plunger_pro",
-      "clogHp": 6
+      "clogHp": 6,
+      "source": "message"
     }
   ],
   "shop": {
