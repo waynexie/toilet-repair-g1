@@ -88,7 +88,7 @@ function chat(ch){if(!PH.chats[ch]){PH.chats[ch]={ch,msgs:[],unread:0};PH.order.
 function deliver(m){const c=chat(m.channel);c.msgs.push({sender:m.sender,text:m.raw,isNew:true});c.unread++;PH.unread++;PH.order=[m.channel,...PH.order.filter(x=>x!==m.channel)];}
 function chatTitle(ch){if(!CHANNEL[ch]&&ch.startsWith('dm_'))return cname(ch.slice(3));return ch==='family_group'?((NAR.app&&NAR.app.family_group_name)||'相亲相爱一家人')+'('+NAR.family_group.member_count_display+')':(CHANNEL[ch]||ch);}
 function canOpenPhone(){return S.screen!=='play'&&S.screen!=='lock'&&S.screen!=='title'&&!S.dexCard;}
-function openPhone(view){if(!canOpenPhone())return;PH.open=true;PH.view=view||'list';PH.toastT=0;SFX.click();if(PH.view.startsWith('chat:'))readChat(PH.view.slice(5));}
+function openPhone(view){if(!canOpenPhone())return;S.toastQ=null;PH.open=true;PH.view=view||'list';PH.toastT=0;SFX.click();if(PH.view.startsWith('chat:'))readChat(PH.view.slice(5));}
 function readChat(ch){const c=PH.chats[ch];if(c){PH.unread-=c.unread;c.unread=0;}}
 // ---------- 打电话问老钱（规则 economy.json callMaster，台词 narrative.json call_master） ----------
 function CM(){return (ECO&&ECO.rewardedAds.callMaster)||{showWhen:{wrongToolCount:2,idleMs:12000,patienceAtOrBelow:.5},freePerDay:1,maxPerOrder:1};}
@@ -311,7 +311,7 @@ function update(dt){
  if(S.screen==='result'){S.resultT+=dt;const r=S.result;const tgt=Math.min(r.total,Math.floor(S.resultT*60));
   if(tgt>r.coinsShown&&S.resultT>.4){if(Math.floor(tgt/5)!==Math.floor(r.coinsShown/5))SFX.coin();r.coinsShown=tgt;}
   if(S.resultT>.4&&!r.paid&&r.coinsShown>=r.total){r.paid=true;S.money+=r.total;buzz(30);}
-  if(S.resultT>1.4&&S.phoneQueue.length&&!S.phoneShown){S.phoneShown=true;PH.toastT=3.4;SFX.notify();buzz([15,60,15]);}}
+  if(S.resultT>1.4&&S.phoneQueue.length&&!S.phoneShown){S.phoneShown=true;S.toastQ=S.phoneQueue.slice();SFX.notify();buzz([15,60,15]);}} // 结算时只亮红点，通知条留到两单之间
  if(PH.toastT>0)PH.toastT-=dt;
  if(S.settings){if(O&&O.startT!=null)O.startT+=dt;return;}
  if(S.ad){S.ad.t+=dt;if(O&&O.startT!=null)O.startT+=dt;if(S.ad.t>=S.ad.dur){const r=S.ad.res;S.ad=null;r&&r(true);}return;}
@@ -446,8 +446,8 @@ function drawDuck(x,y,s,color){g.save();g.translate(x,y);g.scale(s,s);
  g.restore();}
 
 function drawPlunger(x,y,comp,up,scale=1,ghostWin=false){
- g.save();g.translate(x,y);g.scale(scale,scale);
- const dy=comp*34;const cw=56+comp*26,ch=30-comp*14;
+ g.save();g.translate(x,y+comp*12*scale);g.scale(scale,scale);
+ const dy=comp*8;const cw=56+comp*12,ch=30-comp*8; // 往下压：整体下沉 + 胶头轻压扁，木柄下沉量=胶头变矮量，柄底始终藏在胶头里
  // 木柄：主体 + 右侧暗部 + 木纹
  const hd=()=>rr(-7,-132+dy,14,122,6);
  hd();g.fillStyle='#C58A4F';g.fill();shadeClip(hd,()=>{g.fillStyle='#A06A38';g.fillRect(2,-140+dy,8,140);g.strokeStyle='rgba(59,42,32,.35)';g.lineWidth=1.2;g.beginPath();g.moveTo(-3,-120+dy);g.quadraticCurveTo(-1,-80+dy,-3,-30+dy);g.stroke();});
@@ -460,7 +460,7 @@ function drawPlunger(x,y,comp,up,scale=1,ghostWin=false){
  }
  // 胶头
  const body=up?'#3F7FE0':'#D9413A',dark=up?'#2C5FB0':'#A8322A',lite=up?'#8DB6F5':'#F08A7E';
- const cup=()=>{g.beginPath();g.moveTo(-cw/2,0);g.quadraticCurveTo(-cw/2,-ch-6+dy*.2,0,-ch-8+dy*.6);g.quadraticCurveTo(cw/2,-ch-6+dy*.2,cw/2,0);g.closePath();};
+ const cup=()=>{g.beginPath();g.moveTo(-cw/2,0);g.quadraticCurveTo(-cw/2,-ch-6,0,-ch-8);g.quadraticCurveTo(cw/2,-ch-6,cw/2,0);g.closePath();};
  cup();g.fillStyle=body;g.fill();
  shadeClip(cup,()=>{g.fillStyle=dark;g.fillRect(cw*.12,-ch-20,cw,ch+30);g.beginPath();g.ellipse(-cw*.22,-ch*.55,cw*.09,ch*.22,-.5,0,7);g.fillStyle=lite;g.fill();
   if(up){g.strokeStyle=dark;g.lineWidth=2.5;g.beginPath();g.moveTo(-cw*.42,-ch*.45);g.quadraticCurveTo(0,-ch*.75,cw*.42,-ch*.45);g.stroke();}});
@@ -548,7 +548,7 @@ function drawHUD(){ // ui-spec v1.1 §HUD
   const mx=O.d.patMax||4,sw=12,gp=4,tw=mx*sw+(mx-1)*gp,x0=56-tw/2;
   for(let i=0;i<mx;i++){rr(x0+i*(sw+gp),124,sw,8,3);g.fillStyle=i<O.pat?(O.pat<=1?'#D9413A':'#5DBB63'):'#E6D9C3';g.fill();}}
  // 金币胶囊：右16 上48 高40
- g.font='700 16px '+F;const mt='¥'+S.money,cw=Math.max(88,g.measureText(mt).width+56),cx=W-16-cw;
+ g.font='700 16px '+F;const mt=String(S.money),cw=Math.max(88,g.measureText(mt).width+56),cx=W-16-cw;
  rr(cx,48,cw,40,20);fs('#FFF8EC',2);g.beginPath();g.arc(cx+20,68,12,0,7);fs('#FFC83D',2);txt('¥',cx+20,69,12,'#5A4030','center','700');
  txt(mt,cx+cw-14,69,16,'#5A4030','right','700');
  // ⚙：48圆，右16 上96
@@ -673,7 +673,7 @@ function draw(){
  if(S.screen==='reveal')drawReveal();
  if(S.screen==='offer')drawOffer();
  if(S.dexCard)drawDexCard();
- phoneBtn();drawPhone();drawAd();drawSettings();
+ drawBetweenToast();phoneBtn();drawPhone();drawAd();drawSettings();
 }
 function drawTitle(){
  g.fillStyle='#efe2c4';g.fillRect(0,0,W,H);g.fillStyle='#a9d3c0';g.fillRect(0,H*.55,W,H*.45);
@@ -724,18 +724,22 @@ function wxIcon(x,y,s){ // 原创「喂信」图标：单气泡 + 声波，不�
  g.beginPath();g.arc(x+s*.38,y+s*.44,s*.16,-.9,.9);g.stroke();
  g.beginPath();g.arc(x+s*.38,y+s*.44,s*.25,-.8,.8);g.stroke();g.lineCap='butt';
 }
-function drawNotify(m,k,t,onTap){
- const wob=t<.6?Math.sin(t*60)*2:0;g.save();g.translate(wob,0);rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#bfe3ff';g.fill();wxIcon(346,642,20);g.restore();
+// 两单之间的通知条：离开结算后才从顶部滑下，结算/升级/设置/手机打开时不出
+function drawBetweenToast(){if(!S.toastQ||!S.toastQ.length)return;if(['result','upgrade','end','offer','title'].includes(S.screen)||S.settings||PH.open||S.ad||S.callUI){return;}
+ if(S.toastT==null){S.toastT=0;}S.toastT+=1/60;if(S.toastT>3.6){S.toastQ=null;S.toastT=null;return;}
+ const k=Math.min(1,S.toastT*4,(3.6-S.toastT)*3);drawNotify(S.toastQ,k,S.toastT,()=>{S.toastQ=null;S.toastT=null;openPhone(phoneTarget());},16);}
+function drawNotify(m,k,t,onTap,top){
+ if(top==null){const wob=t<.6?Math.sin(t*60)*2:0;g.save();g.translate(wob,0);rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#bfe3ff';g.fill();wxIcon(346,642,20);g.restore();}
 
  const rows=[];m.forEach(n=>{let r=rows.find(r=>r.ch===n.ch);if(!r){r={ch:n.ch,n:0};rows.push(r);}r.n++;r.text=n.text;});
- const h=40+rows.length*20,x=30,y=686-h;g.save();g.globalAlpha=k;g.translate(0,(1-k)*30);
+ const h=40+rows.length*20,x=top!=null?(W-296)/2:30,y=top!=null?top:686-h;g.save();g.globalAlpha=k;g.translate(0,(1-k)*(top!=null?-30:30));
  buttons.push({x,y,w:296,h,fn:onTap||(()=>openPhone(rows.length===1?'chat:'+m[m.length-1].channel:'list'))});
  rr(x,y,296,h,12);fs('rgba(250,250,250,.97)',2);wxIcon(x+10,y+9,18);txt(appName(),x+34,y+18,12,'#888','left','600');txt('现在',x+284,y+18,11,'#aaa','right','500');
  rows.forEach((r,i)=>{const yy=y+40+i*20;const head=(r.n>1?`[${r.n}条]`:'')+r.ch+'：';txt(head,x+12,yy,13,'#222','left','700');g.font='700 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';const hw=g.measureText(head).width;
   g.font='500 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';let t=r.text;const max=272-hw;if(g.measureText(t).width>max){while(t.length&&g.measureText(t+'…').width>max)t=t.slice(0,-1);t+='…';}txt(t,x+12+hw,yy,13,'#444','left','500');});
  g.restore();g.globalAlpha=1;}
 function drawResult(){
- const r=S.result;panel(150,430);
+ const r=S.result;const showDbl=!r.doubled&&(S.doubleToday||0)<dblCfg().maxPerDay;panel(128,(showDbl?621:557)+24-128); // ui-spec：结算卡 top128，内边距24
  if(!resultAvatar(r)){g.font='60px sans-serif';g.textAlign='center';g.fillText(r.face,W/2,215);}
  txt(r.d.who+'：'+(r.said||(r.face==='👍'?'师傅手艺真好！':'行，通了就好。')),W/2,252,15,INK,'center','600');if(r.heroSaid)txt('你：'+r.heroSaid,W/2,276,13,'#7a5a48','center','500');
  txt('工钱',90,305,15,'#7a5a48','left');txt('¥'+r.base,W-90,305,15,INK,'right');
@@ -746,10 +750,8 @@ function drawResult(){
  if(r.gift){const gy=r.d.id===4&&S.times[2]?426:398;const im=giftIcon(r.gift.icon);if(im)g.drawImage(im,70,gy-12,24,24);
   txt(r.gift.cash?`客户硬塞 ¥${r.gift.cash}`:`收到 ${r.gift.item}`,100,gy,14,INK,'left','700');if(r.gift.line&&gy<420)txt('“'+r.gift.line+'”',W/2,gy+22,12,'#7a5a48','center','500');}
  otxt('+¥'+r.coinsShown,W/2,462,40,'#ffcf3f');
- if(S.resultT>1&&!r.doubled&&(S.doubleToday||0)<dblCfg().maxPerDay)button('▶ 看广告 工钱翻倍',W/2-80,560,160,30,()=>{Ads.rewarded('doublePay').then(ok=>{if(!ok||r.doubled)return;r.doubled=true;S.doubleToday=(S.doubleToday||0)+1;const add=r.base*(dblCfg().multiplier-1);r.total+=add;r.base+=add;if(r.paid)S.money+=add;SFX.coin();});},'#fff8eb');
+ if(S.resultT>1&&showDbl)button('▶ 看广告 工钱翻倍',W/2-90,573,180,48,()=>{Ads.rewarded('doublePay').then(ok=>{if(!ok||r.doubled)return;r.doubled=true;S.doubleToday=(S.doubleToday||0)+1;const add=r.base*(dblCfg().multiplier-1);r.total+=add;r.base+=add;if(r.paid)S.money+=add;SFX.coin();});},'#fff8eb');
  // 手机通知
- if(S.phoneShown&&S.phoneQueue.length&&PH.toastT>0&&!PH.open){const m=S.phoneQueue;const k=Math.min(1,(S.resultT-1.4)*4,PH.toastT*3);
-  drawNotify(m,k,S.resultT-1.4);}
  const next=r.d.g2?'继续 ▶':r.d.id===ORDERS.length?'收工':'接下一单 ▶';
  if(S.resultT>1&&r.d.g2)button(next,W/2-90,505,180,52,()=>{S.phoneShown=false;G2afterResult(r.d);},'#ffb53d');
  else if(S.resultT>1)button(next,W/2-90,505,180,52,()=>{S.phoneShown=false;
