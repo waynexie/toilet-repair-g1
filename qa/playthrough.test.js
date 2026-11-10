@@ -8,11 +8,11 @@ const tap=async(x,y)=>{await m.move(x,y);await m.down();await m.up();await W(150
 const drag=async(pts,steps=8)=>{await m.move(...pts[0]);await m.down();for(const q of pts.slice(1)){await m.move(q[0],q[1],{steps});}await m.up();await W(150);};
 const shot=n=>p.screenshot({path:'/workspace/pw/'+n+'.png'});
 const st=()=>p.evaluate(()=>({screen:__G.S.screen,money:__G.S.money,phase:__G.O&&__G.O.phase,hp:__G.O&&__G.O.hp,water:__G.O&&+__G.O.water.toFixed(2),tip:__G.O&&__G.O.tip}));
-const plunge=async(hold=280)=>{await m.move(195,300);await m.down();await m.move(195,430,{steps:4});await W(hold);await m.move(195,290,{steps:2});await m.up();await W(200);};
+const plunge=async(hold)=>{if(hold==null){hold=await p.evaluate(()=>{const w=__G.win(__G.S.upgraded);return Math.round((w.ps+w.pl/2)*1000)-60;});}await m.move(195,300);await m.down();await m.move(195,430,{steps:4});await W(hold);await m.move(195,290,{steps:2});await m.up();await W(200);};
 const brief=async()=>{await W(300);await tap(195,512);await W(300);await tap(195,178);await W(2100);};
 const verify=async()=>{await W(1000);await tap(195,178);await W(2200);};
 const scoop=async()=>{await drag([[195,734],[195,420],[200,430],[338,560],[338,565]],6);};
-const pump=async()=>{for(let i=0;i<8;i++){const s=await st();if(s.phase!=='work')break;await plunge();}};
+const pump=async()=>{for(let i=0;i<30;i++){const s=await st();if(s.phase!=='work')break;await plunge();}};
 await shot('01_title');await tap(195,590);await W(200);await shot('02_brief');
 await brief();await shot('03_observed');
 await drag([[85,734],[150,500],[195,390]]);await plunge();await shot('04_plunging');await pump();
@@ -32,7 +32,7 @@ await m.move(265,405);await m.down();for(let a=0;a<=Math.PI*2*2.6;a+=0.25){await
 await shot('10_hooked');
 await m.move(195,500);await m.down();await m.move(195,280,{steps:10});await m.up();await W(900);await shot('11_dex');
 await W(500);await tap(195,390);await verify();await W(1600);await shot('12_result3');console.log('r3',JSON.stringify(await st()));
-await tap(195,531);await W(400);await shot('08_upgrade');await tap(195,586);
+await tap(195,531);await W(400);await shot('08_upgrade');await tap(145,586);
 await brief();
 await scoop();await scoop();
 await drag([[85,734],[195,390]]);await W(300);await shot('13_ghost');await pump();

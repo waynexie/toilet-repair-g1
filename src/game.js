@@ -54,17 +54,23 @@ function buzz(p){const arr=Array.isArray(p)?p:[p];let on=0;arr.forEach((v,i)=>{i
 // ---------- 订单数据 ----------
 // 订单来自 data/orders.json（策划维护），这里只补表现层字段
 let ORDERS=[],CFG=null;
-const LOOK={o1:{who:'王阿姨',place:'老小区三楼',face:'👵'},o2:{who:'出租屋小刘',place:'城中村单间',face:'🧑'},o3:{who:'李姐',place:'新楼盘两居室',face:'👩'},o4:{who:'出租屋小刘',place:'城中村单间',face:'🧑'}};
-function buildOrders(c){CFG=c;ORDERS=c.orders.map((o,i)=>({id:i+1,key:o.id,who:LOOK[o.id].who,place:LOOK[o.id].place,face:LOOK[o.id].face,line:o.customerLine,
- water:o.waterLevel,clog:o.fault,hp:o.fault==='hard'?1:3,base:o.basePay,tip:o.tipMax,hurry:!!o.urgent,obj:o.object==='rubber_duck'?'duck':null,
- tools:i===0?['plunger']:i===1?['plunger','scoop']:['plunger','scoop','snake']}));}
-fetch('data/orders.json').then(r=>r.json()).then(buildOrders);
-const PHONE_AFTER={
- 1:[['相亲相爱一家人','三姨：家里马桶又堵了，烦死了！'],['相亲相爱一家人','阿杰：哈哈哈 @你 这不专业对口了吗？']],
- 2:[['妈妈','中午吃饭没？别光顾着干活。']],
- 3:[['大壮','听说你今天钩出只鸭子？哈哈牛']],
- 4:[['王阿姨','小师傅，我家门把手也不太灵，下回顺便看看？']]
-};
+// 地点和表情是表现层占位；人名、台词来自 data/narrative.json（叙事维护）
+const LOOK={o1:{place:'老小区三楼',face:'👵'},o2:{place:'城中村单间',face:'🧑'},o3:{place:'新楼盘两居室',face:'👩'},o4:{place:'城中村单间',face:'🧑'}};
+let NAR=null;
+const CHANNEL={family_group:'相亲相爱一家人',dm_mom:'妈妈',dm_dad:'爸爸',dm_dazhuang:'大壮'};
+function heroName(){return '你';}
+function nline(key,k){const o=NAR&&NAR.orders[key];const l=o&&o.lines[k];return l?l.text.replace('{HERO}',heroName()):null;}
+function buildOrders(c,n){CFG=c;NAR=n;ORDERS=c.orders.map((o,i)=>{const no=n.orders[o.id]||{};const cl=no.client&&n.characters[no.client];return {id:i+1,key:o.id,who:cl?cl.name:'客户',place:LOOK[o.id].place,face:LOOK[o.id].face,
+ line:nline(o.id,'arrive')||o.customerLine,
+ water:o.waterLevel,clog:o.fault,hp:o.clogHp!=null?o.clogHp:(o.fault==='hard'?1:3),base:o.basePay,tip:o.tipMax,hurry:!!o.urgent,obj:o.object==='rubber_duck'?'duck':null,
+ tools:i===0?['plunger']:i===1?['plunger','scoop']:['plunger','scoop','snake']};});}
+Promise.all(['data/orders.json','data/narrative.json'].map(u=>fetch(u).then(r=>r.json()))).then(([c,n])=>buildOrders(c,n));
+// 皮搋子节奏：以 rebounceMs 为中心，windowMs 内拉起算“按准”，其中 perfectWindowMs 内显示“完美”
+function rhythm(up){return CFG.tools[up?'plunger_pro':'plunger'].rhythm;}
+function win(up){const r=rhythm(up);return {ws:(r.rebounceMs-r.windowMs/2)/1000,wl:r.windowMs/1000,ps:(r.rebounceMs-r.perfectWindowMs/2)/1000,pl:r.perfectWindowMs/1000};}
+function splashAbove(){return rhythm(S.upgraded).overPressSplashIfWaterAbove;}
+function socialAfter(key){if(!NAR)return [];return NAR.social.filter(m=>m.after===key).map(m=>{const ch=CHANNEL[m.channel]||m.channel;const who=(NAR.characters[m.sender]||{}).name||'';
+ const text=m.text.replace('{HERO}',heroName());return {ch,group:m.channel==='family_group',text:m.channel==='family_group'?who+'：'+text:text};});}
 const TOOLS={plunger:{name:'皮搋子'},scoop:{name:'水瓢'},snake:{name:'弹簧疏通器'}};
 
 // ---------- 布局常量 ----------
@@ -104,7 +110,7 @@ function say(t,dur=2.4){O.hint=t;O.hintT=dur;}
 function observeFlush(){
  SFX.click();noise(.8,.25,900);O.anim={type:'obs',t:0,dur:1.8};O.startT=O.startT??S.t;
  if(O.d.clog==='hard'){setTimeout(()=>{if(O){SFX.thud();}},900);}
- if(O.water>.8)setTimeout(()=>{if(O){O.face='😱';say('（水差点漫出来……先别冲了）');}},600);
+ if(O.water>.8)setTimeout(()=>{if(O){O.face='😱';if(O.d.id===1)say('（水差点漫出来……先别冲了）');}},600);
 }
 function verifyFlush(){
  SFX.click();SFX.gurgle();O.anim={type:'win',t:0,dur:1.6};O.elapsed=S.t-O.startT;buzz([30,40,60]);
@@ -118,14 +124,14 @@ function returnTool(){if(held){held=null;}}
 function finishOrder(){
  const d=O.d,total=d.base+O.tip;S.times[d.id]=O.elapsed;
  save.best=save.best||{};const bk='o'+d.id+(d.id===4?'':'');const prev=save.best[bk];const isBest=prev==null||O.elapsed<prev;if(isBest)save.best[bk]=O.elapsed;persist();
- S.result={d,base:d.base,tip:O.tip,total,elapsed:O.elapsed,pen:O.penalties,prevBest:prev,isBest:isBest&&prev!=null,coinsShown:0,face:O.tip>=d.tip*.8?'👍':'🙂'};
+ S.result={d,said:nline(d.key,'done'),heroSaid:nline(d.key,'done_hero'),base:d.base,tip:O.tip,total,elapsed:O.elapsed,pen:O.penalties,prevBest:prev,isBest:isBest&&prev!=null,coinsShown:0,face:O.tip>=d.tip*.8?'👍':'🙂'};
  S.screen='result';S.resultT=0;
- const msgs=PHONE_AFTER[d.id]||[];S.phoneQueue=msgs.slice();
+ S.phoneQueue=socialAfter(d.key);
  if(d.obj&&!S.dex.includes(d.obj))S.dex.push(d.obj);
 }
 
 // ---------- 工具交互 ----------
-function snapR(){return S.upgraded?90:60;}
+function snapR(){return CFG.tools[S.upgraded?'plunger_pro':'plunger'].suctionRadiusPx;}
 function pickTool(id){
  if(lockTools())return;
  if(!O.d.tools.includes(id)){return;}
@@ -134,7 +140,7 @@ function pickTool(id){
  O.plunger.comp=0;O.plunger.bottom=false;O.plunger.ctrl=false;
  O.snake.depth=0;O.snake.hooked=false;O.snake.pull=0;O.snake.ang=null;
 }
-function wrongTool(msg){SFX.wrong();buzz([20,30,20]);doShake(4);held.bounce=1;say(msg);}
+function wrongTool(msg){SFX.wrong();buzz([20,30,20]);doShake(4);held.bounce=1;const l=O.d.id>1&&nline(O.d.key,'wrong_tool');say(l?'“'+l+'”':msg);}
 function tryAttach(){
  const h=held;const d=dist(h.x,h.y,BOWL.x,BOWL.y-20);
  if(d<snapR()+40){
@@ -146,22 +152,22 @@ function tryAttach(){
 function plungerUpdate(dt){
  const p=O.plunger;
  if(!p.ctrl)p.comp=Math.max(0,p.comp-dt*3.2);
- const ws=.16,wl=S.upgraded?.62:.3;
- if(O.water>.6&&p.comp>.45){ // 满水直接按：溅
+ const {ws,wl,ps,pl}=win(S.upgraded);const R=rhythm(S.upgraded);
+ if(O.water>splashAbove()&&p.comp>.45){ // 满水直接按：溅
   SFX.splash();buzz([40,30,60]);doShake(10);for(let i=0;i<40;i++)parts.push({x:BOWL.x+rnd(-90,90),y:WATER_Y-10,vx:rnd(-260,260),vy:rnd(-420,-150),life:rnd(.6,1.1),color:'#8fd3f4',r:rnd(3,7),g:900});
   O.splashed++;if(O.splashed<=2)penalty(4,'splash');O.penalties.push('溅水');
-  say('水太满了，一压就溅一地……');held=null;p.comp=0;p.ctrl=false;O.face='😱';return;}
+  if(O.d.id===1||!nline(O.d.key,'splash'))say('水太满了，一压就溅一地……');else say('“'+nline(O.d.key,'splash')+'”');held=null;p.comp=0;p.ctrl=false;O.face='😱';return;}
  if(p.comp>.86&&!p.bottom){p.bottom=true;p.bt=0;SFX.seal();buzz(12);}
  if(p.bottom){p.bt+=dt;}
  if(p.bottom&&p.comp<.35){
   p.bottom=false;const bt=p.bt;let q;
-  if(bt<ws)q='early';else if(bt<=ws+wl)q='perfect';else q='late';
+  if(bt<ws)q='early';else if(bt<=ws+wl)q=(bt>=ps&&bt<=ps+pl)?'perfect':'good';else q='late';
   if(O.d.clog==='hard'){
    SFX.thud();buzz([25,40,25]);doShake(3);burst(BOWL.x+rnd(-20,20),WATER_Y,4,'#e6f7ff',60,4);float('咚',BOWL.x+40,WATER_Y-60,'#ddd',24);
    p.hardHits++;if(p.hardHits>=2&&!O.hardHint){O.hardHint=true;say('咚咚的……底下好像卡着硬东西');penalty(3);O.penalties.push('工具不对');}
    return;}
-  let dmg=q==='perfect'?(S.upgraded?2:1):.3;
-  if(q==='perfect'){SFX.perfect();buzz(35);doShake(5);burst(BOWL.x,WATER_Y,16,'#cdeeff',200,5);float(S.upgraded?'完美 ×2!':'完美!',BOWL.x+70,WATER_Y-80,'#7dffb0',26);
+  const hit=q==='perfect'||q==='good';let dmg=hit?R.damagePerPerfect:R.damagePerOffBeat;
+  if(hit){SFX.perfect();buzz(35);doShake(5);burst(BOWL.x,WATER_Y,16,'#cdeeff',200,5);float((q==='perfect'?'完美':'好')+(R.damagePerPerfect>1?' ×'+R.damagePerPerfect:'')+'!',BOWL.x+70,WATER_Y-80,'#7dffb0',q==='perfect'?26:22);
    flashes.push({x:BOWL.x,y:WATER_Y,r:20,life:.5});}
   else{SFX.weak();float(q==='early'?'太急，漏气了':'太慢，没劲了',BOWL.x+60,WATER_Y-70,'#ffd36b',18);buzz(8);}
   O.hp-=dmg;O.wTarget=Math.max(.38,O.wTarget-.04*dmg);O.swirl=Math.min(2,O.swirl+.4*dmg);
@@ -188,7 +194,7 @@ function popObject(){
  SFX.pop();buzz([50,30,100]);doShake(14);hitstop=save.reduced?0:.28;
  O.objOut={x:BOWL.x,y:WATER_Y-40,vy:-520,rot:0,t:0};burst(BOWL.x,WATER_Y,40,'#bfe9ff',320,6);burst(BOWL.x,WATER_Y,14,'#ffd84a',260,5);
  O.face='😳';say('……小黄鸭？！',2.2);
- setTimeout(()=>{if(O){S.dexCard={name:'小黄鸭',line:'李姐：“我说他怎么洗澡不闹了……”',t:0};}},500);
+ setTimeout(()=>{if(O){S.dexCard={name:'小黄鸭',line:'李姐：“'+(nline('o3','done')||'')+'”',t:0};}},500);
  clogCleared();
 }
 function scoopMove(){
@@ -196,7 +202,7 @@ function scoopMove(){
  const inWater=((h.x-BOWL.x)**2/(INNER.rx**2)+(h.y-WATER_Y)**2/(INNER.ry**2))<1;
  if(inWater&&!h.scoopFull){
   if(O.water>.4){h.scoopFull=true;O.water-=.2;O.wTarget=O.water;SFX.fill();buzz(15);burst(h.x,h.y,8,'#bfe9ff',120,3);
-   if(O.water<=.6&&O.water+.2>.6){say('水位安全了，可以下工具了',1.8);}}
+   if(O.water<=splashAbove()&&O.water+.2>splashAbove()){float('水位安全',BOWL.x,WATER_Y-70,'#7dffb0',18);}}
   else if(!h.scraped){h.scraped=true;float('舀不动了',h.x,h.y-30,'#ddd',16);}
  }
  if(!inWater)h.scraped=false;
@@ -390,11 +396,11 @@ function drawHeld(){
   if(h.id==='plunger'){
    const p=O.plunger;drawPlunger(BOWL.x,WATER_Y-2,p.comp,S.upgraded);
    // 节奏圈
-   const ws=.16,wl=S.upgraded?.62:.3,tot=ws+wl+.25,cx=BOWL.x+92,cy=WATER_Y-95,R=24;
+   const {ws,wl,ps,pl}=win(S.upgraded),old=win(false),tot=Math.max(ws+wl,old.ws+old.wl)+.25,cx=BOWL.x+92,cy=WATER_Y-95,R=24;
    g.beginPath();g.arc(cx,cy,R,0,7);g.fillStyle='rgba(40,25,18,.55)';g.fill();
    const arc=(a,b,c,lw)=>{g.beginPath();g.arc(cx,cy,R,-Math.PI/2+a/tot*Math.PI*2,-Math.PI/2+b/tot*Math.PI*2);g.strokeStyle=c;g.lineWidth=lw;g.stroke();};
-   arc(0,ws,'#777',6);arc(ws,ws+wl,'#4fdc8a',6);arc(ws+wl,tot,'#d65a4a',6);
-   if(O.ghost>0){g.setLineDash([4,4]);arc(ws,ws+.3,'rgba(255,255,255,'+Math.min(1,O.ghost)+')',10);g.setLineDash([]);
+   arc(0,ws,'#777',6);arc(ws,ws+wl,'#4fdc8a',6);arc(ps,ps+pl,'#d6ffe6',8);arc(ws+wl,tot,'#d65a4a',6);
+   if(O.ghost>0){g.setLineDash([4,4]);arc(old.ws,old.ws+old.wl,'rgba(255,255,255,'+Math.min(1,O.ghost)+')',10);g.setLineDash([]);
     txt('窗口变宽了',cx,cy-40,13,'rgba(255,255,255,'+Math.min(1,O.ghost)+')');}
    if(p.bottom){const bt=Math.min(p.bt,tot);const inW=bt>=ws&&bt<=ws+wl;
     g.beginPath();g.moveTo(cx,cy);g.arc(cx,cy,R-6,-Math.PI/2,-Math.PI/2+bt/tot*Math.PI*2);g.closePath();g.fillStyle=inW?'#4fdc8a':bt<ws?'#aaa':'#d65a4a';g.fill();
@@ -424,8 +430,8 @@ function drawTray(){
  ['plunger','scoop','snake'].forEach((id,i)=>{const x=SLOTS[i],y=TRAY_Y+44;const avail=O&&O.d.tools.includes(id);
   rr(x-46,y-36,92,76,14);fs(avail?'#f3e6cf':'#8a6a55',3);
   if(avail){const inUse=held&&held.id===id;g.globalAlpha=inUse?.3:1;
-   if(id==='plunger')drawPlunger(x,y+28,0,S.upgraded,.42);if(id==='scoop')drawScoop(x-10,y,false,.9);if(id==='snake')drawSnake(x,y+22,0,.7);g.globalAlpha=1;
-   txt(TOOLS[id].name,x,y+32,11,INK);
+   if(id==='plunger')drawPlunger(x,y+22,0,S.upgraded,.5);if(id==='scoop')drawScoop(x-10,y-4,false,1.05);if(id==='snake')drawSnake(x,y+16,0,.82);g.globalAlpha=1;
+   txt(TOOLS[id].name,x,y+30,13,INK);
    if(id==='snake'&&O.d.id===3&&!O.usedSnake){rr(x+16,y-44,38,18,9);fs('#e0533f',2);txt('NEW',x+35,y-35,11,'#fff');}
    if(lockTools()){rr(x-46,y-36,92,76,14);g.fillStyle='rgba(60,40,30,.45)';g.fill();}}
   else{txt('?',x,y,30,'#5d4535');}
@@ -504,10 +510,22 @@ function drawBrief(){
  button('上门',W/2-80,488,160,48,()=>{S.screen='play';},'#ffb53d');
 }
 function wrap(t,maxW,size){g.font=`600 ${size}px sans-serif`;const out=[];let cur='';for(const ch of t){if(g.measureText(cur+ch).width>maxW){out.push(cur);cur=ch;}else cur+=ch;}if(cur)out.push(cur);return out;}
+// 右下角旧手机亮起 + 微信样式通知预览（可忽略，不承载玩法）
+function wxIcon(x,y,s){rr(x,y,s,s,s*.24);g.fillStyle='#07c160';g.fill();g.fillStyle='#fff';
+ g.beginPath();g.ellipse(x+s*.42,y+s*.45,s*.26,s*.21,0,0,7);g.fill();g.beginPath();g.ellipse(x+s*.62,y+s*.6,s*.2,s*.16,0,0,7);g.fill();
+ g.fillStyle='#07c160';[[.34,.42],[.5,.42]].forEach(([a,b])=>{g.beginPath();g.arc(x+s*a,y+s*b,s*.035,0,7);g.fill();});}
+function drawNotify(m,k,t){
+ const wob=t<.6?Math.sin(t*60)*2:0;g.save();g.translate(wob,0);rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#bfe3ff';g.fill();wxIcon(346,642,20);g.restore();
+ const rows=[];m.forEach(n=>{let r=rows.find(r=>r.ch===n.ch);if(!r){r={ch:n.ch,n:0};rows.push(r);}r.n++;r.text=n.text;});
+ const h=40+rows.length*20,x=30,y=686-h;g.save();g.globalAlpha=k;g.translate(0,(1-k)*30);
+ rr(x,y,296,h,12);fs('rgba(250,250,250,.97)',2);wxIcon(x+10,y+9,18);txt('微信',x+34,y+18,12,'#888','left','600');txt('现在',x+284,y+18,11,'#aaa','right','500');
+ rows.forEach((r,i)=>{const yy=y+40+i*20;const head=(r.n>1?`[${r.n}条]`:'')+r.ch+'：';txt(head,x+12,yy,13,'#222','left','700');g.font='700 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';const hw=g.measureText(head).width;
+  g.font='500 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';let t=r.text;const max=272-hw;if(g.measureText(t).width>max){while(t.length&&g.measureText(t+'…').width>max)t=t.slice(0,-1);t+='…';}txt(t,x+12+hw,yy,13,'#444','left','500');});
+ g.restore();g.globalAlpha=1;}
 function drawResult(){
  const r=S.result;panel(150,430);
  g.font='60px sans-serif';g.textAlign='center';g.fillText(r.face,W/2,215);
- txt(r.d.who+(r.face==='👍'?'：师傅手艺真好！':'：行，通了就好。'),W/2,262,15,INK,'center','600');
+ txt(r.d.who+'：'+(r.said||(r.face==='👍'?'师傅手艺真好！':'行，通了就好。')),W/2,252,15,INK,'center','600');if(r.heroSaid)txt('你：'+r.heroSaid,W/2,276,13,'#7a5a48','center','500');
  txt('工钱',90,305,15,'#7a5a48','left');txt('¥'+r.base,W-90,305,15,INK,'right');
  txt('小费',90,333,15,'#7a5a48','left');txt('¥'+r.tip+(r.tip<r.d.tip?`（满 ¥${r.d.tip}）`:''),W-90,333,15,INK,'right');
  txt('用时',90,361,15,'#7a5a48','left');txt(r.elapsed.toFixed(1)+' 秒',W-90,361,15,INK,'right');if(r.isBest)txt('新纪录！',W/2,361,13,'#2f8a4a');else if(r.prevBest!=null)txt('最佳 '+r.prevBest.toFixed(1)+'s',W/2,361,12,'#a08878','center','500');
@@ -516,9 +534,8 @@ function drawResult(){
  otxt('+¥'+r.coinsShown,W/2,450,40,'#ffcf3f');
  // 手机通知
  if(S.phoneShown&&S.phoneQueue.length){const m=S.phoneQueue;const k=Math.min(1,(S.resultT-1.4)*4);
-  g.save();g.translate(0,(1-k)*-60);g.globalAlpha=k;rr(30,92,W-60,22+m.length*22,12);fs('#2d2d33',2);
-  m.forEach((x,i)=>{txt(x[0]+'  '+x[1],44,112+i*22,12.5,'#f1f1f1','left','500');});g.restore();g.globalAlpha=1;}
- const next=r.d.id===3?'去五金店看看':r.d.id===4?'收工':'接下一单';
+  drawNotify(m,k,S.resultT-1.4);}
+ const next=r.d.id===ORDERS.length?'收工':'接下一单 ▶';
  if(S.resultT>1)button(next,W/2-90,505,180,52,()=>{S.phoneShown=false;
   if(r.d.id===3){S.screen='upgrade';}else if(r.d.id===4){S.screen='end';recordRun();}else{S.idx++;startOrder(S.idx);}},'#ffb53d');
 }
@@ -526,11 +543,13 @@ function drawUpgrade(){
  panel(110,540);txt('五金店 · 老陈',W/2,145,15,'#7a5a48');txt('加压皮搋子',W/2,180,26,INK,'center','800');
  drawPlunger(120,370,0,false,1);drawPlunger(270,370,0,true,1.1);txt('现在',120,395,13,'#7a5a48');txt('升级后',270,395,13,'#2c5fb0');
  otxt('→',195,300,30,'#fff');
- const rows=['节奏窗口加宽一倍，更容易按准','按准一次顶两次','吸附范围更大，丢过去就吸住'];
+ const rows=['节奏窗口更宽，更容易按准','按准一下顶两下，没按准也有劲','吸附范围更大，丢过去就吸住'];
  rows.forEach((t,i)=>{txt('✔ '+t,60,430+i*30,15,INK,'left','600');});
- const cost=100,can=S.money>=cost;
+ const cost=CFG.tools.plunger_pro.price,can=S.money>=cost;
  txt('你有 ¥'+S.money,W/2,530,14,'#2f8a4a');
- button(can?`买！¥${cost}`:'钱不够',W/2-90,560,180,52,()=>{if(!can){S.money=cost;}S.money-=cost;S.upgraded=true;SFX.success();buzz([30,30,80]);doShake(6);S.idx++;startOrder(S.idx);},can?'#ffb53d':'#ccc');
+ if(can)button(`买！¥${cost}`,W/2-125,560,150,52,()=>{S.money-=cost;S.upgraded=true;SFX.success();buzz([30,30,80]);doShake(6);S.idx++;startOrder(S.idx);},'#ffb53d');
+ else txt('钱不够',W/2-50,586,16,'#a08878');
+ button('先不买',W/2+35,566,90,40,()=>{S.skipUp=true;S.idx++;startOrder(S.idx);},'#fff8eb');
 }
 function recordRun(){save.runs=save.runs||[];save.runs.push({at:new Date().toISOString(),t:{...S.times},money:S.money});save.runs=save.runs.slice(-20);persist();}
 function timesText(){const t=S.times;return '修马桶G1用时 '+[1,2,3,4].map(i=>`第${i}单 ${t[i]!=null?t[i].toFixed(1)+'s':'-'}`).join('，')+`（第${(save.runs||[]).length}次通关）`;}
@@ -542,12 +561,10 @@ function drawEnd(){
  txt([1,2,3,4].map(i=>S.times[i]!=null?S.times[i].toFixed(1)+'s':'-').join(' · '),W/2,280,14,INK);
  if(S.times[2]&&S.times[4])txt(`满水堵：${S.times[2].toFixed(1)}s → ${S.times[4].toFixed(1)}s`,W/2,301,14,'#2c5fb0');
  button(S.copied>0?'已复制 ✔':'复制用时',W/2-55,314,110,28,copyTimes,'#fff8eb');
- txt('手机亮了一下……',W/2,358,14,'#7a5a48');
- rr(50,372,W-100,64,12);fs('#2d2d33',2);txt('王阿姨：小师傅，我家门把手也',W/2,394,13,'#f1f1f1');txt('不太灵，下回顺便看看？',W/2,416,13,'#f1f1f1');
- txt('（G2 将从这里继续）',W/2,455,13,'#7a5a48');
+  txt('（G2 将从这里继续）',W/2,400,13,'#7a5a48');
  button('再玩一遍',W/2-90,500,180,52,()=>{S.screen='title';O=null;S.copied=0;},'#ffb53d');
 }
 
 // 调试/测试钩子
-window.__G={S,timesText,get save(){return save;},get O(){return O;},ORDERS,startOrder,setUpgraded:v=>S.upgraded=v};
+window.__G={S,win,get CFG(){return CFG;},timesText,get save(){return save;},get O(){return O;},ORDERS,startOrder,setUpgraded:v=>S.upgraded=v};
 requestAnimationFrame(loop);
