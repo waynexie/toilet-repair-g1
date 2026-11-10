@@ -137,9 +137,9 @@ function drawLockScene(){const d=O.d;
  if(O.sel==='screwdriver'&&O.phase==='work')txt('↻ 在螺丝上转圈拧紧',W/2,610,14,INK);
  if(O.phase==='verify'){g.font='34px sans-serif';g.textAlign='center';g.fillText('👆',HANDLE.x+30,HANDLE.y+40+Math.sin(S.t*6)*6);}
  // 托盘
- if(ART.ok){A('ui_toolbox_lid_lv1',{x:TB.x+(TB.w-271)/2,y:TB.y-14});A('ui_toolbox_body_lv1',{x:TB.x,y:TB.y});const cy=(TB.slotTop+TB.slotBot)/2;
-  TB.slots.forEach((x,i)=>{const id=O.tools[i];if(!id){A('ui_toolbox_lockplate',{x,y:cy});txt('升级解锁',x,746,12,'#fff3d8','center','700');return;}
-   const sel=O.sel===id;g.font='30px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText({lube_spray:'🧴',turn_key:'🔑',screwdriver:'🪛'}[id],x,cy-(sel?8:0));txt(LTOOLS[id].name,x,746,12,'#fff3d8','center','700');
+ if(ART.ok){A('ui_toolbox_lid_lv1',{x:TB.x+(TB.w-270)/2,y:TB.y-14});A('ui_toolbox_body_lv1',{x:TB.x,y:TB.y,w:TB.w,h:TB.h});const cy=(TB.slotTop+TB.slotBot)/2;
+  TB.slots.forEach((x,i)=>{const id=O.tools[i];if(!id){A('ui_toolbox_lockplate',{x,y:cy});txt('升级解锁',x,742,12,'#fff3d8','center','700');return;}
+   const sel=O.sel===id;g.font='30px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText({lube_spray:'🧴',turn_key:'🔑',screwdriver:'🪛'}[id],x,cy-(sel?8:0));txt(LTOOLS[id].name,x,742,12,'#fff3d8','center','700');
    if(sel){rr(x-34,TB.slotTop-10,68,TB.slotBot-TB.slotTop+12,12);g.strokeStyle='#FFE27A';g.lineWidth=3;g.stroke();}
    if(id==='screwdriver'){rr(x-4,TB.slotTop-8,40,16,8);fs('#4a90d9');txt('老钱的',x+16,TB.slotTop,10,'#fff','center','700');}
    if(O.phase==='observe'){rr(x-32,TB.slotTop,64,TB.slotBot-TB.slotTop,8);g.fillStyle='rgba(60,40,30,.45)';g.fill();}});}

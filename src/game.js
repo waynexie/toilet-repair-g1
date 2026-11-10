@@ -796,9 +796,10 @@ function giftIcon(k){if(!k)return null;if(!(k in GIFT_ICON)){GIFT_ICON[k]=null;c
 function rollGift(d,stars){const G=(ECO&&ECO.gifts)||{},NG=NAR.gifts||{};
  const sc=(G.scripted||[]).find(x=>x.order===d.key);
  if(sc){const e=NG[(sc.lineKey||'').replace(/^gifts\./,'')]||{};
-  return sc.kind==='cash'?{cash:sc.amount,line:e.line,icon:'cashroll'}:{item:e.item||sc.item,line:e.line,icon:ICON_BY_ITEM[e.item]||'apples'};}
+  const ic=(e.icon||'').replace(/^gift_/,'');return sc.kind==='cash'?{cash:sc.amount,line:e.line,icon:ic||'cashroll'}:{item:e.item||sc.item,line:e.line,icon:ic||ICON_BY_ITEM[e.item]||'apples'};}
  const R=G.random;if(!R||(G.neverOn||[]).includes(d.key)||stars<(R.requiresRatingAtLeast||3)||(S.giftToday||0)>=(R.maxPerDay||1))return null;
  if(Math.random()>=(stars>=4?R.chanceIfRating4:R.chance))return null;S.giftToday=(S.giftToday||0)+1;
+ if(R.itemPool&&R.itemPool.length&&Math.random()<(R.itemChance||0)){const k=R.itemPool[Math.floor(Math.random()*R.itemPool.length)],it=(NG.random_item_generic||{})['gift_'+k]||{};return {item:it.item||k,line:it.line,icon:k};}
  const [a,b]=R.cashRange||[5,10],cash=a+Math.floor(Math.random()*(b-a+1));
  const own=((NG.by_client||{})[d.client||(NAR.orders[d.key]||{}).client]||[]).find(x=>x.type==='cash');
  const gen=NG.random_cash_generic||['师傅辛苦。'];return {cash,line:own?own.line:gen[Math.floor(Math.random()*gen.length)],icon:'cashroll'};}
