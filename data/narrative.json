@@ -308,7 +308,8 @@
       "unlocks": [
         "business_door_lock"
       ],
-      "_rule": "必须以接单板卡片出现，不读消息也能接；消息只是同步预览"
+      "_rule": "必须以接单板卡片出现，不读消息也能接；消息只是同步预览",
+      "card_badge": "王阿姨介绍"
     },
     "order_lock_001": {
       "client": "zhao_jie",
@@ -376,7 +377,7 @@
     "hero_status": "已读不回"
   },
   "calls": {
-    "_note": "普通单走喂信消息；o2/o4 为来电急单（第一天来电上限已在 economy.json 豁免）。",
+    "_note": "普通单走喂信消息；第一天只有 o2 来电。o4 仍是急单但走喂信。",
     "o1": {
       "type": "weixin_msg",
       "caller": "wang_ayi",
@@ -393,9 +394,9 @@
       "text": "师傅，厕所堵了，孩子刚在里面玩。"
     },
     "o4": {
-      "type": "call",
+      "type": "weixin_msg",
       "caller": "xiao_xu",
-      "text": "师傅，又是我！又堵了，我要去面试！"
+      "text": "师傅！又是我，又堵了，十点面试！！"
     }
   },
   "call_master": {
