@@ -219,5 +219,21 @@
     "showInToolboxFrom": "o1",
     "price": 100,
     "_note": "工具箱里灰着显示，点开只提示「¥100 解锁」，让玩家第一单就知道攒钱的目标"
+  },
+  "dayDisplay": {
+    "_note": "制作人定：保留天数，做轻。不做全屏标题和过场。",
+    "hud": false,
+    "dayStartBanner": false,
+    "settlement": {
+      "show": true,
+      "format": "第 {n} 天",
+      "position": "subtitle_under_title",
+      "title": "收工"
+    },
+    "settingsPanel": {
+      "show": true,
+      "format": "第 {n} 天"
+    },
+    "nextButton": "继续开工"
   }
 }
