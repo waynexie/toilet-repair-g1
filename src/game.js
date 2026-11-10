@@ -556,9 +556,18 @@ function drawBrief(){
 }
 function wrap(t,maxW,size){g.font=`600 ${size}px sans-serif`;const out=[];let cur='';for(const ch of t){if(g.measureText(cur+ch).width>maxW){out.push(cur);cur=ch;}else cur+=ch;}if(cur)out.push(cur);return out;}
 // 右下角旧手机亮起 + 微信样式通知预览（可忽略，不承载玩法）
-function wxIcon(x,y,s){rr(x,y,s,s,s*.24);g.fillStyle='#07c160';g.fill();g.fillStyle='#fff';
- g.beginPath();g.ellipse(x+s*.42,y+s*.45,s*.26,s*.21,0,0,7);g.fill();g.beginPath();g.ellipse(x+s*.62,y+s*.6,s*.2,s*.16,0,0,7);g.fill();
- g.fillStyle='#07c160';[[.34,.42],[.5,.42]].forEach(([a,b])=>{g.beginPath();g.arc(x+s*a,y+s*b,s*.035,0,7);g.fill();});}
+function wxIcon(x,y,s){ // 原创「喂信」图标：单气泡 + 声波，不用微信的双气泡造型
+ rr(x,y,s,s,s*.26);g.fillStyle='#2BC46B';g.fill();
+ g.save();rr(x,y,s,s,s*.26);g.clip();g.fillStyle='#22A85A';g.fillRect(x,y+s*.62,s,s*.4);g.restore();
+ // 白色气泡（圆角方 + 左下尾巴）
+ rr(x+s*.18,y+s*.2,s*.64,s*.48,s*.2);g.fillStyle='#fff';g.fill();
+ g.beginPath();g.moveTo(x+s*.3,y+s*.62);g.lineTo(x+s*.24,y+s*.8);g.lineTo(x+s*.44,y+s*.66);g.closePath();g.fill();
+ // 声波「喂」
+ g.strokeStyle='#2BC46B';g.lineCap='round';g.lineWidth=Math.max(1.2,s*.07);
+ g.beginPath();g.arc(x+s*.38,y+s*.44,s*.07,-1,1);g.stroke();
+ g.beginPath();g.arc(x+s*.38,y+s*.44,s*.16,-.9,.9);g.stroke();
+ g.beginPath();g.arc(x+s*.38,y+s*.44,s*.25,-.8,.8);g.stroke();g.lineCap='butt';
+}
 function drawNotify(m,k,t){
  const wob=t<.6?Math.sin(t*60)*2:0;g.save();g.translate(wob,0);rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#bfe3ff';g.fill();wxIcon(346,642,20);g.restore();
  const rows=[];m.forEach(n=>{let r=rows.find(r=>r.ch===n.ch);if(!r){r={ch:n.ch,n:0};rows.push(r);}r.n++;r.text=n.text;});
