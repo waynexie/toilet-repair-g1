@@ -673,7 +673,7 @@
     ],
     "customer_id": "wang_ayi",
     "mood": "shock",
-    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。受惊表情，用于 onboarding S4 mood:shock（「别冲了！」），不占 p 档位。备选，待策划看第一版效果后决定是否启用"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。受惊表情，用于 onboarding S4 mood:shock（「别冲了！」），不占 p 档位"
    },
    {
     "file": "assets/characters/avatar_wang_ayi_shock_256.png",
@@ -685,7 +685,7 @@
     ],
     "customer_id": "wang_ayi",
     "mood": "shock",
-    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用。受惊表情，用于 onboarding S4 mood:shock（「别冲了！」），不占 p 档位。备选，待策划看第一版效果后决定是否启用"
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用。受惊表情，用于 onboarding S4 mood:shock（「别冲了！」），不占 p 档位"
    },
    {
     "file": "assets/characters/avatar_xiao_xu_p1@2x.png",
