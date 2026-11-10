@@ -14,7 +14,159 @@
    "x": 195,
    "y": 240
   },
-  "ui_positions": "UI 元素（HUD、台词气泡、工具箱、手机、老钱按钮、工具在格子里的位置）以 design/ui/hifi/ui-spec.md 为准，本文件只管美术图层。"
+  "ui_positions": "UI 元素（HUD、台词气泡、工具箱、手机、老钱按钮、工具在格子里的位置）以 design/ui/hifi/ui-spec.md 为准，本文件只管美术图层。",
+  "bowl_geometry_v2": {
+   "units": "1x logical px (390x780 canvas)",
+   "opening_ellipse": {
+    "cx": 195.6,
+    "cy": 500.6,
+    "rx": 68.0,
+    "ry": 76.8,
+    "bbox": [
+     127.5,
+     425.5,
+     263.5,
+     579.0
+    ]
+   },
+   "opening_polygon": [
+    [
+     263.1,
+     500.6
+    ],
+    [
+     260.8,
+     518.1
+    ],
+    [
+     256.2,
+     535.6
+    ],
+    [
+     246.5,
+     551.5
+    ],
+    [
+     233.1,
+     565.6
+    ],
+    [
+     215.7,
+     575.5
+    ],
+    [
+     195.6,
+     579.1
+    ],
+    [
+     175.7,
+     575.0
+    ],
+    [
+     158.4,
+     565.1
+    ],
+    [
+     144.7,
+     551.5
+    ],
+    [
+     135.0,
+     535.6
+    ],
+    [
+     129.4,
+     518.3
+    ],
+    [
+     127.6,
+     500.6
+    ],
+    [
+     128.5,
+     482.6
+    ],
+    [
+     133.7,
+     464.9
+    ],
+    [
+     142.9,
+     447.9
+    ],
+    [
+     157.9,
+     435.2
+    ],
+    [
+     176.2,
+     428.2
+    ],
+    [
+     195.6,
+     425.6
+    ],
+    [
+     215.1,
+     427.7
+    ],
+    [
+     233.9,
+     434.4
+    ],
+    [
+     248.6,
+     447.6
+    ],
+    [
+     258.0,
+     464.6
+    ],
+    [
+     262.7,
+     482.6
+    ]
+   ],
+   "normal_water_ellipse": {
+    "cx": 194.3,
+    "cy": 519.0,
+    "rx": 34.0,
+    "ry": 34.0
+   },
+   "full_water": "fills opening_polygon",
+   "drain": {
+    "normal": {
+     "x": 194.8,
+     "y": 526.5
+    },
+    "full": {
+     "x": 196.2,
+     "y": 520.0
+    }
+   },
+   "plunger_cup_anchor": {
+    "normal": {
+     "x": 195.0,
+     "y": 523.0,
+     "max_cup_width": 64,
+     "note": "cup rim centred on the drain at the water surface; the cup must stay inside normal_water_ellipse (rx 34)"
+    },
+    "full": {
+     "x": 195.6,
+     "y": 512.0,
+     "max_cup_width": 96,
+     "note": "full water is nearer the camera, so the surface contact sits a little higher; cup stays inside opening_ellipse"
+    }
+   },
+   "clog_anchor": {
+    "x": 196.2,
+    "y": 518.0
+   },
+   "notes": "The opening geometry did NOT change from batch 1 (toilet_bowl / tank / lid unchanged); what changed is the water shape and the drain point. Hit-test the bowl with opening_polygon; place the plunger cup at plunger_cup_anchor for the current state."
+  },
+  "changelog": [
+   "v2 (Wen 14:21 反馈): 统一俯视透视；积水按碗型重画（normal/full 都和 toilet_bowl 同尺寸同锚点，s=1 不要缩放）；新增 clog_paper_deep；桶、置物台、洗衣板重画并改坐标；碗口/排水口/皮搋子落点见 canvas.bowl_geometry_v2。"
+  ]
  },
  "layer_order": [
   "bg_bathroom_base",
@@ -28,7 +180,7 @@
   "water_waterline_mark",
   "water_surface_normal | water_surface_full",
   "water_ripple_ring",
-  "clog_paper",
+  "clog_paper (normal) | clog_paper_deep (full)",
   "clog_duck_silhouette | clog_duck",
   "toilet_flushbtn_idle | toilet_flushbtn_pressed",
   "scene_bucket_empty | scene_bucket_water",
@@ -52,7 +204,7 @@
     "x": 0,
     "y": 0
    },
-   "notes": "Full-screen opaque background, 390x780 @2x (780x1560). No toilet, bucket, tray, phone, ads, portraits or coins. Top-right y=0-44 kept clear for the mini-game capsule; wall under the coin capsule (right, y=48-140) is clean cream tile. Wall/floor junction near y=300. Top/bottom 15px have no interactive points."
+   "notes": "v2 (统一俯视): one camera, steep top-down ~65°, same as the toilet. Floor tile grid converges gently to the back wall; wall/floor junction ≈ y 280; door (left, x 0–78) seen from above with its top edge; washing machine (right, x 314–390, y 148–385) shows its top lid + foreshortened front. Slippers baked in at lower left (x 0–98, y 448–563). No toilet, bucket, shelf, washboard, tray, phone, ads, portraits or coins. Top 0–44 clear for the capsule menu."
   },
   {
    "file": "assets/scene/toilet_tank@2x.png",
@@ -142,7 +294,7 @@
     "x": 195.8,
     "y": 507.8
    },
-   "notes": "Inner porcelain well, same pixel size and placement as toilet_bowl. Draw immediately under the water / waterline, above the bowl rim. Fills the transparent opening so the floor does not show through. The drain is the darker ellipse toward the bottom of the well."
+   "notes": "v2: painted porcelain basin with real depth (far wall shaded, near slope bright, drain throat) PLUS the standing water that always sits in the trap, a soft wet sheen just above it. Same pixel size / anchor as toilet_bowl, opaque only inside the bowl opening. Draw right above toilet_bowl. Because the trap water is painted here, the bowl never looks dry even if no water layer is drawn."
   },
   {
    "file": "assets/scene/water_surface_full@2x.png",
@@ -157,22 +309,22 @@
     "x": 195.8,
     "y": 507.8
    },
-   "notes": "Full-water fill of the bowl opening, same pixel size and anchor as toilet_bowl. Covers the opening to the inner rim. Draw above the inner porcelain and waterline."
+   "notes": "v2 FULL water: same size / anchor as toilet_bowl. Fills the whole opening to the inner rim (darker, ripples, drain visible through the water) and carries ~10 water beads on the seat ring just outside the opening. Draw at s=1. To animate level change, cross-fade full over normal by alpha instead of scaling."
   },
   {
    "file": "assets/scene/water_surface_normal@2x.png",
    "category": "scene",
    "name": "water_surface_normal",
    "pixel_size": [
-    155,
-    196
+    401,
+    473
    ],
    "anchor": "center",
    "placement_1x": {
-    "x": 195.2,
-    "y": 517.5
+    "x": 195.8,
+    "y": 507.8
    },
-   "notes": "Scalable normal-water oval, smaller and slightly lower in the bowl so a ring of porcelain and the waterline mark stay visible above it."
+   "notes": "v2 NORMAL water: same size / anchor as toilet_bowl (draw at s=1, x 195.8 y 507.8 — do NOT scale or shift any more; the old .55+.6*l scaling would show a double edge). Water-only alpha, painted against this exact bowl, so it follows the basin and meets the porcelain with a meniscus. Water ellipse ≈ centre (194.3, 519), rx 34, ry 34 (1x). Matches the water painted in toilet_bowl_inner pixel-for-pixel, so slosh offsets of ±2px are fine."
   },
   {
    "file": "assets/scene/water_ripple_ring@2x.png",
@@ -184,10 +336,10 @@
    ],
    "anchor": "center",
    "placement_1x": {
-    "x": 195.2,
-    "y": 502.2
+    "x": 195.6,
+    "y": 502.6
    },
-   "notes": "Optional ripple ring, sits just inside the full-water rim. Can be rotated / pulsed."
+   "notes": "v2: soft broken concentric highlight arcs, centred on the bowl opening. Pulse scale 0.95–1.05 stays inside the opening. Full state only, alpha 0.6–0.9."
   },
   {
    "file": "assets/scene/water_drop@2x.png",
@@ -232,22 +384,37 @@
     "x": 195.8,
     "y": 507.8
    },
-   "notes": "Thin beige-grey stain ring on the inner porcelain, same size and anchor as toilet_bowl. Visible in the normal-water state as the high-water reference; hide or draw under the water in the full state."
+   "notes": "v2: faint beige-grey stain ring above the normal waterline (alpha only), same size / anchor as toilet_bowl. Draw under water_surface_normal in the normal state; hide in the full state."
   },
   {
    "file": "assets/scene/clog_paper@2x.png",
    "category": "scene",
    "name": "clog_paper",
    "pixel_size": [
-    112,
-    86
+    101,
+    96
    ],
    "anchor": "center",
    "placement_1x": {
-    "x": 195.0,
-    "y": 495.5
+    "x": 196.2,
+    "y": 518.0
    },
-   "notes": "Paper clog wad. Place in the center of the water (both full and normal states)."
+   "notes": "v2: soggy paper wad lodged in the drain, partially submerged (top folds dry with outline, lower sheets seen through water, blue-tinted). Use in the NORMAL water state at (196.2, 518). Alpha by hp as before."
+  },
+  {
+   "file": "assets/scene/clog_paper_deep@2x.png",
+   "category": "scene",
+   "name": "clog_paper_deep",
+   "pixel_size": [
+    101,
+    96
+   ],
+   "anchor": "center",
+   "placement_1x": {
+    "x": 196.2,
+    "y": 518.0
+   },
+   "notes": "v2: same paper wad as seen deep under FULL water (tinted, softened, refracted). Use instead of clog_paper while water is full; same anchor so swapping states does not jump."
   },
   {
    "file": "assets/scene/clog_duck@2x.png",
@@ -260,9 +427,9 @@
    "anchor": "center",
    "placement_1x": {
     "x": 194.8,
-    "y": 491.8
+    "y": 512.0
    },
-   "notes": "Yellow rubber duck (order 3, after it is identified / pulled). Do not show in the character portrait or on 李姐."
+   "notes": "Yellow rubber duck (order 3, after it is identified / pulled). Do not show in the character portrait or on 李姐. v2: moved down to y 512 so the duck sits in the drain of the new basin."
   },
   {
    "file": "assets/scene/clog_duck_silhouette@2x.png",
@@ -275,39 +442,39 @@
    "anchor": "center",
    "placement_1x": {
     "x": 194.8,
-    "y": 491.8
+    "y": 512.0
    },
-   "notes": "Underwater silhouette of the same duck pose. Use while the duck is still hidden in the bowl; the headlamp upgrade can tint / brighten this layer."
+   "notes": "Underwater silhouette of the same duck pose. Use while the duck is still hidden in the bowl; the headlamp upgrade can tint / brighten this layer. v2: moved down to y 512 so the duck sits in the drain of the new basin."
   },
   {
    "file": "assets/scene/scene_bucket_empty@2x.png",
    "category": "scene",
    "name": "scene_bucket_empty",
    "pixel_size": [
-    136,
-    160
+    142,
+    170
    ],
    "anchor": "bottom-center",
    "placement_1x": {
-    "x": 328,
-    "y": 545
+    "x": 330,
+    "y": 552
    },
-   "notes": "Interactive dump bucket, empty. Sit on the floor to the right of the toilet, above the phone / 老钱 button, in front of the washing machine."
+   "notes": "v2: red bucket, empty, seen from the same steep top-down camera: near-circular opening, inside and bottom visible, only a short sliver of the side; soft floor shadow baked in (the base touches the floor ≈4px above the sprite bottom). Sits right of the bowl, above the 老钱 button (button top 560). Empty and water versions are pixel-aligned; swap freely."
   },
   {
    "file": "assets/scene/scene_bucket_water@2x.png",
    "category": "scene",
    "name": "scene_bucket_water",
    "pixel_size": [
-    136,
-    157
+    142,
+    170
    ],
    "anchor": "bottom-center",
    "placement_1x": {
-    "x": 328,
-    "y": 545
+    "x": 330,
+    "y": 552
    },
-   "notes": "Same bucket, filled with water. Swap with the empty layer when the player has scooped water into it. Same anchor."
+   "notes": "v2: red bucket, about two-thirds full of water, seen from the same steep top-down camera: near-circular opening, inside and bottom visible, only a short sliver of the side; soft floor shadow baked in (the base touches the floor ≈4px above the sprite bottom). Sits right of the bowl, above the 老钱 button (button top 560). Empty and water versions are pixel-aligned; swap freely."
   },
   {
    "file": "assets/scene/home_wang_seatcover@2x.png",
@@ -329,30 +496,30 @@
    "category": "scene",
    "name": "home_wang_windowsill",
    "pixel_size": [
-    178,
-    130
+    200,
+    122
    ],
    "anchor": "topleft",
    "placement_1x": {
-    "x": 18.0,
-    "y": 200.0
+    "x": 205,
+    "y": 154
    },
-   "notes": "王阿姨 home layer: pothos, soap dish and 花露水 on a short sill. Place on the left mint wall, below the speech-bubble band, not in the HUD. No pickle jars, no ads."
+   "notes": "v2 王阿姨 home layer: wall ledge above the toilet tank (right half), seen from above: top surface visible, pothos pot rim + soil, soap dish, 花露水 bottle cap. x 205–305, y 154–215, clear of the HUD right column (ends y 152) and of the tank top / flush button. The speech bubble / hint (left 16, top 160, max width 240) may briefly cover its left part; nothing on it is interactive."
   },
   {
    "file": "assets/scene/home_wang_washboard@2x.png",
    "category": "scene",
    "name": "home_wang_washboard",
    "pixel_size": [
-    108,
-    180
+    138,
+    162
    ],
    "anchor": "topleft",
    "placement_1x": {
-    "x": 300.0,
-    "y": 290.0
+    "x": 284,
+    "y": 323
    },
-   "notes": "王阿姨 home layer: wooden washboard, lower right, leaning by the washing machine. Kept out of the coin / ⚙ wall."
+   "notes": "v2 王阿姨 home layer: wooden washboard leaning against the washing machine's front-left, seen from above (top end nearest, ribbed face foreshortened), soft floor shadow baked in. Draw before the tank / lid."
   },
   {
    "file": "assets/ui/ui_toolbox_lid_lv1@2x.png",
