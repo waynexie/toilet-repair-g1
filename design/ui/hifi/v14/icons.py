@@ -1,0 +1,9 @@
+COIN='''<svg viewBox="0 0 40 40"><defs><radialGradient id="cg" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#FFF1A8"/><stop offset=".45" stop-color="#FFD045"/><stop offset="1" stop-color="#F0A81E"/></radialGradient></defs>
+<circle cx="20" cy="22" r="17" fill="#C27A0E" stroke="#5A4030" stroke-width="2"/>
+<circle cx="20" cy="19.5" r="17" fill="url(#cg)" stroke="#5A4030" stroke-width="2"/>
+<circle cx="20" cy="19.5" r="12.5" fill="none" stroke="#E09A1A" stroke-width="1.6"/>
+<path d="M14.5 12.5l5.5 7.5 5.5-7.5M20 20v8.5M15.5 21h9M15.5 24.6h9" fill="none" stroke="#9A5E06" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.5 15.5a11.5 11.5 0 0 1 7-6.5" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="2.2" stroke-linecap="round"/></svg>'''
+def GEAR(fill="#5A4030",hole="#FFF8EC"):
+    return f'''<svg viewBox="0 0 32 32"><path d="M25.24 12.17 L25.81 14.05 L28.91 14.47 L28.91 17.53 L25.81 17.95 L25.24 19.83 L24.31 21.56 L26.21 24.05 L24.05 26.21 L21.56 24.31 L19.83 25.24 L17.95 25.81 L17.53 28.91 L14.47 28.91 L14.05 25.81 L12.17 25.24 L10.44 24.31 L7.95 26.21 L5.79 24.05 L7.69 21.56 L6.76 19.83 L6.19 17.95 L3.09 17.53 L3.09 14.47 L6.19 14.05 L6.76 12.17 L7.69 10.44 L5.79 7.95 L7.95 5.79 L10.44 7.69 L12.17 6.76 L14.05 6.19 L14.47 3.09 L17.53 3.09 L17.95 6.19 L19.83 6.76 L21.56 7.69 L24.05 5.79 L26.21 7.95 L24.31 10.44Z" fill="{fill}" stroke="{fill}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="16" cy="16" r="4.6" fill="{hole}"/></svg>'''
+SLIP='''<svg viewBox="0 0 20 20"><rect x="3.5" y="2.5" width="13" height="15.5" rx="2.5" fill="#FFF3DA" stroke="#5A4030" stroke-width="1.6"/><path d="M7 7h6M7 10.5h6M7 14h3.5" stroke="#8A6F5A" stroke-width="1.6" stroke-linecap="round"/><rect x="7" y="1" width="6" height="3.5" rx="1.2" fill="#C9A985" stroke="#5A4030" stroke-width="1.4"/></svg>'''
