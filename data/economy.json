@@ -42,5 +42,42 @@
       "neverBlocksProgress": true,
       "maxPerOrder": 1
     }
+  },
+  "orderSources": {
+    "message": {
+      "default": true,
+      "payMultiplier": 1.0,
+      "note": "普通单走喂信消息接单"
+    },
+    "call": {
+      "payMultiplier": 1.5,
+      "tipMultiplier": 1.5,
+      "patienceMax": 2,
+      "useFor": [
+        "urgent",
+        "big_job"
+      ],
+      "maxPerDay": 1,
+      "note": "来电只给紧急单和大活儿，报酬高但耐心少一格"
+    },
+    "referral": {
+      "payMultiplier": 1.2,
+      "showAs": "order_board_card",
+      "alsoPreviewIn": "weixin",
+      "note": "转介绍必须出现在接单板，不依赖读聊天"
+    }
+  },
+  "laborFees": {
+    "lock_wang": {
+      "basePay": 25,
+      "tipMax": 10,
+      "note": "顺手单人工费，比马桶单低，强调是额外收入"
+    },
+    "lock_referral_1": {
+      "customer": "zhao_jie",
+      "basePay": 35,
+      "tipMax": 12,
+      "source": "referral"
+    }
   }
 }
