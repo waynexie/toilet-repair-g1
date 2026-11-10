@@ -22,7 +22,7 @@ function G2build(g){G2.data=g;G2.ord={};
 function G2reset(){Object.assign(G2,{day:1,board:[],done:[],pick:0,lockWangDone:false,referralUnlocked:false,screwdriver:false,offer:null});S.day=1;}
 function beats(k){((NAR.workday_beats||{})[k]||[]).forEach(m=>deliver({channel:m.channel,sender:m.sender,raw:m.text}));}
 function G2dayEnd(){beats('evening');}
-function G2nextDay(){Ads.interstitial('day_end');G2.day++;S.day=G2.day;S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2.dayStartMoney=S.money;G2.done=[];O=null;
+function G2nextDay(){Ads.interstitial('day_end');G2.day++;S.day=G2.day;S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2.dayStartMoney=S.money;G2.dayStartSpent=S.spent||0;G2.done=[];O=null;
  const dd=(G2.data.days||[]).find(x=>x.day===G2.day);
  if(!dd){S.screen='end';return;}
  let ids=(dd.board||[]).filter(id=>G2.ord[id]);
@@ -178,7 +178,7 @@ function drawBoard(){const left=G2.pick-G2.done.filter(k=>G2.board.includes(k)).
   if(done){otxt('已完成',W/2+60,y+40,20,'#7dffb0');}else if(gone)txt('明天再说',W/2+60,y+40,14,'#a08878');
   else buttons.push({x:28,y,w:W-56,h:124,fn:()=>acceptCard(id)});
   g.restore();});}
-function drawDayEnd(){const earned=S.money-(G2.dayStartMoney||0);
+function drawDayEnd(){const earned=S.money-(G2.dayStartMoney||0)+(S.spent||0)-(G2.dayStartSpent||0);
  panel(140,470);txt(`第 ${G2.day} 天 · 收工`,W/2,185,26,INK,'center','800');txt('今日收入 ¥'+earned,W/2,230,18,'#2f8a4a');txt('余额 ¥'+S.money,W/2,258,14,'#7a5a48');
  G2.done.forEach((k,i)=>{const d=G2.ord[k];if(d)txt('✔ '+(d.client?cname(d.client):'新客户')+' · '+d.boardHint,W/2,300+i*24,14,INK);});
  const next=(G2.data.days||[]).some(x=>x.day===G2.day+1);

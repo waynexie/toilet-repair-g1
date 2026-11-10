@@ -102,7 +102,7 @@ let notifyVis=false;
 function drawNotify2(m,t,onTap,extra=0){const PX=W-48,PY=H-80,x=16,y=556,w=W-32,h=64;let e;
  if(t<.25){const u=t/.25;e=u<.7?u/.7*1.05:1.05-(u-.7)/.3*.05;}else if(t<3.25)e=1;else if(t<3.5)e=1-(t-3.25)/.25;else return false;
  notifyVis=true;const cx=lerp(PX,x+w/2,Math.min(1,e)),cy=lerp(PY,y+h/2,Math.min(1,e));g.save();g.translate(cx,cy);g.scale(e,e);g.translate(-(x+w/2),-(y+h/2));g.globalAlpha=Math.min(1,e*1.5);
- rr(x-4,y-4,w+8,h+8,20);g.fillStyle='rgba(255,212,94,.6)';g.fill();rr(x,y,w,h,16);g.fillStyle='#FFFFFF';g.fill();g.strokeStyle=BROWN;g.lineWidth=2;g.stroke();
+ g.save();g.shadowColor='rgba(255,212,94,.9)';g.shadowBlur=10;rr(x-4,y-4,w+8,h+8,20);g.fillStyle='rgba(255,212,94,.6)';g.fill();g.restore();rr(x-4,y-4,w+8,h+8,20);g.strokeStyle='rgba(255,212,94,.6)';g.lineWidth=1;g.stroke();rr(x,y,w,h,16);g.fillStyle='#FFFFFF';g.fill();g.strokeStyle=BROWN;g.lineWidth=2;g.stroke();
  wxIcon(x+12,y+12,40);const last=m[m.length-1];const n=m.length+extra;
  const head=appName(),rest=' · '+last.ch+(n>1?` 等 ${n} 条`:'');T(head,x+64,y+20,5,BROWN,'left');T(rest,x+64+TW(head,5),y+20,5,'#8A6F5A','left',false);
  let tx=last.text;const max=w-64-16-56-8;g.font=`700 14px ${FXF}`;if(g.measureText(tx).width>max){while(tx.length&&g.measureText(tx+'…').width>max)tx=tx.slice(0,-1);tx+='…';}T(tx,x+64,y+42,4,BROWN,'left');
@@ -157,7 +157,7 @@ const _drawEnd=drawEnd;drawEnd=function(){if(S.day===1)fullBg('trans_evening');_
 const _drawTitle=drawTitle;
 drawTitle=function(){if(!fullBg('title_bg'))return _drawTitle();const logo=uiImg('logo_title');
  if(logo)g.drawImage(logo,195-170,175-100,340,200);else{otxt('重生之我在',W/2,170,30,'#fff8eb');otxt('澳洲修马桶',W/2,215,42,'#ffcf3f');}
- primaryBtn('开工',W/2-90,560,180,()=>{S.money=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);goTrans('trans_morning',()=>{S.screen='brief';});});
+ primaryBtn('开工',W/2-90,560,180,()=>{S.money=0;S.spent=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);goTrans('trans_morning',()=>{S.screen='brief';});});
  T('建议用手机竖屏打开，戴耳机体验更好',W/2,656,5,'#FFF3DA','center',false);
  gearCircle(W/2,712);};
 // ---------- 美术 bowl_geometry_v2：积水贴合碗、纸团、鸭子、皮搋子落点、水桶 ----------

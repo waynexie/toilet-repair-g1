@@ -679,7 +679,7 @@ function drawTitle(){
  g.fillStyle='#efe2c4';g.fillRect(0,0,W,H);g.fillStyle='#a9d3c0';g.fillRect(0,H*.55,W,H*.45);
  otxt('重生之我在',W/2,170,30,'#fff8eb');otxt('澳洲修马桶',W/2,215,42,'#ffcf3f');
  drawPlunger(W/2,470+Math.sin(S.t*3)*6,(Math.sin(S.t*3)+1)/2*.6,false,1.4);
- button('开 工',W/2-90,560,180,60,()=>{S.money=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);},'#ffb53d');
+ button('开 工',W/2-90,560,180,60,()=>{S.money=0;S.spent=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);},'#ffb53d');
  txt('建议用手机竖屏打开，戴耳机体验更好',W/2,650,13,'#6b4a36','center','500');
  gearBtn(W/2-22,686);
 }
@@ -747,7 +747,7 @@ function drawResult(){
  txt('用时',90,361,15,'#7a5a48','left');txt(r.elapsed.toFixed(1)+' 秒',W-90,361,15,INK,'right');if(r.isBest)txt('新纪录！',W/2,361,13,'#2f8a4a');else if(r.prevBest!=null)txt('最佳 '+r.prevBest.toFixed(1)+'s',W/2,361,12,'#a08878','center','500');
  if(r.d.id===4&&S.times[2]){const diff=S.times[2]-r.elapsed;
   rr(50,380,W-100,34,10);fs(diff>0?'#d8ffe6':'#ffe3dc',2);txt(diff>0?`比第 2 单（同款满水堵）快了 ${diff.toFixed(1)} 秒`:`比第 2 单慢了 ${(-diff).toFixed(1)} 秒`,W/2,397,14,INK);}
- if(r.gift){const gy=r.d.id===4&&S.times[2]?426:398;const im=giftIcon(r.gift.icon);if(im)g.drawImage(im,70,gy-12,24,24);
+ if(r.gift){const gy=r.d.id===4&&S.times[2]?430:398;const im=giftIcon(r.gift.icon);if(im)g.drawImage(im,70,gy-12,24,24);
   txt(r.gift.cash?`客户硬塞 ¥${r.gift.cash}`:`收到 ${r.gift.item}`,100,gy,14,INK,'left','700');if(r.gift.line&&gy<420)txt('“'+r.gift.line+'”',W/2,gy+22,12,'#7a5a48','center','500');}
  otxt('+¥'+r.coinsShown,W/2,462,40,'#ffcf3f');
  if(S.resultT>1&&showDbl)button('▶ 看广告 工钱翻倍',W/2-90,573,180,48,()=>{Ads.rewarded('doublePay').then(ok=>{if(!ok||r.doubled)return;r.doubled=true;S.doubleToday=(S.doubleToday||0)+1;const add=r.base*(dblCfg().multiplier-1);r.total+=add;r.base+=add;if(r.paid)S.money+=add;SFX.coin();});},'#fff8eb');
@@ -765,7 +765,7 @@ function drawUpgrade(){
  rows.forEach((t,i)=>{txt('✔ '+t,60,430+i*30,15,INK,'left','600');});
  const cost=CFG.tools.plunger_pro.price,can=S.money>=cost;
  txt('你有 ¥'+S.money,W/2,530,14,'#2f8a4a');
- if(can)button(`买！¥${cost}`,W/2-125,560,150,52,()=>{S.money-=cost;S.upgraded=true;SFX.success();buzz([30,30,80]);doShake(6);S.idx++;startOrder(S.idx);},'#ffb53d');
+ if(can)button(`买！¥${cost}`,W/2-125,560,150,52,()=>{S.money-=cost;S.spent=(S.spent||0)+cost;S.upgraded=true;SFX.success();buzz([30,30,80]);doShake(6);S.idx++;startOrder(S.idx);},'#ffb53d');
  else txt('钱不够',W/2-50,586,16,'#a08878');
  button('先不买',W/2+35,566,90,40,()=>{S.skipUp=true;S.idx++;startOrder(S.idx);},'#fff8eb');
 }
@@ -775,11 +775,9 @@ function copyTimes(){const s=timesText();const done=()=>{S.copied=2;};try{naviga
 function drawEnd(){
  if(S.day>1)return drawDayEnd();
  panel(140,470);txt('今天收工',W/2,180,26,INK,'center','800');
- txt('今日收入 ¥'+S.money,W/2,225,18,'#2f8a4a');
+ txt('今日收入 ¥'+(S.money+(S.spent||0)),W/2,225,18,'#2f8a4a');
  txt('图鉴：'+(S.dex.length?'小黄鸭 ×1':'空'),W/2,260,15,INK);
- txt([1,2,3,4].map(i=>S.times[i]!=null?S.times[i].toFixed(1)+'s':'-').join(' · '),W/2,280,14,INK);
- if(S.times[2]&&S.times[4])txt(`满水堵：${S.times[2].toFixed(1)}s → ${S.times[4].toFixed(1)}s`,W/2,301,14,'#2c5fb0');
- button(S.copied>0?'已复制 ✔':'复制用时',W/2-55,314,110,28,copyTimes,'#fff8eb');
+ if(S.times[2]&&S.times[4])txt(`满水堵：${S.times[2].toFixed(1)}s → ${S.times[4].toFixed(1)}s`,W/2,290,14,'#2c5fb0');
   txt('第 1 天',W/2,400,13,'#7a5a48');
  button('第 2 天 ▶',W/2-90,440,180,52,()=>G2nextDay(),'#4fc26f','#fff');
  button('再玩一遍',W/2-70,510,140,40,()=>{S.screen='title';O=null;S.copied=0;},'#ffb53d');
