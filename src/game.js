@@ -47,6 +47,7 @@ const SFX={
 const CAN_VIBRATE=typeof navigator.vibrate==='function'&&!/iP(hone|ad|od)/.test(navigator.userAgent);
 // iOS 等不支持震动的设备：用低频"咚"声 + 轻微画面抖动代替
 function buzz(p){const arr=Array.isArray(p)?p:[p];let on=0;arr.forEach((v,i)=>{if(i%2===0)on+=v;});
+ if(save.novibe)return;
  if(CAN_VIBRATE){if(save.reduced)return;try{navigator.vibrate(p);}catch(e){}return;}
  if(on<10)return;const k=Math.min(1,on/120);
  tone(70+k*40,.05+k*.07,'sine',.18+k*.22,45);
@@ -65,7 +66,9 @@ function nline(key,k){const o=NAR&&NAR.orders[key];const l=o&&o.lines[k];return 
 function buildOrders(c,n){CFG=c;NAR=n;ORDERS=c.orders.map((o,i)=>{const no=n.orders[o.id]||{};const cl=no.client&&n.characters[no.client];return {id:i+1,key:o.id,who:cl?cl.name:'客户',place:LOOK[o.id].place,face:LOOK[o.id].face,
  line:nline(o.id,'arrive')||o.customerLine,
  water:o.waterLevel,clog:o.fault,hp:o.clogHp!=null?o.clogHp:(o.fault==='hard'?1:3),base:o.basePay,tip:o.tipMax,hurry:!!o.urgent,obj:o.object==='rubber_duck'?'duck':null,
- tools:i===0?['plunger']:i===1?['plunger','scoop']:['plunger','scoop','snake']};});}
+ tools:i===0?['plunger']:i===1?['plunger','scoop']:['plunger','scoop','snake']};}).map(d=>{const c=n.calls&&n.calls[d.key];
+  if(c&&c.type==='call'){const k=(ECO&&ECO.orderSources&&ECO.orderSources.call)||{payMultiplier:1.5,tipMultiplier:1.5};d.isCall=true;d.payX=k.payMultiplier;d.base=Math.round(d.base*k.payMultiplier);d.tip=Math.round(d.tip*(k.tipMultiplier||1));}
+  return d;});}
 let ECO=null;
 Promise.all(['data/orders.json','data/narrative.json','data/economy.json'].map(u=>fetch(u).then(r=>r.json()))).then(([c,n,e])=>{ECO=e;buildOrders(c,n);});
 // 皮搋子节奏：以 rebounceMs 为中心，windowMs 内拉起算“按准”，其中 perfectWindowMs 内显示“完美”
@@ -309,6 +312,7 @@ function update(dt){
   if(S.resultT>.4&&!r.paid&&r.coinsShown>=r.total){r.paid=true;S.money+=r.total;buzz(30);}
   if(S.resultT>1.4&&S.phoneQueue.length&&!S.phoneShown){S.phoneShown=true;PH.toastT=3.4;SFX.notify();buzz([15,60,15]);}}
  if(PH.toastT>0)PH.toastT-=dt;
+ if(S.settings){if(O&&O.startT!=null)O.startT+=dt;return;}
  if(S.ad){S.ad.t+=dt;if(O&&O.startT!=null)O.startT+=dt;if(S.ad.t>=S.ad.dur){const r=S.ad.res;S.ad=null;r&&r(true);}return;}
  if(S.callUI){const c=S.callUI;c.t+=dt;if(O&&O.startT!=null)O.startT+=dt;const last=c.i>=c.lines.length-1;if(!last&&c.t>=LINE_SEC){c.t=0;c.i++;}else if(last&&c.t>=LINE_SEC+1)hangUp();return;}
  if(O&&S.screen==='play'){if(O.hlT>0)O.hlT-=dt;if(O.reveal>0)O.reveal-=dt;if(O.phase==='work'&&!O.anim&&!ptr.down)O.idleT=(O.idleT||0)+dt;}
@@ -532,8 +536,7 @@ function drawHUD(){
  if(O){g.font='34px sans-serif';g.textAlign='center';g.fillText(O.face,W-140,44);
   txt('小费 ¥'+O.tip,W-80,30,14,INK);if(O.startT!=null){const el=(O.anim&&O.anim.type==='win')||O.phase==='done'||S.screen!=='play'?O.elapsed:S.t-O.startT;txt(el.toFixed(1)+'s',W-80,54,13,'#7a5a48','center','600');}}
  // 设置
- button(save.muted?'🔇':'🔊',W-44,84,34,30,()=>{save.muted=!save.muted;persist();},'#fff8eb');
- button(save.reduced?'🐢':'✨',W-84,84,34,30,()=>{save.reduced=!save.reduced;persist();},'#fff8eb');
+ gearBtn(W-54,78);
  // 旧手机角
  rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#4a6a80';g.fill();g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1;g.beginPath();g.moveTo(344,640);g.lineTo(362,668);g.stroke();
  if(PH.unread>0){g.beginPath();g.arc(374,630,9,0,7);g.fillStyle='#e8453c';g.fill();txt(String(PH.unread),374,630,11,'#fff');}
@@ -549,6 +552,19 @@ function phoneTarget(){return PH.chats.family_group?'chat:family_group':'list';}
 function phoneBtn(){if(PH.open||S.screen==='title'||S.dexCard)return;
  if(canOpenPhone())buttons.push({x:328,y:616,w:56,h:76,fn:()=>openPhone(phoneTarget())});
  else if(S.screen==='play'&&O&&!O.anim)buttons.push({x:328,y:616,w:56,h:76,fn:()=>{if(PH.unread)say('（先干活，修完再看手机）',1.4);}});}
+function gearBtn(x,y){rr(x,y,44,44,14);fs('#fff8eb',2.5);g.font='22px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle=INK;g.fillText('⚙',x+22,y+23);
+ buttons.push({x,y,w:44,h:44,fn:()=>{audioInit();SFX.click();S.settings=true;}});}
+function drawSettings(){if(!S.settings)return;g.fillStyle='rgba(20,12,8,.5)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:()=>{S.settings=false;SFX.click();}});
+ const X=40,Y=220,PW=W-80,PHh=262;rr(X,Y,PW,PHh,20);fs('#fff8eb',4);buttons.push({x:X,y:Y,w:PW,h:PHh,fn:()=>{}});
+ txt('设置',W/2,Y+30,18,INK,'center','800');
+ const row=(i,label,on,fn,dis,note)=>{const y=Y+62+i*52;txt(label,X+20,y+18,15,dis?'#b8a898':INK,'left','700');
+  const sx=X+PW-74;rr(sx,y+4,56,28,14);g.fillStyle=dis?'#ddd':on?'#4fc26f':'#cbbfae';g.fill();g.beginPath();g.arc(on&&!dis?sx+42:sx+14,y+18,11,0,7);g.fillStyle='#fff';g.fill();
+  if(note)txt(note,sx-8,y+18,11,'#a08878','right','500');if(!dis)buttons.push({x:X,y,w:PW,h:44,fn:()=>{fn();persist();SFX.click();}});};
+ row(0,'🔊 声音',!save.muted,()=>{save.muted=!save.muted;});
+ row(1,'🐢 省动效',!!save.reduced,()=>{save.reduced=!save.reduced;});txt('减少抖动和闪光',X+20,Y+62+52+36,11,'#a08878','left','500');
+ row(2,'📳 震动',!save.novibe,()=>{save.novibe=!save.novibe;},!CAN_VIBRATE,!CAN_VIBRATE?'本机不支持':'');
+ const left=Math.max(0,CM().freePerDay-(S.masterFree||0));
+ txt(`老钱求助：今日免费 ${left} 次`,W/2,Y+PHh-24,12,'#7a5a48','center','600');}
 function drawMasterBtn(){if((O.masterCalls||0)>=CM().maxPerOrder)return;const ready=masterReady();
  const x=212,y=646,w=110,h=36,wob=ready?Math.sin(S.t*14)*Math.max(0,Math.sin(S.t*2.2))*3:0;g.save();g.translate(wob,0);
  rr(x,y,w,h,14);fs(ready?'#fff8eb':'rgba(220,210,195,.75)',ready?3:2);txt('📞 问老钱',x+w/2,y+h/2+1,14,ready?INK:'#9a8a7a');
@@ -625,7 +641,7 @@ function drawDexCard(){
 function draw(){
  buttons=[];g.setTransform(SC*DPR,0,0,SC*DPR,0,0);g.clearRect(0,0,W,H);
  const sx=shake?rnd(-shake,shake):0,sy=shake?rnd(-shake,shake):0;
- if(S.screen==='title')return drawTitle();
+ if(S.screen==='title'){drawTitle();drawSettings();return;}
  g.save();g.translate(sx,sy);drawBathroom();drawToilet();drawHeld();drawFX();g.restore();
  drawTray();drawHUD();drawHintBubble();drawObserveHint();
  if(S.screen==='brief')drawBrief();
@@ -633,7 +649,7 @@ function draw(){
  if(S.screen==='upgrade')drawUpgrade();
  if(S.screen==='end')drawEnd();
  if(S.dexCard)drawDexCard();
- phoneBtn();drawPhone();drawAd();
+ phoneBtn();drawPhone();drawAd();drawSettings();
 }
 function drawTitle(){
  g.fillStyle='#efe2c4';g.fillRect(0,0,W,H);g.fillStyle='#a9d3c0';g.fillRect(0,H*.55,W,H*.45);
@@ -642,11 +658,10 @@ function drawTitle(){
  drawPlunger(W/2,470+Math.sin(S.t*3)*6,(Math.sin(S.t*3)+1)/2*.6,false,1.4);
  button('开 工',W/2-90,560,180,60,()=>{S.money=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;startOrder(0);},'#ffb53d');
  txt('建议用手机竖屏打开，戴耳机体验更好',W/2,650,13,'#6b4a36','center','500');
- button(save.muted?'🔇 声音关':'🔊 声音开',W/2-120,690,110,36,()=>{save.muted=!save.muted;persist();},'#fff8eb');
- button(save.reduced?'减少动效：开':'减少动效：关',W/2+10,690,120,36,()=>{save.reduced=!save.reduced;persist();},'#fff8eb');
+ gearBtn(W/2-22,686);
 }
 function panel(y,h){g.fillStyle='rgba(20,12,8,.5)';g.fillRect(0,0,W,H);rr(24,y,W-48,h,22);fs('#fff8eb',4);}
-function orderMsg(d){const c=NAR&&NAR.calls&&NAR.calls[d.key];const urgent=!!(c&&(c.urgent||c.type==='urgent_call'||d.urgent));
+function orderMsg(d){const c=NAR&&NAR.calls&&NAR.calls[d.key];const urgent=!!(c&&c.type==='call');
  const m=NAR&&NAR.order_messages&&NAR.order_messages[d.key];
  const who=(m&&m.sender)||(c&&c.caller)||null;const text=((m&&m.text)||(c&&c.text)||d.line||'').replace(/^\[语音\]\s*/,'');
  return {urgent,who,text,voice:!!(c&&c.type==='voice'&&!m)};}
@@ -669,7 +684,7 @@ function drawBrief(){
  g.font='54px sans-serif';g.textAlign='center';g.fillText(d.face,W/2,335);
  txt(d.who,W/2,380,15,'#7a5a48');
  const lines=wrap(`“${M.text}”`,W-100,16);lines.forEach((l,i)=>txt(l,W/2,412+i*24,16,INK,'center','600'));
- txt(`工钱 ¥${d.base} · 小费最多 ¥${d.tip}`,W/2,470,13,'#2f8a4a');
+ txt(`工钱 ¥${d.base} · 小费最多 ¥${d.tip}`+(d.isCall?`（来电单 ×${d.payX}）`:''),W/2,470,13,'#2f8a4a');
  button('上门',W/2-80,488,160,48,()=>{S.screen='play';if(d.id>1&&d.line&&d.line!==M.text)say('“'+d.line+'”',2.6);},'#ffb53d');
 }
 function wrap(t,maxW,size){g.font=`600 ${size}px sans-serif`;const out=[];let cur='';for(const ch of t){if(g.measureText(cur+ch).width>maxW){out.push(cur);cur=ch;}else cur+=ch;}if(cur)out.push(cur);return out;}
