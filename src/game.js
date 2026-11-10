@@ -432,7 +432,7 @@ function drawHUD(){
  button(save.muted?'🔇':'🔊',W-44,84,34,30,()=>{save.muted=!save.muted;persist();},'#fff8eb');
  button(save.reduced?'🐢':'✨',W-84,84,34,30,()=>{save.reduced=!save.reduced;persist();},'#fff8eb');
  // 旧手机角
- rr(14,628,40,56,7);fs('#2d2d33');rr(18,634,32,40,4);g.fillStyle='#4a6a80';g.fill();g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1;g.beginPath();g.moveTo(22,640);g.lineTo(40,668);g.stroke();
+ rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#4a6a80';g.fill();g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1;g.beginPath();g.moveTo(344,640);g.lineTo(362,668);g.stroke();
 }
 function drawHintBubble(){
  if(!O||O.hintT<=0||!O.hint)return;const a=Math.min(1,O.hintT*2);g.globalAlpha=a;
