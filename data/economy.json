@@ -26,17 +26,21 @@
       "payMultiplier": 1.8
     },
     "callMaster": {
-      "name": "打电话问老师傅",
+      "name": "打电话问老钱",
       "showWhen": {
         "wrongToolCount": 2,
-        "idleMs": 12000
+        "idleMs": 12000,
+        "patienceAtOrBelow": 0.5,
+        "logic": "any"
       },
       "freePerDay": 1,
       "effect": [
-        "voice_hint_line_by_fault",
-        "highlight_correct_tool_3s"
+        "laoqian_voice_line_by_fault",
+        "highlight_correct_tool_3s",
+        "reveal_clog_outline_like_headlamp"
       ],
-      "neverBlocksProgress": true
+      "neverBlocksProgress": true,
+      "maxPerOrder": 1
     }
   }
 }
