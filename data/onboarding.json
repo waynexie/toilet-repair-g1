@@ -2,7 +2,6 @@
   "_note": "开局流程 v2 配置，见 docs/onboarding_v2.md。台词由叙事在 narrative.json 的 onboarding / bubbles 下填，这里只放键。",
   "firstLaunch": {
     "skipTitle": true,
-    "skipMorningTransitionDay1": true,
     "startScene": "home_wang",
     "firstOrder": "o1"
   },
@@ -155,7 +154,7 @@
       "id": "S13_stairwell",
       "type": "transition",
       "scene": "trans_stairwell",
-      "durationMs": 1200,
+      "durationMs": 800,
       "skippable": true,
       "trigger": "S12_order_card.closed",
       "target": null
@@ -199,17 +198,21 @@
     "settingsReplay": true
   },
   "transitions": {
-    "day1": [
-      "trans_stairwell",
-      "trans_evening"
-    ],
-    "day2plus": [
+    "_note": "制作人定：每天都直接进维修现场，整体要轻。只保留客户之间的楼道短转场，点任意处跳过；收工直接进结算，不再播晚上过场。",
+    "everyDay": {
+      "dayStart": null,
+      "betweenOrders": {
+        "scene": "trans_stairwell",
+        "durationMs": 800,
+        "tapToSkip": true
+      },
+      "dayEnd": null
+    },
+    "unused": [
       "trans_morning",
       "trans_road",
-      "trans_stairwell",
       "trans_evening"
-    ],
-    "_note": "第1天只保留楼道1.2s（o1→o2之间）；收工晚上过场第1天也保留，作为一天结束"
+    ]
   },
   "lockedPreview": {
     "tool": "plunger_pro",
