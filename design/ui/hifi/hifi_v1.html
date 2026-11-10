@@ -1,121 +1,139 @@
 <html><head><meta charset="utf-8"><style>
-:root{--ln:#5A4030;--paper:#FFF8EC;--paper2:#F6EAD3;--coin:#FFC83D;--ok:#6FCF6F;--bad:#F07A5C;--red:#D9413A;--tape:#F2C84B;--sh:0 3px 8px rgba(70,45,25,.28)}
-*{box-sizing:border-box}
-body{margin:0;background:#2b211b;font-family:"Noto Sans CJK SC",sans-serif;color:var(--ln)}
-.row{display:flex;gap:28px;padding:28px}
-.cap{color:#f3e6cf;font-size:15px;margin:0 0 10px;font-weight:700}
-.ph{position:relative;width:390px;height:780px;border-radius:30px;overflow:hidden;outline:4px solid #000;background:url(_bg_clean.jpg) center/cover}
-.safe{position:absolute;left:0;right:0;height:15px;background:repeating-linear-gradient(45deg,rgba(255,0,80,.18) 0 6px,transparent 6px 12px);z-index:20;pointer-events:none}
+/* ===== tokens (ui-spec v1.1) ===== */
+:root{
+ --ink:#5A4030;--ink2:#8A6F5A;--ink3:#B9A68F;--line:#E6D6BC;
+ --paper:#FFF8EC;--paper2:#F6EAD3;--coin:#FFC83D;--ok:#5DBB63;--okbg:#E8F5E3;--red:#D9413A;
+ --sh:0 2px 8px rgba(70,45,25,.25);
+ --s1:4px;--s2:8px;--s3:16px;--s4:24px;--s5:32px;
+}
+*{box-sizing:border-box;margin:0}
+body{background:#2b211b;font-family:"Noto Sans CJK SC",sans-serif;color:var(--ink);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.t1{font-size:40px;line-height:48px;font-weight:700}
+.t2{font-size:20px;line-height:28px;font-weight:700}
+.t3{font-size:16px;line-height:24px}
+.t4{font-size:14px;line-height:20px}
+.t5{font-size:12px;line-height:16px}
+.b{font-weight:700}.mute{color:var(--ink2)}.c{text-align:center}
+.row{display:flex;gap:32px;padding:32px}
+.cap{color:#f3e6cf;font-size:14px;margin:0 0 8px;font-weight:700}
+.ph{position:relative;width:390px;height:780px;border-radius:32px;overflow:hidden;outline:4px solid #000;background:url(_bg_clean.jpg) center/cover}
+.safe{position:absolute;left:0;right:0;height:15px;background:repeating-linear-gradient(45deg,rgba(255,0,80,.18) 0 6px,transparent 6px 12px);z-index:20}
 .wxcap{position:absolute;top:8px;right:8px;width:88px;height:32px;border-radius:16px;border:1.5px dashed rgba(255,255,255,.8);background:rgba(0,0,0,.25);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;z-index:20}
-.dim::after{content:"";position:absolute;inset:0;background:rgba(43,30,20,.55);z-index:5}
-.card{position:absolute;z-index:6;background:var(--paper);border:2px solid var(--ln);border-radius:20px;box-shadow:var(--sh)}
-.btn{border:2px solid var(--ln);border-radius:14px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -4px 0 rgba(90,64,48,.22),var(--sh)}
-.pri{background:linear-gradient(#FFD45E,#F5B92E);font-size:20px}
-.sec{background:#fff;font-size:15px}
-.small{font-size:12px;color:#8a6f5a;line-height:1.3}
+.dim::after{content:"";position:absolute;inset:0;background:rgba(43,30,20,.6);z-index:5}
+.panel{background:var(--paper);border:2px solid var(--ink);box-shadow:var(--sh)}
+.card{position:absolute;left:24px;right:24px;z-index:6;border-radius:24px;padding:24px}
+.btn{height:56px;border:2px solid var(--ink);border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -4px 0 rgba(90,64,48,.2),var(--sh)}
+.pri{background:linear-gradient(#FFD45E,#F5B92E)}
+.sec{height:48px;background:#fff}
+.hr{height:0;border-top:1.5px dashed var(--line)}
+.kv{display:flex;justify-content:space-between;align-items:center;height:32px}
 /* HUD */
-.who{position:absolute;top:48px;left:12px;width:74px;padding:5px 5px 6px;background:var(--paper);border:2px solid var(--ln);border-radius:14px;box-shadow:var(--sh);z-index:3;text-align:center}
-.who img{width:60px;height:60px;border-radius:10px;display:block;margin:0 auto}
-.pat{display:flex;gap:4px;justify-content:center;margin-top:5px}.pat i{width:10px;height:10px;border-radius:50%;background:var(--ok);border:1.5px solid var(--ln)}.pat i.off{background:#E5D6BD}
-.coins{position:absolute;top:48px;right:12px;height:40px;padding:0 14px 0 6px;background:var(--paper);border:2px solid var(--ln);border-radius:20px;box-shadow:var(--sh);display:flex;align-items:center;gap:6px;font-size:20px;font-weight:900;z-index:3}
-.cn{width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#FFE38A,#F2B21C);border:2px solid #B07A10;color:#8a5a00;font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center}
-.order{position:absolute;top:96px;right:62px;height:36px;padding:0 10px;background:rgba(255,248,236,.94);border:2px solid var(--ln);border-radius:12px;box-shadow:var(--sh);display:flex;align-items:center;gap:6px;font-size:14px;font-weight:900;z-index:3}
-.gear{position:absolute;top:92px;right:12px;width:44px;height:44px;border-radius:50%;background:var(--paper);border:2px solid var(--ln);box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;font-size:22px;z-index:3}
-.bubble{position:absolute;left:96px;top:150px;max-width:220px;background:#fff;border:2px solid var(--ln);border-radius:14px;padding:7px 12px;font-size:14px;font-weight:700;box-shadow:var(--sh);z-index:3}
-.bubble::before{content:"";position:absolute;left:-9px;top:12px;border:8px solid transparent;border-right-color:var(--ln);border-left:0}
-.toast{position:absolute;left:50%;top:390px;transform:translateX(-50%);font-size:32px;font-weight:900;color:var(--ok);-webkit-text-stroke:1.5px var(--ln);text-shadow:0 3px 6px rgba(0,0,0,.25);z-index:3}
-.ring{position:absolute;left:142px;top:430px;width:110px;height:110px;border-radius:50%;border:5px solid var(--ok);border-right-color:transparent;z-index:3;opacity:.9;filter:drop-shadow(0 0 6px rgba(111,207,111,.8))}
+.who{position:absolute;top:48px;left:16px;width:80px;padding:8px;border-radius:16px;z-index:3}
+.who img{width:60px;height:60px;border-radius:8px;display:block;margin:0 auto}
+.pat{display:flex;gap:4px;justify-content:center;margin-top:8px}.pat i{width:12px;height:8px;border-radius:4px;background:var(--ok)}.pat i.off{background:#E5D6BD}
+.coins{position:absolute;top:48px;right:16px;height:40px;padding:0 16px 0 8px;border-radius:20px;display:flex;align-items:center;gap:8px;z-index:3}
+.cn{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#FFE38A,#F2B21C);border:2px solid #B07A10;color:#7a4e00;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.order{position:absolute;top:96px;right:72px;height:48px;padding:0 16px;border-radius:16px;display:flex;flex-direction:column;justify-content:center;z-index:3}
+.gear{position:absolute;top:96px;right:16px;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:3}
+.gear svg{width:24px;height:24px}
+.bubble{position:absolute;left:16px;top:160px;max-width:240px;padding:8px 16px;border-radius:16px;z-index:3;background:#fff}
+.bubble::before{content:"";position:absolute;left:32px;top:-9px;border:8px solid transparent;border-bottom-color:var(--ink);border-top:0}
+.toast{position:absolute;left:0;right:0;top:384px;text-align:center;color:var(--ok);-webkit-text-stroke:1.5px var(--ink);z-index:3}
+.ring{position:absolute;left:144px;top:432px;width:104px;height:104px;border-radius:50%;border:4px solid var(--ok);border-right-color:transparent;z-index:3;filter:drop-shadow(0 0 6px rgba(93,187,99,.8))}
 /* toolbox */
-.floor{position:absolute;left:0;right:0;bottom:0;height:190px;background:linear-gradient(90deg,rgba(150,120,85,.35) 1px,transparent 1px) 0 0/62px 62px,linear-gradient(rgba(150,120,85,.35) 1px,transparent 1px) 0 0/62px 62px,#D9C3A0;box-shadow:0 -6px 10px rgba(80,55,30,.25);z-index:2}
-.box{position:absolute;left:12px;bottom:18px;width:290px;height:130px;background:url(_toolbox_crop.png) center/100% 100%;z-index:3;filter:drop-shadow(0 4px 6px rgba(60,35,15,.35))}
-.slot{position:absolute;top:8px;width:64px;height:84px}
-.slot.sel{outline:3px solid #FFE27A;border-radius:6px;box-shadow:0 0 12px 3px rgba(255,220,90,.9);transform:translateY(-8px)}
-.lab{position:absolute;bottom:8px;width:64px;text-align:center;font-size:12px;font-weight:900;color:#FFF3DA;text-shadow:0 1px 0 rgba(0,0,0,.5)}
-.lab.lk{color:#F5D9B0;font-weight:700}
-.phone{position:absolute;right:14px;bottom:34px;width:62px;height:94px;border-radius:12px;background:linear-gradient(160deg,#3a3a3a,#161616);border:2px solid #111;transform:rotate(-10deg);box-shadow:0 5px 8px rgba(0,0,0,.35);z-index:3}
-.phone::after{content:"";position:absolute;inset:5px;border-radius:7px;background:linear-gradient(160deg,#2c3440,#11161c)}
+.floor{position:absolute;left:0;right:0;bottom:0;height:192px;background:linear-gradient(90deg,rgba(150,120,85,.3) 1px,transparent 1px) 0 0/64px 64px,linear-gradient(rgba(150,120,85,.3) 1px,transparent 1px) 0 0/64px 64px,#D9C3A0;box-shadow:0 -4px 8px rgba(80,55,30,.2);z-index:2}
+.box{position:absolute;left:16px;bottom:16px;width:288px;height:128px;background:url(_toolbox_crop.png) center/100% 100%;z-index:3;filter:drop-shadow(0 4px 6px rgba(60,35,15,.35))}
+.slot{position:absolute;top:8px;width:64px;height:80px}
+.slot.sel{outline:3px solid #FFE27A;border-radius:8px;box-shadow:0 0 12px 2px rgba(255,220,90,.9)}
+.lab{position:absolute;bottom:8px;width:64px;text-align:center;font-size:12px;line-height:16px;font-weight:700;color:#FFF3DA;text-shadow:0 1px 0 rgba(0,0,0,.45)}
+.lab.lk{font-weight:400;color:#F5D9B0}
+.phone{position:absolute;right:16px;bottom:32px;width:64px;height:96px;border-radius:12px;background:linear-gradient(160deg,#3a3a3a,#161616);border:2px solid #111;transform:rotate(-10deg);box-shadow:0 4px 8px rgba(0,0,0,.35);z-index:3}
+.phone::after{content:"";position:absolute;inset:4px;border-radius:8px;background:linear-gradient(160deg,#2c3440,#11161c)}
 .dim .phone{z-index:7}
-
-.dot{position:absolute;right:-6px;top:-6px;width:20px;height:20px;border-radius:50%;background:var(--red);border:2px solid #fff;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:2}
-.call{position:absolute;right:20px;top:560px;width:52px;height:52px;border-radius:50%;background:#FFF3C4;border:2px solid var(--ln);box-shadow:var(--sh),0 0 0 4px rgba(242,200,75,.55);display:flex;align-items:center;justify-content:center;font-size:24px;z-index:4}
-.free{position:absolute;right:6px;top:602px;background:var(--red);color:#fff;font-size:11px;font-weight:900;padding:1px 6px;border-radius:8px;border:1.5px solid #fff;z-index:5}
-.tg{display:flex;justify-content:space-between;align-items:center;padding:13px 4px;border-bottom:1.5px dashed #e0cfb2;font-size:16px;font-weight:700}
-.sw{width:54px;height:30px;border-radius:15px;border:2px solid var(--ln);background:var(--ok);position:relative}
-.sw::after{content:"";position:absolute;right:2px;top:2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)}
-.sw.off{background:#d8c8ad}.sw.off::after{left:2px;right:auto}
+.dot{position:absolute;right:-8px;top:-8px;min-width:20px;height:20px;border-radius:10px;background:var(--red);border:2px solid #fff;color:#fff;font-size:12px;line-height:16px;font-weight:700;text-align:center;z-index:2}
+.call{position:absolute;right:20px;top:560px;width:56px;height:56px;border-radius:50%;background:#FFF3C4;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:4;box-shadow:var(--sh),0 0 0 4px rgba(242,200,75,.5)}
+.free{position:absolute;right:8px;top:608px;height:20px;padding:2px 8px;border-radius:10px;background:var(--red);color:#fff;z-index:5;border:1.5px solid #fff;display:flex;align-items:center}
+/* settings */
+.tg{display:flex;justify-content:space-between;align-items:center;min-height:56px;border-bottom:1.5px dashed var(--line)}
+.sw{width:48px;height:28px;border-radius:14px;background:var(--ok);position:relative;border:2px solid var(--ink)}
+.sw::after{content:"";position:absolute;right:2px;top:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.sw.off{background:#D8C8AD}.sw.off::after{left:2px;right:auto}
 .dis{opacity:.45}
-.line{display:flex;justify-content:space-between}
+.chip{width:24px;height:24px;border-radius:8px;background:var(--paper2);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:none}
 </style></head><body><div class="row">
 
 <div><p class="cap">① 维修中 HUD + 工具箱</p><div class="ph">
- <div class="safe" style="top:0"></div><div class="safe" style="bottom:0"></div>
- <div class="wxcap">小游戏胶囊区</div>
- <div class="who"><img src="_wang.png"><div class="pat"><i></i><i></i><i></i><i class="off"></i></div></div>
- <div class="coins"><span class="cn">¥</span>128</div>
- <div class="order">本单 ¥30<span class="small" style="font-weight:700">+小费</span></div>
- <div class="gear">⚙</div>
- <div class="bubble">小伙子，慢慢来，不急。</div>
- <div class="ring"></div><div class="toast">完美!</div>
+ <div class="safe" style="top:0"></div><div class="safe" style="bottom:0"></div><div class="wxcap">小游戏胶囊区</div>
+ <div class="who panel"><img src="_wang.png"><div class="pat"><i></i><i></i><i></i><i class="off"></i></div></div>
+ <div class="coins panel"><span class="cn">¥</span><span class="t2">128</span></div>
+ <div class="order panel"><span class="t5 mute">本单</span><span class="t3 b">¥30</span></div>
+ <div class="gear panel"><svg viewBox="0 0 24 24" fill="none" stroke="#5A4030" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/><circle cx="12" cy="12" r="6.5"/></svg></div>
+ <div class="bubble panel t4 b">小伙子，慢慢来，不急。</div>
+ <div class="ring"></div><div class="toast t1">完美!</div>
  <div class="floor"></div>
- <div class="box">
-  <div class="slot sel" style="left:8px"></div>
-  <div class="lab" style="left:11px">皮搋子</div><div class="lab" style="left:78px">水瓢</div>
-  <div class="lab lk" style="left:146px">升级解锁</div><div class="lab lk" style="left:214px">升级解锁</div>
- </div>
+ <div class="box"><div class="slot sel" style="left:8px;top:0"></div>
+  <div class="lab" style="left:9px">皮搋子</div><div class="lab" style="left:77px">水瓢</div><div class="lab lk" style="left:146px">升级解锁</div><div class="lab lk" style="left:214px">升级解锁</div></div>
  <div class="phone"><div class="dot">2</div></div>
- <div class="call">📞</div><div class="free">今日免费</div>
+ <div class="call panel">📞</div><div class="free t5 b">今日免费</div>
 </div></div>
 
-<div><p class="cap">② 结算页</p><div class="ph dim">
-<div class="floor"></div><div class="box"><div class="lab" style="left:11px">皮搋子</div><div class="lab" style="left:78px">水瓢</div><div class="lab lk" style="left:146px">升级解锁</div><div class="lab lk" style="left:214px">升级解锁</div></div>
- <div class="card" style="left:22px;right:22px;top:140px;padding:20px 22px 22px;text-align:center">
-  <img src="_wang.png" style="width:84px;height:84px;border-radius:18px;border:2px solid var(--ln);margin:-62px auto 6px;display:block;box-shadow:var(--sh)">
-  <div style="font-size:18px;font-weight:900">“师傅手艺真好！”</div>
-  <div class="small" style="margin:4px 0 14px">王阿姨家 · 卫生间</div>
-  <div style="text-align:left;font-size:15px;line-height:2;border-top:1.5px dashed #e0cfb2;border-bottom:1.5px dashed #e0cfb2;padding:6px 4px">
-   <div class="line"><span>工钱</span><b>¥30</b></div><div class="line"><span>小费</span><b>¥10</b></div><div class="line"><span>用时</span><b>8.4 秒</b></div></div>
-  <div style="margin:12px 0;background:#E8F7E4;border:1.5px solid #9CCB92;border-radius:12px;padding:8px;font-weight:900;font-size:14px;color:#3d6b35">比第 2 单快了 3.4 秒 · 新纪录！</div>
-  <div style="font-size:46px;font-weight:900;color:var(--coin);-webkit-text-stroke:1.5px #8a5a00;text-shadow:0 3px 6px rgba(0,0,0,.2)">+¥40</div>
-  <div class="btn pri" style="height:58px;margin-top:14px">接下一单 ▶</div>
-  <div class="btn sec" style="height:44px;margin-top:12px">▶ 看广告 小费翻倍</div>
+<div><p class="cap">② 结算页（第 4 单 · 徐哥）</p><div class="ph dim">
+ <div class="floor"></div><div class="box"></div>
+ <div class="card panel" style="top:128px">
+  <img src="_xu.png" style="width:80px;height:80px;border-radius:16px;border:2px solid var(--ink);margin:-64px auto 8px;display:block;box-shadow:var(--sh);background:#f6e6cc">
+  <div class="t2 c">“比上次还快！赶得上了。”</div>
+  <div class="t5 mute c" style="margin-top:4px">徐哥家 · 卫生间</div>
+  <div class="hr" style="margin-top:16px"></div>
+  <div style="padding:8px 0">
+   <div class="kv t3"><span class="mute">工钱</span><b>¥45</b></div>
+   <div class="kv t3"><span class="mute">用时</span><b>8.4 秒</b></div>
+   <div class="kv t3"><span class="mute">收到</span><b>两个车上拉的橙子</b></div>
+  </div>
+  <div class="hr"></div>
+  <div class="t4 b c" style="margin-top:16px;height:40px;line-height:40px;border-radius:12px;background:var(--okbg);color:#3d6b35">比第 2 单快了 3.4 秒 · 新纪录</div>
+  <div class="t1 c" style="margin-top:16px;color:var(--coin);-webkit-text-stroke:1.5px #8a5a00">+¥45</div>
+  <div class="btn pri t2" style="margin-top:16px">接下一单</div>
+  <div class="btn sec t3 b" style="margin-top:16px">▶ 看广告 工钱翻倍</div>
  </div>
  <div class="phone"><div class="dot">1</div></div>
 </div></div>
 
 <div><p class="cap">③ 升级卡</p><div class="ph dim">
-<div class="floor"></div><div class="box"><div class="lab" style="left:11px">皮搋子</div><div class="lab" style="left:78px">水瓢</div><div class="lab lk" style="left:146px">升级解锁</div><div class="lab lk" style="left:214px">升级解锁</div></div>
- <div class="card" style="left:22px;right:22px;top:110px;padding:18px 20px 20px;text-align:center">
-  <div class="small" style="font-size:13px">五金店 · 老陈</div>
-  <div style="font-size:24px;font-weight:900;margin:2px 0 12px">加压皮搋子</div>
-  <div style="display:flex;align-items:center;justify-content:space-around;background:var(--paper2);border:1.5px solid #d9c3a0;border-radius:14px;padding:12px 6px">
-   <div><div style="font-size:50px">🪠</div><div class="small">现在 · 缠胶布</div></div>
-   <div style="font-size:26px;font-weight:900;color:#b08a68">➜</div>
-   <div><div style="font-size:50px;filter:hue-rotate(200deg) saturate(1.3)">🪠</div><div class="small" style="color:#2E3F66;font-weight:900">升级后</div></div>
+ <div class="floor"></div><div class="box"></div>
+ <div class="card panel" style="top:96px">
+  <div class="t5 mute c">五金店 · 老陈</div>
+  <div class="t2 c" style="margin-top:4px">加压皮搋子</div>
+  <div style="margin-top:16px;height:128px;border-radius:16px;background:var(--paper2);display:flex;align-items:center;justify-content:space-around">
+   <div class="c"><img src="_plunger.png" style="height:88px"><div class="t5 mute">现在</div></div>
+   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B9A68F" stroke-width="2.5" stroke-linecap="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+   <div class="c"><img src="_plunger.png" style="height:88px;filter:hue-rotate(200deg) saturate(1.2)"><div class="t5 b" style="color:#2E3F66">升级后</div></div>
   </div>
-  <div style="text-align:left;font-size:14px;line-height:1.45;margin:12px 2px">
-   <div style="display:flex;gap:8px;margin:6px 0"><span>🎯</span><span><b>节奏窗口 ×2</b><br><span class="small">更容易按出“完美”</span></span></div>
-   <div style="display:flex;gap:8px;margin:6px 0"><span>💪</span><span><b>按准一下顶两下</b><br><span class="small">没按准也有效</span></span></div>
-   <div style="display:flex;gap:8px;margin:6px 0"><span>🧲</span><span><b>吸附圈变大</b><br><span class="small">扔过去就吸住</span></span></div>
+  <div style="margin-top:16px;display:grid;gap:8px">
+   <div style="display:flex;gap:8px"><span class="chip">1</span><span><span class="t3 b">节奏窗口 ×2</span><br><span class="t5 mute">更容易按出“完美”</span></span></div>
+   <div style="display:flex;gap:8px"><span class="chip">2</span><span><span class="t3 b">按准一下顶两下</span><br><span class="t5 mute">没按准也有效</span></span></div>
+   <div style="display:flex;gap:8px"><span class="chip">3</span><span><span class="t3 b">吸附圈变大</span><br><span class="t5 mute">扔过去就吸住</span></span></div>
   </div>
-  <div class="small" style="margin-bottom:8px">你有 <b style="color:var(--ln)">¥157</b></div>
-  <div class="btn pri" style="height:58px">买！¥100</div>
-  <div class="btn sec" style="height:44px;margin-top:10px">先不买</div>
-  <div class="small" style="margin-top:10px">▶ 看广告 免费试用一单</div>
+  <div class="t5 mute c" style="margin-top:16px">你有 ¥157</div>
+  <div class="btn pri t2" style="margin-top:8px">买 · ¥100</div>
+  <div class="btn sec t3 b" style="margin-top:16px">先不买</div>
+  <div class="t4 mute c" style="margin-top:16px">▶ 看广告 免费试用一单</div>
  </div>
  <div class="phone"><div class="dot">1</div></div>
 </div></div>
 
-<div><p class="cap">④ ⚙ 设置卡</p><div class="ph dim">
-<div class="floor"></div><div class="box"><div class="lab" style="left:11px">皮搋子</div><div class="lab" style="left:78px">水瓢</div><div class="lab lk" style="left:146px">升级解锁</div><div class="lab lk" style="left:214px">升级解锁</div></div>
- <div class="gear" style="z-index:7">⚙</div>
- <div class="card" style="left:30px;right:30px;top:170px;padding:18px 22px 22px">
-  <div style="font-size:20px;font-weight:900;text-align:center;margin-bottom:4px">设置</div>
-  <div class="tg"><span>🔊 声音</span><div class="sw"></div></div>
-  <div class="tg"><span>✨ 省动效<br><span class="small">减少抖动和闪光</span></span><div class="sw off"></div></div>
-  <div class="tg dis"><span>📳 震动<br><span class="small">本机不支持</span></span><div class="sw off"></div></div>
-  <div style="margin-top:14px;background:#FFF3C4;border:1.5px solid #E2C46A;border-radius:12px;padding:8px 10px;font-size:13px;font-weight:700">📞 卡住了？问老钱 · 今日免费 1 次</div>
-  <div class="btn pri" style="height:52px;margin-top:16px;font-size:18px">继续干活</div>
-  <div class="small" style="text-align:center;margin-top:8px">点卡片外也可关闭 · 打开时游戏暂停</div>
+<div><p class="cap">④ 设置卡</p><div class="ph dim">
+ <div class="floor"></div><div class="box"></div>
+ <div class="gear panel" style="z-index:7"><svg viewBox="0 0 24 24" fill="none" stroke="#5A4030" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/><circle cx="12" cy="12" r="6.5"/></svg></div>
+ <div class="card panel" style="top:176px">
+  <div class="t2 c">设置</div>
+  <div style="margin-top:8px">
+   <div class="tg"><span class="t3 b">声音</span><div class="sw"></div></div>
+   <div class="tg"><span><span class="t3 b">省动效</span><br><span class="t5 mute">减少抖动和闪光</span></span><div class="sw off"></div></div>
+   <div class="tg dis"><span><span class="t3 b">震动</span><br><span class="t5 mute">本机不支持</span></span><div class="sw off"></div></div>
+  </div>
+  <div class="t4 b" style="margin-top:16px;padding:8px 16px;border-radius:12px;background:#FFF3C4">卡住了？问老钱 · 今日免费 1 次</div>
+  <div class="btn pri t2" style="margin-top:16px">继续干活</div>
+  <div class="t5 mute c" style="margin-top:8px">点卡片外也能关闭 · 打开时游戏暂停</div>
  </div>
 </div></div>
 
