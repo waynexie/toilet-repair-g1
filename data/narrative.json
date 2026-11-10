@@ -698,6 +698,20 @@
       "hero": "这……",
       "insist": "王阿姨说你实在，我也实在。",
       "icon": "gift_cashroll"
+    },
+    "random_item_generic": {
+      "gift_oranges": {
+        "item": "几个橙子",
+        "line": "刚买的橙子，拿几个路上吃。"
+      },
+      "gift_yogurt": {
+        "item": "两盒酸奶",
+        "line": "冰箱里拿的，带着喝。"
+      },
+      "gift_pickles": {
+        "item": "一罐腌咸菜",
+        "line": "自家腌的，配粥香。"
+      }
     }
   }
 }
