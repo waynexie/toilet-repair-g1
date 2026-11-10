@@ -134,5 +134,7 @@
     ],
     "display": "仅在有打赏时结算页单独显示一行",
     "_iconNote": "图标以 narrative.json gifts 各条的 icon 字段为准"
-  }
+  },
+  "maxOrderPayDisplay": 999,
+  "_maxOrderPayNote": "单笔本单报酬（含来电/加急倍率）上限 ¥999，HUD 本单金额框按 3 位数设计；目前最高约 ¥126（o6 70×加急1.8）"
 }
