@@ -394,5 +394,480 @@
    "anchor": "bottom-center",
    "placement": "见 ui-spec.md"
   }
- ]
+ ],
+ "portraits_v1": {
+  "_note": "客户头像 4 档耐心 + 老钱 + 地上手机。只记美术文件、尺寸和用途；位置以 ui-spec.md 为准。文件名里的 id 与 data/narrative.json characters 的 key 一致（徐哥 id 仍是 xiao_xu）。p1=耐心满 … p4=只剩最后一格。",
+  "preview": "design/art/portraits_v1_preview.png",
+  "card_check_1x": "design/art/portraits_v1_card_check_1x.png",
+  "files": [
+   {
+    "file": "assets/characters/avatar_wang_ayi_p1@2x.png",
+    "category": "avatar",
+    "name": "avatar_wang_ayi_p1",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "wang_ayi",
+    "patience_stage": 1,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。calm 平静。套袖；p3/p4 双手叉腰"
+   },
+   {
+    "file": "assets/characters/avatar_wang_ayi_p1_256.png",
+    "category": "avatar_master",
+    "name": "avatar_wang_ayi_p1_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "wang_ayi",
+    "patience_stage": 1,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_wang_ayi_p2@2x.png",
+    "category": "avatar",
+    "name": "avatar_wang_ayi_p2",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "wang_ayi",
+    "patience_stage": 2,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。slightly impatient 有点急。套袖；p3/p4 双手叉腰"
+   },
+   {
+    "file": "assets/characters/avatar_wang_ayi_p2_256.png",
+    "category": "avatar_master",
+    "name": "avatar_wang_ayi_p2_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "wang_ayi",
+    "patience_stage": 2,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_wang_ayi_p3@2x.png",
+    "category": "avatar",
+    "name": "avatar_wang_ayi_p3",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "wang_ayi",
+    "patience_stage": 3,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。impatient 不耐烦。套袖；p3/p4 双手叉腰"
+   },
+   {
+    "file": "assets/characters/avatar_wang_ayi_p3_256.png",
+    "category": "avatar_master",
+    "name": "avatar_wang_ayi_p3_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "wang_ayi",
+    "patience_stage": 3,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_wang_ayi_p4@2x.png",
+    "category": "avatar",
+    "name": "avatar_wang_ayi_p4",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "wang_ayi",
+    "patience_stage": 4,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。about to explode 快爆了。套袖；p3/p4 双手叉腰"
+   },
+   {
+    "file": "assets/characters/avatar_wang_ayi_p4_256.png",
+    "category": "avatar_master",
+    "name": "avatar_wang_ayi_p4_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "wang_ayi",
+    "patience_stage": 4,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_xiao_xu_p1@2x.png",
+    "category": "avatar",
+    "name": "avatar_xiao_xu_p1",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "xiao_xu",
+    "patience_stage": 1,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。calm 平静。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
+   },
+   {
+    "file": "assets/characters/avatar_xiao_xu_p1_256.png",
+    "category": "avatar_master",
+    "name": "avatar_xiao_xu_p1_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "xiao_xu",
+    "patience_stage": 1,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_xiao_xu_p2@2x.png",
+    "category": "avatar",
+    "name": "avatar_xiao_xu_p2",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "xiao_xu",
+    "patience_stage": 2,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。slightly impatient 有点急。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
+   },
+   {
+    "file": "assets/characters/avatar_xiao_xu_p2_256.png",
+    "category": "avatar_master",
+    "name": "avatar_xiao_xu_p2_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "xiao_xu",
+    "patience_stage": 2,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_xiao_xu_p3@2x.png",
+    "category": "avatar",
+    "name": "avatar_xiao_xu_p3",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "xiao_xu",
+    "patience_stage": 3,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。impatient 不耐烦。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
+   },
+   {
+    "file": "assets/characters/avatar_xiao_xu_p3_256.png",
+    "category": "avatar_master",
+    "name": "avatar_xiao_xu_p3_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "xiao_xu",
+    "patience_stage": 3,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_xiao_xu_p4@2x.png",
+    "category": "avatar",
+    "name": "avatar_xiao_xu_p4",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "xiao_xu",
+    "patience_stage": 4,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。about to explode 快爆了。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
+   },
+   {
+    "file": "assets/characters/avatar_xiao_xu_p4_256.png",
+    "category": "avatar_master",
+    "name": "avatar_xiao_xu_p4_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "xiao_xu",
+    "patience_stage": 4,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_li_jie_p1@2x.png",
+    "category": "avatar",
+    "name": "avatar_li_jie_p1",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "li_jie",
+    "patience_stage": 1,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。calm 平静。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
+   },
+   {
+    "file": "assets/characters/avatar_li_jie_p1_256.png",
+    "category": "avatar_master",
+    "name": "avatar_li_jie_p1_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "li_jie",
+    "patience_stage": 1,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_li_jie_p2@2x.png",
+    "category": "avatar",
+    "name": "avatar_li_jie_p2",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "li_jie",
+    "patience_stage": 2,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。slightly impatient 有点急。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
+   },
+   {
+    "file": "assets/characters/avatar_li_jie_p2_256.png",
+    "category": "avatar_master",
+    "name": "avatar_li_jie_p2_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "li_jie",
+    "patience_stage": 2,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_li_jie_p3@2x.png",
+    "category": "avatar",
+    "name": "avatar_li_jie_p3",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "li_jie",
+    "patience_stage": 3,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。impatient 不耐烦。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
+   },
+   {
+    "file": "assets/characters/avatar_li_jie_p3_256.png",
+    "category": "avatar_master",
+    "name": "avatar_li_jie_p3_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "li_jie",
+    "patience_stage": 3,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_li_jie_p4@2x.png",
+    "category": "avatar",
+    "name": "avatar_li_jie_p4",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "li_jie",
+    "patience_stage": 4,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。about to explode 快爆了。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
+   },
+   {
+    "file": "assets/characters/avatar_li_jie_p4_256.png",
+    "category": "avatar_master",
+    "name": "avatar_li_jie_p4_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "li_jie",
+    "patience_stage": 4,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_zhao_jie_p1@2x.png",
+    "category": "avatar",
+    "name": "avatar_zhao_jie_p1",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "zhao_jie",
+    "patience_stage": 1,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。calm 平静。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
+   },
+   {
+    "file": "assets/characters/avatar_zhao_jie_p1_256.png",
+    "category": "avatar_master",
+    "name": "avatar_zhao_jie_p1_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "zhao_jie",
+    "patience_stage": 1,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_zhao_jie_p2@2x.png",
+    "category": "avatar",
+    "name": "avatar_zhao_jie_p2",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "zhao_jie",
+    "patience_stage": 2,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。slightly impatient 有点急。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
+   },
+   {
+    "file": "assets/characters/avatar_zhao_jie_p2_256.png",
+    "category": "avatar_master",
+    "name": "avatar_zhao_jie_p2_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "zhao_jie",
+    "patience_stage": 2,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_zhao_jie_p3@2x.png",
+    "category": "avatar",
+    "name": "avatar_zhao_jie_p3",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "zhao_jie",
+    "patience_stage": 3,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。impatient 不耐烦。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
+   },
+   {
+    "file": "assets/characters/avatar_zhao_jie_p3_256.png",
+    "category": "avatar_master",
+    "name": "avatar_zhao_jie_p3_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "zhao_jie",
+    "patience_stage": 3,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_zhao_jie_p4@2x.png",
+    "category": "avatar",
+    "name": "avatar_zhao_jie_p4",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "zhao_jie",
+    "patience_stage": 4,
+    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。about to explode 快爆了。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
+   },
+   {
+    "file": "assets/characters/avatar_zhao_jie_p4_256.png",
+    "category": "avatar_master",
+    "name": "avatar_zhao_jie_p4_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "zhao_jie",
+    "patience_stage": 4,
+    "notes": "256 母版（更宽的胸像），给结算页 80 头像/弹窗等放大使用"
+   },
+   {
+    "file": "assets/characters/avatar_lao_qian@2x.png",
+    "category": "avatar",
+    "name": "avatar_lao_qian",
+    "pixel_size": [
+     120,
+     120
+    ],
+    "customer_id": "lao_qian",
+    "notes": "老钱中性头像 60×60@2x，花白平头、耳夹铅笔、叼牙签（无烟）"
+   },
+   {
+    "file": "assets/characters/avatar_lao_qian_256.png",
+    "category": "avatar_master",
+    "name": "avatar_lao_qian_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "lao_qian",
+    "notes": "老钱中性 256 母版"
+   },
+   {
+    "file": "assets/characters/avatar_lao_qian_smile_256.png",
+    "category": "avatar_master",
+    "name": "avatar_lao_qian_smile_256",
+    "pixel_size": [
+     256,
+     256
+    ],
+    "customer_id": "lao_qian",
+    "notes": "老钱笑脸 256 母版（通话里给出答案时可换）"
+   },
+   {
+    "file": "assets/characters/laoqian_call@2x.png",
+    "category": "portrait",
+    "name": "laoqian_call",
+    "pixel_size": [
+     640,
+     960
+    ],
+    "customer_id": "lao_qian",
+    "notes": "老钱通话画面，不透明，2:3 竖图 320×480@2x，背景是五金店货架；放进通话面板时按 cover 缩放、可裁边"
+   },
+   {
+    "file": "assets/ui/btn_laoqian@2x.png",
+    "category": "ui_icon",
+    "name": "btn_laoqian",
+    "pixel_size": [
+     112,
+     112
+    ],
+    "notes": "问老钱按钮 56×56@2x，圆框内是老钱头像，不含文字；光晕/角标/半透明由 UI 叠加"
+   },
+   {
+    "file": "assets/ui/btn_laoqian_pressed@2x.png",
+    "category": "ui_icon",
+    "name": "btn_laoqian_pressed",
+    "pixel_size": [
+     112,
+     112
+    ],
+    "notes": "按下态：压暗 18%、缩到 94%"
+   },
+   {
+    "file": "assets/ui/phone_floor_idle@2x.png",
+    "category": "ui_icon",
+    "name": "phone_floor_idle",
+    "pixel_size": [
+     128,
+     192
+    ],
+    "notes": "地上的旧手机 64×96@2x，平放俯视、未旋转（−10° 由 UI 转），熄屏，自带一点接触阴影"
+   },
+   {
+    "file": "assets/ui/phone_floor_notify@2x.png",
+    "category": "ui_icon",
+    "name": "phone_floor_notify",
+    "pixel_size": [
+     128,
+     192
+    ],
+    "notes": "来消息态：屏幕亮起、外圈暖光、屏上是原创喂信单气泡图标（无文字、非微信）；红点数字由 UI 叠加"
+   }
+  ]
+ }
 }
