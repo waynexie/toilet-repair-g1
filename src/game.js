@@ -67,7 +67,7 @@ function buildOrders(c,n){CFG=c;NAR=n;ORDERS=c.orders.map((o,i)=>{const no=n.ord
  line:nline(o.id,'arrive')||o.customerLine,
  water:o.waterLevel,clog:o.fault,hp:o.clogHp!=null?o.clogHp:(o.fault==='hard'?1:3),base:o.basePay,patMax:PAT().max,hurry:!!o.urgent,obj:o.object==='rubber_duck'?'duck':null,
  tools:i===0?['plunger']:i===1?['plunger','scoop']:['plunger','scoop','snake']};}).map(d=>{const c=n.calls&&n.calls[d.key];
-  if(c&&c.type==='call'){const k=(ECO&&ECO.orderSources&&ECO.orderSources.call)||{payMultiplier:1.5,tipMultiplier:1.5};d.isCall=true;d.payX=k.payMultiplier;d.base=Math.round(d.base*k.payMultiplier);d.patMax=PAT().max-1;}
+  if(c&&c.type==='call'){const k=(ECO&&ECO.orderSources&&ECO.orderSources.call)||{payMultiplier:1.5,tipMultiplier:1.5};d.isCall=true;d.payX=k.payMultiplier;d.base=Math.round(d.base*k.payMultiplier);d.patMax=k.patienceMax||PAT().max-1;}
   return d;});}
 let ECO=null,PATIENCE=null;
 Promise.all(['data/orders.json','data/narrative.json','data/economy.json','data/g2_orders.json'].map(u=>fetch(u).then(r=>r.json()))).then(([c,n,e,g2])=>{ECO=e;PATIENCE=c.patience||{max:4};buildOrders(c,n);G2build(g2);});

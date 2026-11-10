@@ -14,7 +14,8 @@ function A(nm,opt={}){const im=ART.img[nm],l=ART.L[nm];if(!im||!l)return;const w
  if(opt.a!=null)g.globalAlpha=opt.a;g.drawImage(im,dx,dy,w,h);g.globalAlpha=1;}
 function custOf(){const d=O&&O.d;if(!d)return null;return d.client||((NAR.orders||{})[d.key]||{}).client||null;}
 function artBathroom(){const c=custOf();A('bg_bathroom_base');(ART.homes[c]||[]).forEach(n=>A(n));A('toilet_tank');
- A(O&&O.flushT>0?'toilet_flushbtn_pressed':'toilet_flushbtn_idle');A('toilet_lid_up');if(ART.covers[c])A(ART.covers[c]);
+ const fk=O&&O.d.id===1&&O.phase==='observe'&&!O.anim?1+.08*(.5-.5*Math.cos(S.t*2*Math.PI/1.2)):1; // ui-spec：首单冲水键每1.2秒放大到1.08
+ A(O&&O.flushT>0?'toilet_flushbtn_pressed':'toilet_flushbtn_idle',{s:fk});A('toilet_lid_up');if(ART.covers[c])A(ART.covers[c]);
  const full=O&&O.water>.82;A(full?'scene_bucket_water':(O&&O.bucketWet?'scene_bucket_water':'scene_bucket_empty'));}
 function artToilet(){A('toilet_bowl');A('toilet_bowl_inner');if(!O)return;const l=O.water;
  if(l<.8)A('water_waterline_mark');
