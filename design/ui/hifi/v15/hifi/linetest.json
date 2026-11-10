@@ -1,0 +1,322 @@
+[
+ {
+  "name": "气泡 arrive",
+  "text": "师傅，冲不下去了，你看看。",
+  "chars": 13,
+  "lines": 2,
+  "maxLineW": 144.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "师傅，冲不下去了， / 你看看。"
+ },
+ {
+  "name": "气泡 need",
+  "text": "师傅，冲不下去了，你看看。",
+  "chars": 13,
+  "lines": 2,
+  "maxLineW": 144.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "师傅，冲不下去了， / 你看看。"
+ },
+ {
+  "name": "气泡 dont_flush",
+  "text": "哎哎别冲了！要漫出来了！",
+  "chars": 12,
+  "lines": 2,
+  "maxLineW": 96.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "哎哎别冲了！ / 要漫出来了！"
+ },
+ {
+  "name": "气泡 idle_p1",
+  "text": "这么早就出来干活啦？",
+  "chars": 10,
+  "lines": 1,
+  "maxLineW": 160.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "这么早就出来干活啦？"
+ },
+ {
+  "name": "气泡 patience_p2",
+  "text": "师傅，好弄不？",
+  "chars": 7,
+  "lines": 1,
+  "maxLineW": 112.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "师傅，好弄不？"
+ },
+ {
+  "name": "气泡 patience_p3",
+  "text": "我九点还得去接孙子……",
+  "chars": 11,
+  "lines": 1,
+  "maxLineW": 176.0,
+  "textArea": 176,
+  "ok": true,
+  "layout": "我九点还得去接孙子……"
+ },
+ {
+  "name": "气泡 patience_p4",
+  "text": "哎呀，这可咋整……",
+  "chars": 9,
+  "lines": 1,
+  "maxLineW": 144.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "哎呀，这可咋整……"
+ },
+ {
+  "name": "气泡 wrong_tool",
+  "text": "不急不急，慢慢弄。",
+  "chars": 9,
+  "lines": 1,
+  "maxLineW": 144.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "不急不急，慢慢弄。"
+ },
+ {
+  "name": "气泡 wrong_tool_late",
+  "text": "那个……是干这个的吗？",
+  "chars": 11,
+  "lines": 1,
+  "maxLineW": 176.0,
+  "textArea": 176,
+  "ok": true,
+  "layout": "那个……是干这个的吗？"
+ },
+ {
+  "name": "气泡 progress_hit",
+  "text": "哎，有动静了！",
+  "chars": 7,
+  "lines": 1,
+  "maxLineW": 112.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "哎，有动静了！"
+ },
+ {
+  "name": "气泡 splash",
+  "text": "哎哟，溅着没？",
+  "chars": 7,
+  "lines": 1,
+  "maxLineW": 112.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "哎哟，溅着没？"
+ },
+ {
+  "name": "气泡 done",
+  "text": "哎哟，比我儿子强。",
+  "chars": 9,
+  "lines": 1,
+  "maxLineW": 144.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "哎哟，比我儿子强。"
+ },
+ {
+  "name": "气泡 thanks",
+  "text": "通了通了！哎哟，比我儿子强。",
+  "chars": 14,
+  "lines": 2,
+  "maxLineW": 128.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "通了通了！哎哟， / 比我儿子强。"
+ },
+ {
+  "name": "气泡 arrive",
+  "text": "师傅你可来了！就这个。",
+  "chars": 11,
+  "lines": 1,
+  "maxLineW": 160.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "师傅你可来了！就这个。"
+ },
+ {
+  "name": "气泡 patience_p2",
+  "text": "还有二十分钟……",
+  "chars": 8,
+  "lines": 1,
+  "maxLineW": 128.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "还有二十分钟……"
+ },
+ {
+  "name": "气泡 patience_p3",
+  "text": "我先给车队打个电话……",
+  "chars": 11,
+  "lines": 1,
+  "maxLineW": 176.0,
+  "textArea": 176,
+  "ok": true,
+  "layout": "我先给车队打个电话……"
+ },
+ {
+  "name": "气泡 wrong_tool",
+  "text": "师傅……来得及吗？",
+  "chars": 9,
+  "lines": 1,
+  "maxLineW": 144.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "师傅……来得及吗？"
+ },
+ {
+  "name": "气泡 progress_hit",
+  "text": "动了动了！",
+  "chars": 5,
+  "lines": 1,
+  "maxLineW": 80.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "动了动了！"
+ },
+ {
+  "name": "气泡 splash",
+  "text": "哎哟，我的布鞋！",
+  "chars": 8,
+  "lines": 1,
+  "maxLineW": 128.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "哎哟，我的布鞋！"
+ },
+ {
+  "name": "气泡 done",
+  "text": "得救了！我先走了啊！",
+  "chars": 10,
+  "lines": 1,
+  "maxLineW": 160.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "得救了！我先走了啊！"
+ },
+ {
+  "name": "通话第1句",
+  "text": "喂，师傅？修马桶的师傅是吧？",
+  "chars": 14,
+  "lines": 2,
+  "maxLineW": 144.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "喂，师傅？ / 修马桶的师傅是吧？"
+ },
+ {
+  "name": "通话第2句",
+  "text": "厕所堵死了，八点我得出车，能马上来不？",
+  "chars": 19,
+  "lines": 2,
+  "maxLineW": 160.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "厕所堵死了，八点我得 / 出车，能马上来不？"
+ },
+ {
+  "name": "通话第3句",
+  "text": "能。地址发我。",
+  "chars": 7,
+  "lines": 1,
+  "maxLineW": 112.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "能。地址发我。"
+ },
+ {
+  "name": "通话第4句",
+  "text": "纺织厂家属院3栋401，门开着！",
+  "chars": 16,
+  "lines": 2,
+  "maxLineW": 149.8,
+  "textArea": 160,
+  "ok": true,
+  "layout": "纺织厂家属院3栋401， / 门开着！"
+ },
+ {
+  "name": "通话第5句",
+  "text": "快点啊师傅！",
+  "chars": 6,
+  "lines": 1,
+  "maxLineW": 96.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "快点啊师傅！"
+ },
+ {
+  "name": "提示 flush_first",
+  "text": "先冲一下，看看什么情况",
+  "chars": 11,
+  "lines": 1,
+  "maxLineW": 176.0,
+  "textArea": 208,
+  "ok": true,
+  "layout": "先冲一下，看看什么情况"
+ },
+ {
+  "name": "提示 ring_match",
+  "text": "金圈套上绿圈时按下去",
+  "chars": 10,
+  "lines": 1,
+  "maxLineW": 160.0,
+  "textArea": 208,
+  "ok": true,
+  "layout": "金圈套上绿圈时按下去"
+ },
+ {
+  "name": "提示 too_full_scoop",
+  "text": "水太满了，先用水瓢舀出来",
+  "chars": 12,
+  "lines": 1,
+  "maxLineW": 192.0,
+  "textArea": 208,
+  "ok": true,
+  "layout": "水太满了，先用水瓢舀出来"
+ },
+ {
+  "name": "极限 20 字·逗号在第 11",
+  "text": "一二三四五六七八九十，一二三四五六七八九",
+  "chars": 20,
+  "lines": 2,
+  "maxLineW": 160.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "一二三四五六七八九十， / 一二三四五六七八九"
+ },
+ {
+  "name": "极限 20 字·叹号在第 11",
+  "text": "一二三四五六七八九十！一二三四五六七八九",
+  "chars": 20,
+  "lines": 2,
+  "maxLineW": 176.0,
+  "textArea": 176,
+  "ok": true,
+  "layout": "一二三四五六七八九十！ / 一二三四五六七八九"
+ },
+ {
+  "name": "极限 20 字·省略号在 10–11",
+  "text": "一二三四五六七八九……一二三四五六七八九",
+  "chars": 20,
+  "lines": 2,
+  "maxLineW": 176.0,
+  "textArea": 176,
+  "ok": true,
+  "layout": "一二三四五六七八九…… / 一二三四五六七八九"
+ },
+ {
+  "name": "极限 20 字·无标点",
+  "text": "一二三四五六七八九十一二三四五六七八九十",
+  "chars": 20,
+  "lines": 2,
+  "maxLineW": 160.0,
+  "textArea": 160,
+  "ok": true,
+  "layout": "一二三四五六七八九十 / 一二三四五六七八九十"
+ }
+]
