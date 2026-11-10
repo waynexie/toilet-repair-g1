@@ -83,7 +83,7 @@ function phoneReset(){PH.open=false;PH.view='list';PH.chats={};PH.order=[];PH.un
  if(!NAR)return;const fg=NAR.family_group;chat('family_group').msgs=fg.history.map(h=>({sender:h.sender,text:h.text}));}
 function chat(ch){if(!PH.chats[ch]){PH.chats[ch]={ch,msgs:[],unread:0};PH.order.unshift(ch);}return PH.chats[ch];}
 function deliver(m){const c=chat(m.channel);c.msgs.push({sender:m.sender,text:m.raw,isNew:true});c.unread++;PH.unread++;PH.order=[m.channel,...PH.order.filter(x=>x!==m.channel)];}
-function chatTitle(ch){return ch==='family_group'?((NAR.app&&NAR.app.family_group_name)||'相亲相爱一家人')+'('+NAR.family_group.member_count_display+')':(CHANNEL[ch]||ch);}
+function chatTitle(ch){if(!CHANNEL[ch]&&ch.startsWith('dm_'))return cname(ch.slice(3));return ch==='family_group'?((NAR.app&&NAR.app.family_group_name)||'相亲相爱一家人')+'('+NAR.family_group.member_count_display+')':(CHANNEL[ch]||ch);}
 function canOpenPhone(){return S.screen!=='play'&&S.screen!=='title'&&!S.dexCard;}
 function openPhone(view){if(!canOpenPhone())return;PH.open=true;PH.view=view||'list';PH.toastT=0;SFX.click();if(PH.view.startsWith('chat:'))readChat(PH.view.slice(5));}
 function readChat(ch){const c=PH.chats[ch];if(c){PH.unread-=c.unread;c.unread=0;}}
@@ -92,13 +92,16 @@ function CM(){return (ECO&&ECO.rewardedAds.callMaster)||{showWhen:{wrongToolCoun
 function pick(a){return a&&a.length?a[Math.floor(Math.random()*a.length)]:'';}
 function masterFault(){if(O.water>splashAbove()&&!O.usedScoop)return 'high_water';return O.d.clog==='hard'?'hard':'soft';}
 function masterTool(){const f=masterFault();return f==='high_water'?'scoop':f==='hard'?'snake':'plunger';}
-function masterLine(){const c=(NAR&&NAR.call_master)||{};return [pick(c.opener),pick((c.hints||{})[masterFault()]),pick(c.closer)].filter(Boolean).join(' ');}
+function masterLines(){const c=(NAR&&NAR.call_master)||{};return [pick(c.opener),pick((c.hints||{})[masterFault()]),pick(c.closer)].filter(Boolean);}
+const LINE_SEC=1.8;
+function hangUp(){const c=S.callUI;S.callUI=null;if(O){O.hlTool=c.tool;O.hlT=3;O.reveal=3;SFX.notify();}}
+function callTap(){const c=S.callUI;if(!c||c.t<.25)return;c.t=0;if(c.i<c.lines.length-1)c.i++;else hangUp();}
 function masterReady(){if(!O||O.phase!=='work'||O.anim)return false;const w=CM().showWhen;
  return (O.wrong||0)>=w.wrongToolCount||(O.idleT||0)*1000>=w.idleMs||O.tip/O.d.tip<=w.patienceAtOrBelow;}
 function masterFree(){return (S.masterFree||0)<CM().freePerDay;}
 function askMaster(){if(!masterReady()||(O.masterCalls||0)>=CM().maxPerOrder||S.ad)return;O.masterCalls=(O.masterCalls||0)+1;
  const after=ok=>{if(!O)return;if(!ok){say('（电话没打通）',1.6);return;}
-  S.callUI={t:0,dur:4.5,line:masterLine()};O.hlTool=masterTool();O.hlT=3;O.reveal=3;SFX.notify();};
+  S.callUI={t:0,i:0,lines:masterLines(),tool:masterTool()};SFX.ring();};
  if(masterFree()){S.masterFree=(S.masterFree||0)+1;after(true);}else{Ads.rewarded('callMaster').then(after);}}
 // 网页假广告：画面上数 3 秒，期间暂停计时
 Ads.fakeUI=(placement,dur)=>new Promise(res=>{S.ad={t:0,dur,placement,res};SFX.ad();});
@@ -307,7 +310,7 @@ function update(dt){
   if(S.resultT>1.4&&S.phoneQueue.length&&!S.phoneShown){S.phoneShown=true;PH.toastT=3.4;SFX.notify();buzz([15,60,15]);}}
  if(PH.toastT>0)PH.toastT-=dt;
  if(S.ad){S.ad.t+=dt;if(O&&O.startT!=null)O.startT+=dt;if(S.ad.t>=S.ad.dur){const r=S.ad.res;S.ad=null;r&&r(true);}return;}
- if(S.callUI){S.callUI.t+=dt;if(O&&O.startT!=null)O.startT+=dt;if(S.callUI.t>=S.callUI.dur)S.callUI=null;return;}
+ if(S.callUI){const c=S.callUI;c.t+=dt;if(O&&O.startT!=null)O.startT+=dt;const last=c.i>=c.lines.length-1;if(!last&&c.t>=LINE_SEC){c.t=0;c.i++;}else if(last&&c.t>=LINE_SEC+1)hangUp();return;}
  if(O&&S.screen==='play'){if(O.hlT>0)O.hlT-=dt;if(O.reveal>0)O.reveal-=dt;if(O.phase==='work'&&!O.anim&&!ptr.down)O.idleT=(O.idleT||0)+dt;}
  if(!O||S.screen!=='play')return;
  if(O.hintT>0)O.hintT-=dt;
@@ -542,16 +545,19 @@ function drawHintBubble(){
  const fsz=L.length>1?14:15;g.font=`700 ${fsz}px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif`;const w=Math.min(W-30,Math.max(...L.map(l=>g.measureText(l).width))+30),h=L.length*20+20;
  rr(W/2-w/2,640-h,w,h,18);fs('#fffdf6',2.5);L.forEach((l,i)=>txt(l,W/2,640-h+20+i*20,fsz,INK));g.globalAlpha=1;
 }
-function phoneBtn(){if(canOpenPhone()&&!PH.open)buttons.push({x:330,y:620,w:52,h:70,fn:()=>openPhone('list')});}
-function drawMasterBtn(){const used=(O.masterCalls||0)>=CM().maxPerOrder,ready=masterReady()&&!used;
- const x=14,y=540,w=112,h=36,wob=ready?Math.sin(S.t*14)*Math.max(0,Math.sin(S.t*2.2))*3:0;g.save();g.translate(wob,0);
- rr(x,y,w,h,14);fs(ready?'#fff8eb':'rgba(220,210,195,.75)',ready?3:2);txt('📞 问老钱',x+44,y+h/2+1,14,ready?INK:'#9a8a7a');
- if(ready){const free=masterFree();rr(x+w-34,y-8,40,18,9);fs(free?'#4fc26f':'#ffb53d',2);txt(free?'免费':'▶广告',x+w-14,y+1,10,free?'#fff':INK);}
- g.restore();if(ready)buttons.push({x,y,w,h,fn:()=>{audioInit();SFX.click();askMaster();}});}
-function drawAd(){if(S.callUI){const c=S.callUI;g.fillStyle='rgba(20,12,8,.55)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:()=>{if(c.t>1)S.callUI=null;}});
-  rr(30,190,W-60,200,20);fs('#2b2b33',2);avatar('lao_qian',W/2,240,28);txt(cname('lao_qian')+' · 通话中',W/2,286,14,'#bbb','center','600');
-  const L=bubbleText(c.line,W-120);L.forEach((l,i)=>txt(l,W/2,320+i*22,15,'#fff','center','600'));
-  if(c.t>1)txt('点击挂断',W/2,375,12,'#888','center','500');}
+function phoneTarget(){return PH.chats.family_group?'chat:family_group':'list';}
+function phoneBtn(){if(PH.open||S.screen==='title'||S.dexCard)return;
+ if(canOpenPhone())buttons.push({x:328,y:616,w:56,h:76,fn:()=>openPhone(phoneTarget())});
+ else if(S.screen==='play'&&O&&!O.anim)buttons.push({x:328,y:616,w:56,h:76,fn:()=>{if(PH.unread)say('（先干活，修完再看手机）',1.4);}});}
+function drawMasterBtn(){if((O.masterCalls||0)>=CM().maxPerOrder)return;const ready=masterReady();
+ const x=212,y=646,w=110,h=36,wob=ready?Math.sin(S.t*14)*Math.max(0,Math.sin(S.t*2.2))*3:0;g.save();g.translate(wob,0);
+ rr(x,y,w,h,14);fs(ready?'#fff8eb':'rgba(220,210,195,.75)',ready?3:2);txt('📞 问老钱',x+w/2,y+h/2+1,14,ready?INK:'#9a8a7a');
+ if(ready){const free=masterFree(),lab=free?'今日免费':'▶广告',bw=free?54:42;rr(x+w-bw+6,y-10,bw,18,9);fs(free?'#4fc26f':'#ffb53d',2);txt(lab,x+w-bw/2+6,y-1,10,free?'#fff':INK);}
+ g.restore();if(ready)buttons.push({x,y:y-10,w,h:h+10,fn:()=>{audioInit();SFX.click();askMaster();}});}
+function drawAd(){if(S.callUI){const c=S.callUI;g.fillStyle='rgba(20,12,8,.55)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:callTap});
+  rr(30,170,W-60,250,20);fs('#2b2b33',2);avatar('lao_qian',W/2,220,28);txt(cname('lao_qian')+' · 通话中',W/2,266,14,'#bbb','center','600');
+  let yy=298;for(let i=0;i<=c.i;i++){const L=bubbleText(c.lines[i],W-120);L.forEach(l=>{txt(l,W/2,yy,15,i===c.i?'#fff':'#999','center','600');yy+=21;});yy+=6;}
+  txt(c.i<c.lines.length-1?'点一下继续':'点一下挂断',W/2,402,12,'#888','center','500');}
  if(!S.ad)return;g.fillStyle='rgba(10,10,14,.88)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:()=>{}});
  rr(40,250,W-80,240,18);fs('#2b2b33',2);txt('广告占位',W/2,300,15,'#aaa');txt('（正式版这里播激励视频）',W/2,328,13,'#888','center','500');
  txt('📞 正在接通'+cname('lao_qian')+'…',W/2,390,18,'#fff');otxt(String(Math.ceil(S.ad.dur-S.ad.t)),W/2,440,34,'#ffcf3f');}
@@ -593,7 +599,7 @@ function drawPhone(){if(!PH.open)return;
   txt(ch==='family_group'?'你：'+(NAR.family_group.hero_status||'已读不回'):'已读',X+PW/2,Y+PHh-20,12,'#aaa','center','500');}
  g.restore();}
 function drawObserveHint(){
- if(!O||O.phase!=='observe'||O.anim)return;
+ if(!O||O.phase!=='observe'||O.anim||S.screen!=='play')return;
  const y=FLUSH.y+40+Math.sin(S.t*6)*6;g.font='34px sans-serif';g.textAlign='center';g.fillText('👆',FLUSH.x+30,y);
  if(O.d.id===1)txt('先冲一下水，看看什么情况',W/2,620,15,INK);
 }
@@ -640,19 +646,31 @@ function drawTitle(){
  button(save.reduced?'减少动效：开':'减少动效：关',W/2+10,690,120,36,()=>{save.reduced=!save.reduced;persist();},'#fff8eb');
 }
 function panel(y,h){g.fillStyle='rgba(20,12,8,.5)';g.fillRect(0,0,W,H);rr(24,y,W-48,h,22);fs('#fff8eb',4);}
+function orderMsg(d){const c=NAR&&NAR.calls&&NAR.calls[d.key];const urgent=!!(c&&(c.urgent||c.type==='urgent_call'||d.urgent));
+ const m=NAR&&NAR.order_messages&&NAR.order_messages[d.key];
+ const who=(m&&m.sender)||(c&&c.caller)||null;const text=((m&&m.text)||(c&&c.text)||d.line||'').replace(/^\[语音\]\s*/,'');
+ return {urgent,who,text,voice:!!(c&&c.type==='voice'&&!m)};}
 function drawBrief(){
- const d=O.d;const call=NAR&&NAR.calls&&NAR.calls[d.key];
- if(call&&!O.callAccepted){O.ringT=(O.ringT||0);if(O.ringT<=0){O.ringT=1.4;if(call.type==='call')SFX.ring();else SFX.notify();}O.ringT-=1/60;
-  panel(200,330);const k=1+Math.sin(S.t*12)*.04;g.save();g.translate(W/2,300);g.scale(k,k);avatar(call.caller,0,0,38);g.restore();
-  txt(cname(call.caller),W/2,362,20,INK,'center','800');txt(call.type==='call'?'来电…':appName()+' · 语音消息',W/2,392,14,'#7a5a48');
-  button(call.type==='call'?'📞 接听':'▶ 听语音',W/2-80,488,160,48,()=>{O.callAccepted=true;},'#4fc26f','#fff');return;}
+ const d=O.d,M=orderMsg(d);
+ if(!O.msgIn&&!M.urgent&&M.who){O.msgIn=true;O.briefT=0;deliver({channel:'dm_'+M.who,sender:M.who,raw:M.text});SFX.notify();buzz([15,60,15]);}
+ if(!O.callAccepted){O.briefT=(O.briefT||0)+1/60;
+  if(M.urgent){O.ringT=(O.ringT||0);if(O.ringT<=0){O.ringT=1.4;SFX.ring();}O.ringT-=1/60;
+   panel(200,330);const k=1+Math.sin(S.t*12)*.04;g.save();g.translate(W/2,300);g.scale(k,k);avatar(M.who,0,0,38);g.restore();
+   txt(cname(M.who),W/2,362,20,INK,'center','800');txt('急单来电…',W/2,392,14,'#c0392b');
+   button('📞 接听',W/2-80,488,160,48,()=>{O.callAccepted=true;},'#4fc26f','#fff');return;}
+  // 普通单：右下角手机冒出喂信消息，点开看订单
+  const accept=()=>{O.callAccepted=true;readChat('dm_'+M.who);SFX.click();};
+  buttons.push({x:0,y:0,w:W,h:H,fn:accept});
+  if(O.briefT>.3){const k=Math.min(1,(O.briefT-.3)*4);drawNotify([{ch:cname(M.who),text:M.text,channel:'dm_'+M.who}],k,O.briefT-.3,accept);}
+  if(O.briefT>1.2)txt('点消息看看',W/2,600,14,INK,'center','700');
+  return;}
  panel(200,330);
- txt(call?(call.type==='call'?'📞 通话中':'🔊 语音'):'📱 新订单',W/2,236,15,'#7a5a48');txt(d.place,W/2,272,22,INK,'center','800');
+ txt(M.urgent?'📞 急单':'💬 '+appName()+' · '+cname(M.who),W/2,236,15,M.urgent?'#c0392b':'#7a5a48');txt(d.place,W/2,272,22,INK,'center','800');
  g.font='54px sans-serif';g.textAlign='center';g.fillText(d.face,W/2,335);
  txt(d.who,W/2,380,15,'#7a5a48');
- const lines=wrap(`“${call?call.text.replace(/^\[语音\]\s*/,''):d.line}”`,W-100,16);lines.forEach((l,i)=>txt(l,W/2,412+i*24,16,INK,'center','600'));
+ const lines=wrap(`“${M.text}”`,W-100,16);lines.forEach((l,i)=>txt(l,W/2,412+i*24,16,INK,'center','600'));
  txt(`工钱 ¥${d.base} · 小费最多 ¥${d.tip}`,W/2,470,13,'#2f8a4a');
- button('上门',W/2-80,488,160,48,()=>{S.screen='play';if(call&&d.id>1&&d.line)say('“'+d.line+'”',2.6);},'#ffb53d');
+ button('上门',W/2-80,488,160,48,()=>{S.screen='play';if(d.id>1&&d.line&&d.line!==M.text)say('“'+d.line+'”',2.6);},'#ffb53d');
 }
 function wrap(t,maxW,size){g.font=`600 ${size}px sans-serif`;const out=[];let cur='';for(const ch of t){if(g.measureText(cur+ch).width>maxW){out.push(cur);cur=ch;}else cur+=ch;}if(cur)out.push(cur);return out;}
 // 右下角旧手机亮起 + 微信样式通知预览（可忽略，不承载玩法）
@@ -668,12 +686,12 @@ function wxIcon(x,y,s){ // 原创「喂信」图标：单气泡 + 声波，不�
  g.beginPath();g.arc(x+s*.38,y+s*.44,s*.16,-.9,.9);g.stroke();
  g.beginPath();g.arc(x+s*.38,y+s*.44,s*.25,-.8,.8);g.stroke();g.lineCap='butt';
 }
-function drawNotify(m,k,t){
+function drawNotify(m,k,t,onTap){
  const wob=t<.6?Math.sin(t*60)*2:0;g.save();g.translate(wob,0);rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#bfe3ff';g.fill();wxIcon(346,642,20);g.restore();
 
  const rows=[];m.forEach(n=>{let r=rows.find(r=>r.ch===n.ch);if(!r){r={ch:n.ch,n:0};rows.push(r);}r.n++;r.text=n.text;});
  const h=40+rows.length*20,x=30,y=686-h;g.save();g.globalAlpha=k;g.translate(0,(1-k)*30);
- buttons.push({x,y,w:296,h,fn:()=>openPhone(rows.length===1?'chat:'+m[m.length-1].channel:'list')});
+ buttons.push({x,y,w:296,h,fn:onTap||(()=>openPhone(rows.length===1?'chat:'+m[m.length-1].channel:'list'))});
  rr(x,y,296,h,12);fs('rgba(250,250,250,.97)',2);wxIcon(x+10,y+9,18);txt(appName(),x+34,y+18,12,'#888','left','600');txt('现在',x+284,y+18,11,'#aaa','right','500');
  rows.forEach((r,i)=>{const yy=y+40+i*20;const head=(r.n>1?`[${r.n}条]`:'')+r.ch+'：';txt(head,x+12,yy,13,'#222','left','700');g.font='700 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';const hw=g.measureText(head).width;
   g.font='500 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';let t=r.text;const max=272-hw;if(g.measureText(t).width>max){while(t.length&&g.measureText(t+'…').width>max)t=t.slice(0,-1);t+='…';}txt(t,x+12+hw,yy,13,'#444','left','500');});
