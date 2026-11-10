@@ -107,6 +107,19 @@
         "amount": 0,
         "lineKey": "gifts.wang_apples",
         "note": "王阿姨硬塞两个苹果，可进图鉴"
+      },
+      {
+        "order": "o3",
+        "kind": "item",
+        "item": "candy",
+        "amount": 0,
+        "lineKey": "gifts.li_candy"
+      },
+      {
+        "order": "lock_referral_1",
+        "kind": "cash",
+        "amount": 10,
+        "lineKey": "gifts.zhao_transfer"
       }
     ],
     "neverOn": [
