@@ -713,5 +713,47 @@
         "line": "自家腌的，配粥香。"
       }
     }
+  },
+  "transitions": {
+    "_note": "过场文案。图上不带字，每张最多一句，用喂信预览条或台词气泡显示，点任意处跳过。line 为 null 时只显示画面。不出章节标题。",
+    "trans_morning": {
+      "bg": "trans_morning",
+      "line": {
+        "sender": "mom",
+        "style": "weixin_preview",
+        "text": "早饭吃了再出门。"
+      }
+    },
+    "trans_road": {
+      "bg": "trans_road",
+      "line": {
+        "pool": "workday_beats.commute",
+        "style": "weixin_preview",
+        "chance": 0.5
+      }
+    },
+    "trans_stairwell": {
+      "bg": "trans_stairwell",
+      "line": null,
+      "sfx": "knock_door",
+      "_note": "画面重点在电表箱上的疏通小广告，不加字。"
+    },
+    "trans_evening": {
+      "bg": "trans_evening",
+      "line": {
+        "sender": "mom",
+        "style": "weixin_preview",
+        "text": "锅里给你留了饭。"
+      },
+      "alt_lines": [
+        {
+          "sender": "dad",
+          "style": "bubble",
+          "text": "你妈热过两回了。",
+          "weight": 1,
+          "_note": "低频，最多每3天1次"
+        }
+      ]
+    }
   }
 }
