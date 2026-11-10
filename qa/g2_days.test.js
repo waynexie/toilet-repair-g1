@@ -1,7 +1,7 @@
 const {chromium}=require('playwright');
 (async()=>{
 const b=await chromium.launch();const ctx=await b.newContext({viewport:{width:390,height:780},});
-const p=await ctx.newPage();const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});
+const p=await ctx.newPage();await p.addInitScript(()=>{window.__noTrans=1});const errs=[];p.on('pageerror',e=>errs.push(e.message));p.on('console',m=>{if(m.type()==='error')errs.push(m.text())});
 await p.goto('http://localhost:8787/');await p.waitForTimeout(1000);
 const m=p.mouse,W=ms=>p.waitForTimeout(ms);
 const tap=async(x,y)=>{await m.move(x,y);await m.down();await m.up();await W(150);};

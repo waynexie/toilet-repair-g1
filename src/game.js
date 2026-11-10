@@ -205,9 +205,9 @@ function plungerUpdate(dt){
    p.hardHits++;O.wrong=(O.wrong||0)+1;if(p.hardHits>=2&&!O.hardHint){O.hardHint=true;const wl=nline(O.d.key,'wrong_tool');say(wl?'“'+wl+'”':'咚咚的……底下好像卡着硬东西');penalty(1);O.penalties.push('工具不对');}
    return;}
   const hit=q==='perfect'||q==='good';let dmg=hit?R.damagePerPerfect:R.damagePerOffBeat;
-  if(hit){SFX.perfect();buzz(35);doShake(5);burst(BOWL.x,WATER_Y,16,'#cdeeff',200,5);float((q==='perfect'?'完美':'好')+(R.damagePerPerfect>1?' ×'+R.damagePerPerfect:'')+'!',BOWL.x+70,WATER_Y-80,'#7dffb0',q==='perfect'?26:22);
+  if(hit){SFX.perfect();buzz(35);doShake(5);burst(BOWL.x,WATER_Y,16,'#cdeeff',200,5);fxText(q);
    flashes.push({x:BOWL.x,y:WATER_Y,r:20,life:.5});}
-  else{SFX.weak();float(q==='early'?'太急，漏气了':'太慢，没劲了',BOWL.x+60,WATER_Y-70,'#ffd36b',18);buzz(8);}
+  else{SFX.weak();fxText(q);buzz(8);}
   O.hp-=dmg;O.wTarget=Math.max(.38,O.wTarget-.04*dmg);O.swirl=Math.min(2,O.swirl+.4*dmg);
   if(O.hp<=0)clogCleared();
  }
