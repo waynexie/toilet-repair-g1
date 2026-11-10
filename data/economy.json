@@ -133,13 +133,6 @@
       "o1"
     ],
     "display": "仅在有打赏时结算页单独显示一行",
-    "icons": {
-      "apple_x2": "assets/ui/gifts/gift_apples@2x.png",
-      "candy": "assets/ui/gifts/gift_candy@2x.png",
-      "oranges": "assets/ui/gifts/gift_oranges@2x.png",
-      "yogurt": "assets/ui/gifts/gift_yogurt@2x.png",
-      "pickles": "assets/ui/gifts/gift_pickles@2x.png",
-      "cash": "assets/ui/gifts/gift_cashroll@2x.png"
-    }
+    "_iconNote": "图标以 narrative.json gifts 各条的 icon 字段为准"
   }
 }
