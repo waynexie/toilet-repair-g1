@@ -1,0 +1,535 @@
+{
+  "canvas": {
+    "logical": [
+      390,
+      780
+    ],
+    "scale": 2,
+    "export_px": [
+      780,
+      1560
+    ],
+    "keep_clear_top_bottom_px": 15,
+    "mini_game_capsule": {
+      "x": "right",
+      "y": 0,
+      "h": 44,
+      "note": "Reserved; keep the top-right of the background clear."
+    },
+    "hud_starts_at_y": 48,
+    "speech_bubble": {
+      "left": 96,
+      "top": 150,
+      "max_width": 220
+    },
+    "flush_button": {
+      "x": 195,
+      "y": 240
+    },
+    "toolbox": {
+      "left": 12,
+      "bottom": 18,
+      "w": 290,
+      "h": 130,
+      "slot_hit": [
+        64,
+        84
+      ],
+      "slots": 4
+    },
+    "phone": {
+      "right": 14,
+      "bottom": 34,
+      "w": 62,
+      "h": 94,
+      "rotation_deg": -10,
+      "note": "UI, not in the background art. Lies on the floor to the right of the toolbox."
+    },
+    "lao_qian_button": {
+      "right": 20,
+      "top": 560,
+      "w": 52,
+      "h": 52,
+      "note": "UI, not in the background art. Directly above the phone."
+    },
+    "slot_centers_x_1x": [
+      53.5,
+      122.5,
+      191.5,
+      260.5
+    ],
+    "slot_floor_y_1x": 717.5
+  },
+  "layer_order": [
+    "bg_bathroom_base",
+    "home_wang_windowsill",
+    "home_wang_washboard",
+    "toilet_tank",
+    "toilet_lid_up",
+    "home_wang_seatcover",
+    "toilet_bowl",
+    "toilet_bowl_inner",
+    "water_waterline_mark",
+    "water_surface_normal | water_surface_full",
+    "water_ripple_ring",
+    "clog_paper",
+    "clog_duck_silhouette | clog_duck",
+    "toilet_flushbtn_idle | toilet_flushbtn_pressed",
+    "scene_bucket_empty | scene_bucket_water",
+    "ui_toolbox_lid_lv1",
+    "ui_toolbox_body_lv1",
+    "(ui_toolbox_dividers only if the body skin has an empty interior)",
+    "ui_toolbox_lockplate x2 on locked slots",
+    "tools (plunger, scoop, snake)",
+    "UI: HUD, phone, 老钱 button, tool labels"
+  ],
+  "layers": [
+    {
+      "file": "assets/scene/bg_bathroom_base@2x.png",
+      "category": "scene",
+      "name": "bg_bathroom_base",
+      "pixel_size": [
+        780,
+        1560
+      ],
+      "anchor": "topleft",
+      "placement_1x": {
+        "x": 0,
+        "y": 0
+      },
+      "notes": "Full-screen opaque background, 390x780 @2x (780x1560). No toilet, bucket, tray, phone, ads, portraits or coins. Top-right y=0-44 kept clear for the mini-game capsule; wall under the coin capsule (right, y=48-140) is clean cream tile. Wall/floor junction near y=300. Top/bottom 15px have no interactive points."
+    },
+    {
+      "file": "assets/scene/toilet_tank@2x.png",
+      "category": "scene",
+      "name": "toilet_tank",
+      "pixel_size": [
+        384,
+        220
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195.5,
+        "y": 271.0
+      },
+      "notes": "Tank against the back wall. Draw under the lid and flush button. The tank top is blank so the flush-button sprite can be overlaid at (195, 240)."
+    },
+    {
+      "file": "assets/scene/toilet_flushbtn_idle@2x.png",
+      "category": "scene",
+      "name": "toilet_flushbtn_idle",
+      "pixel_size": [
+        64,
+        58
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195,
+        "y": 240
+      },
+      "notes": "Idle flush button. Hit area should be at least 44x44 even if the art is smaller."
+    },
+    {
+      "file": "assets/scene/toilet_flushbtn_pressed@2x.png",
+      "category": "scene",
+      "name": "toilet_flushbtn_pressed",
+      "pixel_size": [
+        64,
+        58
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195,
+        "y": 240
+      },
+      "notes": "Pressed state of the flush button, same anchor as idle."
+    },
+    {
+      "file": "assets/scene/toilet_lid_up@2x.png",
+      "category": "scene",
+      "name": "toilet_lid_up",
+      "pixel_size": [
+        353,
+        292
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195.2,
+        "y": 324.0
+      },
+      "notes": "Lid raised, leaning on the tank. Draw above the tank, under the 王阿姨 seat cover when that layer is on."
+    },
+    {
+      "file": "assets/scene/toilet_bowl@2x.png",
+      "category": "scene",
+      "name": "toilet_bowl",
+      "pixel_size": [
+        401,
+        473
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195.8,
+        "y": 507.8
+      },
+      "notes": "Bowl, lowered seat ring and pedestal. The inner opening is transparent so water / clogs / the waterline show through. Opening sits at about y=390-578, centered at x=195."
+    },
+    {
+      "file": "assets/scene/toilet_bowl_inner@2x.png",
+      "category": "scene",
+      "name": "toilet_bowl_inner",
+      "pixel_size": [
+        401,
+        473
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195.8,
+        "y": 507.8
+      },
+      "notes": "Inner porcelain well, same pixel size and placement as toilet_bowl. Draw immediately under the water / waterline, above the bowl rim. Fills the transparent opening so the floor does not show through. The drain is the darker ellipse toward the bottom of the well."
+    },
+    {
+      "file": "assets/scene/water_surface_full@2x.png",
+      "category": "scene",
+      "name": "water_surface_full",
+      "pixel_size": [
+        401,
+        473
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195.8,
+        "y": 507.8
+      },
+      "notes": "Full-water fill of the bowl opening, same pixel size and anchor as toilet_bowl. Covers the opening to the inner rim. Draw above the inner porcelain and waterline."
+    },
+    {
+      "file": "assets/scene/water_surface_normal@2x.png",
+      "category": "scene",
+      "name": "water_surface_normal",
+      "pixel_size": [
+        155,
+        196
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195.2,
+        "y": 517.5
+      },
+      "notes": "Scalable normal-water oval, smaller and slightly lower in the bowl so a ring of porcelain and the waterline mark stay visible above it."
+    },
+    {
+      "file": "assets/scene/water_ripple_ring@2x.png",
+      "category": "scene",
+      "name": "water_ripple_ring",
+      "pixel_size": [
+        243,
+        275
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195.2,
+        "y": 502.2
+      },
+      "notes": "Optional ripple ring, sits just inside the full-water rim. Can be rotated / pulsed."
+    },
+    {
+      "file": "assets/scene/water_drop@2x.png",
+      "category": "scene",
+      "name": "water_drop",
+      "pixel_size": [
+        27,
+        48
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195,
+        "y": 400
+      },
+      "notes": "Single droplet particle. Spawn near the rim for full-water overflow and for splash bursts. Anchor is the drop center."
+    },
+    {
+      "file": "assets/scene/water_splash@2x.png",
+      "category": "scene",
+      "name": "water_splash",
+      "pixel_size": [
+        120,
+        85
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195,
+        "y": 390
+      },
+      "notes": "Short splash burst for pressing a full bowl. Place at the inner rim / water surface."
+    },
+    {
+      "file": "assets/scene/water_waterline_mark@2x.png",
+      "category": "scene",
+      "name": "water_waterline_mark",
+      "pixel_size": [
+        401,
+        473
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195.8,
+        "y": 507.8
+      },
+      "notes": "Thin beige-grey stain ring on the inner porcelain, same size and anchor as toilet_bowl. Visible in the normal-water state as the high-water reference; hide or draw under the water in the full state."
+    },
+    {
+      "file": "assets/scene/clog_paper@2x.png",
+      "category": "scene",
+      "name": "clog_paper",
+      "pixel_size": [
+        112,
+        86
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 195.0,
+        "y": 495.5
+      },
+      "notes": "Paper clog wad. Place in the center of the water (both full and normal states)."
+    },
+    {
+      "file": "assets/scene/clog_duck@2x.png",
+      "category": "scene",
+      "name": "clog_duck",
+      "pixel_size": [
+        147,
+        159
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 194.8,
+        "y": 491.8
+      },
+      "notes": "Yellow rubber duck (order 3, after it is identified / pulled). Do not show in the character portrait or on 李姐."
+    },
+    {
+      "file": "assets/scene/clog_duck_silhouette@2x.png",
+      "category": "scene",
+      "name": "clog_duck_silhouette",
+      "pixel_size": [
+        147,
+        159
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 194.8,
+        "y": 491.8
+      },
+      "notes": "Underwater silhouette of the same duck pose. Use while the duck is still hidden in the bowl; the headlamp upgrade can tint / brighten this layer."
+    },
+    {
+      "file": "assets/scene/scene_bucket_empty@2x.png",
+      "category": "scene",
+      "name": "scene_bucket_empty",
+      "pixel_size": [
+        136,
+        160
+      ],
+      "anchor": "bottom-center",
+      "placement_1x": {
+        "x": 328,
+        "y": 545
+      },
+      "notes": "Interactive dump bucket, empty. Sit on the floor to the right of the toilet, above the phone / 老钱 button, in front of the washing machine."
+    },
+    {
+      "file": "assets/scene/scene_bucket_water@2x.png",
+      "category": "scene",
+      "name": "scene_bucket_water",
+      "pixel_size": [
+        136,
+        157
+      ],
+      "anchor": "bottom-center",
+      "placement_1x": {
+        "x": 328,
+        "y": 545
+      },
+      "notes": "Same bucket, filled with water. Swap with the empty layer when the player has scooped water into it. Same anchor."
+    },
+    {
+      "file": "assets/scene/home_wang_seatcover@2x.png",
+      "category": "scene",
+      "name": "home_wang_seatcover",
+      "pixel_size": [
+        367,
+        256
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 191.8,
+        "y": 317.5
+      },
+      "notes": "王阿姨 home layer: pink-and-cream crochet cover, sits on the raised lid."
+    },
+    {
+      "file": "assets/scene/home_wang_windowsill@2x.png",
+      "category": "scene",
+      "name": "home_wang_windowsill",
+      "pixel_size": [
+        178,
+        130
+      ],
+      "anchor": "topleft",
+      "placement_1x": {
+        "x": 18.0,
+        "y": 200.0
+      },
+      "notes": "王阿姨 home layer: pothos, soap dish and 花露水 on a short sill. Place on the left mint wall, below the speech-bubble band, not in the HUD. No pickle jars, no ads."
+    },
+    {
+      "file": "assets/scene/home_wang_washboard@2x.png",
+      "category": "scene",
+      "name": "home_wang_washboard",
+      "pixel_size": [
+        108,
+        180
+      ],
+      "anchor": "topleft",
+      "placement_1x": {
+        "x": 300.0,
+        "y": 290.0
+      },
+      "notes": "王阿姨 home layer: wooden washboard, lower right, leaning by the washing machine. Kept out of the coin / ⚙ wall."
+    },
+    {
+      "file": "assets/ui/ui_toolbox_lid_lv1@2x.png",
+      "category": "ui",
+      "name": "ui_toolbox_lid_lv1",
+      "pixel_size": [
+        543,
+        28
+      ],
+      "anchor": "topleft",
+      "placement_1x": {
+        "x": 21.0,
+        "y": 635.5
+      },
+      "notes": "Lv1 lid (short strip, tipped back). Upgrade skins replace this file. Toolbox box is 290x130 at left 12 / bottom 18."
+    },
+    {
+      "file": "assets/ui/ui_toolbox_body_lv1@2x.png",
+      "category": "ui",
+      "name": "ui_toolbox_body_lv1",
+      "pixel_size": [
+        579,
+        234
+      ],
+      "anchor": "topleft",
+      "placement_1x": {
+        "x": 12.0,
+        "y": 645.0
+      },
+      "notes": "Lv1 body with worn-wood lining, thin walls, clean front band for labels, faded sticker on the left end. This lv1 body already includes the three wood partitions; do not also stack ui_toolbox_dividers on top of it or they will double. Future empty bodies can use the dividers layer."
+    },
+    {
+      "file": "assets/ui/ui_toolbox_dividers@2x.png",
+      "category": "ui",
+      "name": "ui_toolbox_dividers",
+      "pixel_size": [
+        579,
+        234
+      ],
+      "anchor": "topleft",
+      "placement_1x": {
+        "x": 12.0,
+        "y": 645.0
+      },
+      "notes": "Three thin wood partitions at the fixed slot positions, same size and placement as ui_toolbox_body_lv1. The lv1 body already includes partitions; do not stack this layer on top of it. Use with future empty-interior skins."
+    },
+    {
+      "file": "assets/ui/ui_toolbox_lockplate@2x.png",
+      "category": "ui",
+      "name": "ui_toolbox_lockplate",
+      "pixel_size": [
+        116,
+        71
+      ],
+      "anchor": "center",
+      "placement_1x": {
+        "x": 191.5,
+        "y": 695.2
+      },
+      "notes": "Wood plate + brass padlock. Reuse on locked slots. Default copies: slot 3 at (191.5, 695.2) and slot 4 at (260.5, 695.2), center anchor. The label「升级解锁」is UI text, not painted in the art.",
+      "placement_copies_1x": [
+        {
+          "x": 191.5,
+          "y": 695.2,
+          "slot": 3
+        },
+        {
+          "x": 260.5,
+          "y": 695.2,
+          "slot": 4
+        }
+      ]
+    },
+    {
+      "file": "assets/tools/tool_plunger_old@2x.png",
+      "category": "tools",
+      "name": "tool_plunger_old",
+      "pixel_size": [
+        112,
+        223
+      ],
+      "anchor": "bottom-center",
+      "placement_1x": {
+        "x": 53.5,
+        "y": 717.5
+      },
+      "notes": "Old red-cup plunger with yellow tape on the wooden handle. Default tool in slot 1. Selected state (lift 8px + gold outline) is done in code."
+    },
+    {
+      "file": "assets/tools/tool_plunger_pro@2x.png",
+      "category": "tools",
+      "name": "tool_plunger_pro",
+      "pixel_size": [
+        108,
+        234
+      ],
+      "anchor": "bottom-center",
+      "placement_1x": {
+        "x": 53.5,
+        "y": 717.5
+      },
+      "notes": "Upgraded plunger: blue cup, black grip, metal ferrule. Swap in for tool_plunger_old at the same anchor."
+    },
+    {
+      "file": "assets/tools/tool_scoop@2x.png",
+      "category": "tools",
+      "name": "tool_scoop",
+      "pixel_size": [
+        120,
+        101
+      ],
+      "anchor": "bottom-center",
+      "placement_1x": {
+        "x": 122.5,
+        "y": 717.5
+      },
+      "notes": "Blue plastic water scoop. Default tool in slot 2."
+    },
+    {
+      "file": "assets/tools/tool_snake@2x.png",
+      "category": "tools",
+      "name": "tool_snake",
+      "pixel_size": [
+        128,
+        140
+      ],
+      "anchor": "bottom-center",
+      "placement_1x": {
+        "x": 191.5,
+        "y": 717.5
+      },
+      "notes": "Hand-crank spring drain snake (grey closed drum, red crank, visible coiled cable). Unlock into slot 3 (or 4) after upgrade; until then the lockplate covers that slot."
+    }
+  ]
+}
