@@ -35,13 +35,16 @@
     },
     {
       "id": "S3_guide_flush",
-      "type": "guide_mask",
+      "type": "guide_soft",
       "target": "flush_button",
       "hand": "tap",
       "hintKey": "hints.flush_first",
-      "blocking": true,
+      "blocking": false,
       "trigger": "S2_task_card.closed",
-      "skippable": false
+      "skippable": false,
+      "lineKey": "orders.o1.bubbles.tutorial_flush",
+      "handAfterIdleMs": 3000,
+      "maskAfterIdleMs": 6000
     },
     {
       "id": "S4_react",
@@ -56,13 +59,15 @@
     {
       "id": "S5_guide_tool",
       "delayMs": 600,
-      "type": "guide_mask",
+      "type": "guide_soft",
       "target": "toolbox_slot_plunger",
       "hand": "drag",
       "dragTo": "bowl_rim",
-      "blocking": true,
+      "blocking": false,
       "trigger": "S4_react",
-      "skippable": false
+      "skippable": false,
+      "handAfterIdleMs": 0,
+      "maskAfterIdleMs": 6000
     },
     {
       "id": "S6_guide_rhythm",
@@ -93,11 +98,14 @@
     {
       "id": "S8_coins",
       "delayMs": 800,
-      "type": "coin_fly",
+      "type": "coin_drop_tap",
       "to": "coin_capsule",
       "trigger": "S7_clear",
       "target": null,
-      "skippable": true
+      "skippable": true,
+      "dropOn": "toilet_lid",
+      "tapToCollect": true,
+      "autoCollectMs": 4000
     },
     {
       "id": "S9_result",
@@ -197,5 +205,11 @@
       "trans_evening"
     ],
     "_note": "第1天只保留楼道1.2s（o1→o2之间）；收工晚上过场第1天也保留，作为一天结束"
+  },
+  "lockedPreview": {
+    "tool": "plunger_pro",
+    "showInToolboxFrom": "o1",
+    "price": 100,
+    "_note": "工具箱里灰着显示，点开只提示「¥100 解锁」，让玩家第一单就知道攒钱的目标"
   }
 }
