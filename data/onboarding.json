@@ -11,7 +11,7 @@
       "id": "S1_need_bubble",
       "delayMs": 400,
       "type": "avatar_bubble",
-      "lineKey": "orders.o1.bubbles.need",
+      "lineKey": "orders.o1.bubbles.arrive",
       "autoHideMs": 2400,
       "skippable": true,
       "trigger": "scene_ready",
@@ -42,14 +42,14 @@
       "blocking": false,
       "trigger": "S2_task_card.closed",
       "skippable": false,
-      "lineKey": "orders.o1.bubbles.tutorial_flush",
+      "lineKey": "orders.o1.bubbles.tutorial_observe",
       "handAfterIdleMs": 3000,
       "maskAfterIdleMs": 6000
     },
     {
       "id": "S4_react",
       "type": "avatar_bubble",
-      "lineKey": "orders.o1.bubbles.dont_flush",
+      "lineKey": "orders.o1.bubbles.flush_rise",
       "mood": "shock",
       "autoHideMs": 2000,
       "trigger": "flush_anim_done",
@@ -90,7 +90,7 @@
         "swirl_drain",
         "screen_shake_light"
       ],
-      "lineKey": "orders.o1.bubbles.thanks",
+      "lineKey": "orders.o1.bubbles.done",
       "trigger": "clog_cleared",
       "target": null,
       "skippable": true
