@@ -129,3 +129,5 @@ def shot(html, png, transparent=False, size=(390, 780)):
 def dom(html):
     r = subprocess.run(CHROME + ['--dump-dom', 'file://' + os.path.abspath(html)], capture_output=True, timeout=120, text=True)
     return r.stdout
+
+PLAY = '<svg class="play" viewBox="0 0 12 12"><path d="M2.5 1.2 L10.6 6 L2.5 10.8 Z" fill="#3F7F3A" stroke="#3F7F3A" stroke-width="1.4" stroke-linejoin="round"/></svg>'

@@ -228,6 +228,51 @@
    },
    "note": "小号次按钮 高 32（瓷面，圆角 12，2px 描边；字 T5 Bold 由代码画，左右内边距 12 含描边外 10+2）；按下态已含下移 2px；禁用字色 #A8957E。点击区上下各扩 8 → 高 48"
   },
+  "btn_secondary_normal": {
+   "file": "assets/ui/v15/btn_secondary_normal@2x.png",
+   "size_2x": [
+    304,
+    160
+   ],
+   "margin_2x": 32,
+   "nine_slice_2x": {
+    "left": 64,
+    "top": 64,
+    "right": 64,
+    "bottom": 64
+   },
+   "note": "次按钮 48（瓷面，圆角 16，2px 描边；字 T3 Bold #5A4030 由代码画；广告用法前面放 12×12 绿三角 #3F7F3A（代码画，路径见 code_drawn.ad_play），和字隔 8）；按下态已含下移 2px；禁用字色 #A8957E"
+  },
+  "btn_secondary_pressed": {
+   "file": "assets/ui/v15/btn_secondary_pressed@2x.png",
+   "size_2x": [
+    304,
+    160
+   ],
+   "margin_2x": 32,
+   "nine_slice_2x": {
+    "left": 64,
+    "top": 64,
+    "right": 64,
+    "bottom": 64
+   },
+   "note": "次按钮 48（瓷面，圆角 16，2px 描边；字 T3 Bold #5A4030 由代码画；广告用法前面放 12×12 绿三角 #3F7F3A（代码画，路径见 code_drawn.ad_play），和字隔 8）；按下态已含下移 2px；禁用字色 #A8957E"
+  },
+  "btn_secondary_disabled": {
+   "file": "assets/ui/v15/btn_secondary_disabled@2x.png",
+   "size_2x": [
+    304,
+    160
+   ],
+   "margin_2x": 32,
+   "nine_slice_2x": {
+    "left": 64,
+    "top": 64,
+    "right": 64,
+    "bottom": 64
+   },
+   "note": "次按钮 48（瓷面，圆角 16，2px 描边；字 T3 Bold #5A4030 由代码画；广告用法前面放 12×12 绿三角 #3F7F3A（代码画，路径见 code_drawn.ad_play），和字隔 8）；按下态已含下移 2px；禁用字色 #A8957E"
+  },
   "icon_phone_32": {
    "file": "assets/ui/v15/icon_phone_32@2x.png",
    "size_2x": [
@@ -297,6 +342,17 @@
    "font": "400 12px/16px，等宽数字",
    "color": "#7A5A40",
    "pos": "设置标题行（高 28）右端，右边距卡片内沿 24（= 卡片右沿 −24），与「设置」T2 基线对齐；Canvas 用 textBaseline=alphabetic，两者基线 y 222.5（卡片顶 176 +24 +22.5，DOM 实测），右对齐 x 342"
+  },
+  "ad_play": {
+   "size_1x": [
+    12,
+    12
+   ],
+   "path": "M2.5 1.2 L10.6 6 L2.5 10.8 Z",
+   "fill": "#3F7F3A",
+   "stroke": "1.4 #3F7F3A round",
+   "gap_to_text": 8,
+   "note": "不用 ▶ 字符（部分机型会渲染成 emoji）"
   },
   "dash_line": {
    "h": 2,
