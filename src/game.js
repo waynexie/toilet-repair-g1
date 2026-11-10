@@ -574,7 +574,7 @@ function phoneBtn(){if(PH.open||S.screen==='title'||S.dexCard)return;
 function gearBtn(x,y){rr(x,y,44,44,14);fs('#fff8eb',2.5);g.font='22px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillStyle=INK;g.fillText('⚙',x+22,y+23);
  buttons.push({x,y,w:44,h:44,fn:()=>{audioInit();SFX.click();S.settings=true;}});}
 function drawSettings(){if(!S.settings)return;g.fillStyle='rgba(20,12,8,.5)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:()=>{S.settings=false;SFX.click();}});
- const X=40,Y=220,PW=W-80,PHh=262;rr(X,Y,PW,PHh,20);fs('#fff8eb',4);buttons.push({x:X,y:Y,w:PW,h:PHh,fn:()=>{}});
+ const X=40,Y=200,PW=W-80,PHh=306;rr(X,Y,PW,PHh,20);fs('#fff8eb',4);buttons.push({x:X,y:Y,w:PW,h:PHh,fn:()=>{}});
  txt('设置',W/2,Y+30,18,INK,'center','800');
  const row=(i,label,on,fn,dis,note)=>{const y=Y+62+i*52;txt(label,X+20,y+18,15,dis?'#b8a898':INK,'left','700');
   const sx=X+PW-74;rr(sx,y+4,56,28,14);g.fillStyle=dis?'#ddd':on?'#4fc26f':'#cbbfae';g.fill();g.beginPath();g.arc(on&&!dis?sx+42:sx+14,y+18,11,0,7);g.fillStyle='#fff';g.fill();
@@ -583,6 +583,7 @@ function drawSettings(){if(!S.settings)return;g.fillStyle='rgba(20,12,8,.5)';g.f
  row(1,'🐢 省动效',!!save.reduced,()=>{save.reduced=!save.reduced;});txt('减少抖动和闪光',X+20,Y+62+52+36,11,'#a08878','left','500');
  row(2,'📳 震动',!save.novibe,()=>{save.novibe=!save.novibe;},!CAN_VIBRATE,!CAN_VIBRATE?'本机不支持':'');
  const left=Math.max(0,CM().freePerDay-(S.masterFree||0));
+ button(S.copied>0?'已复制 ✔':'复制用时',W/2-60,Y+222,120,32,copyTimes,'#fff8eb'); // 策划：真实玩家导出用时调判定窗口
  txt(`老钱求助：今日免费 ${left} 次`,W/2,Y+PHh-24,12,'#7a5a48','center','600');}
 function drawMasterBtn(){if((O.masterCalls||0)>=CM().maxPerOrder)return;const ready=masterReady(); // ui-spec：56圆，右20 上560
  const cx=W-20-28,cy=588,wob=ready?Math.sin(S.t*14)*Math.max(0,Math.sin(S.t*2.2))*3:0;g.save();g.translate(wob,0);
@@ -778,7 +779,8 @@ function drawEnd(){
  txt('今日收入 ¥'+(S.money+(S.spent||0)),W/2,225,18,'#2f8a4a');
  txt('图鉴：'+(S.dex.length?'小黄鸭 ×1':'空'),W/2,260,15,INK);
  if(S.times[2]&&S.times[4])txt(`满水堵：${S.times[2].toFixed(1)}s → ${S.times[4].toFixed(1)}s`,W/2,290,14,'#2c5fb0');
-  txt('第 1 天',W/2,400,13,'#7a5a48');
+  if(/[?&]debug=1/.test(location.search))button(S.copied>0?'已复制 ✔':'复制用时',W/2-55,314,110,28,copyTimes,'#fff8eb');
+ txt('第 1 天',W/2,400,13,'#7a5a48');
  button('第 2 天 ▶',W/2-90,440,180,52,()=>G2nextDay(),'#4fc26f','#fff');
  button('再玩一遍',W/2-70,510,140,40,()=>{S.screen='title';O=null;S.copied=0;},'#ffb53d');
 }
