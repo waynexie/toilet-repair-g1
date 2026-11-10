@@ -642,7 +642,7 @@
       "zhao_jie": [
         {
           "type": "cash",
-          "line": "我多转你二十，别推了。"
+          "line": "我多转你十块，别推了。"
         }
       ]
     },
@@ -663,7 +663,7 @@
       "client": "wang_ayi",
       "type": "item",
       "item": "两个苹果",
-      "icon": "gift_apples",
+      "icon": "apple_x2",
       "line": "拿着！不拿我生气了。",
       "hero": "这哪行。",
       "insist": "塞你兜里了啊。"
@@ -671,6 +671,24 @@
     "random_cash_generic": [
       "师傅辛苦，多的拿着。",
       "零头不用找了。"
-    ]
+    ],
+    "li_candy": {
+      "order": "o3",
+      "client": "li_jie",
+      "type": "item",
+      "item": "一颗糖",
+      "icon": "gift_candy",
+      "line": "宝宝，把糖给叔叔。",
+      "hero_action": "蹲下接过，不推辞",
+      "hero": "谢谢。"
+    },
+    "zhao_transfer": {
+      "order": "lock_referral_1",
+      "client": "zhao_jie",
+      "type": "cash",
+      "line": "我多转你十块，别推了。",
+      "hero": "这……",
+      "insist": "王阿姨说你实在，我也实在。"
+    }
   }
 }
