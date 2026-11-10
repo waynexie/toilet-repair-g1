@@ -543,8 +543,8 @@ function drawTray(){if(ART.ok){artTray(['plunger','scoop','snake'].map(id=>O&&O.
 function drawHUD(){ // ui-spec v1.1 §HUD
  const F='"Noto Sans CJK SC","PingFang SC",sans-serif';
  if(O){ // 客户卡：左16 上48 宽80，头像60，下面4格耐心
-  rr(16,48,80,92,12);fs('#FFF8EC',2);avatar(custOf()||'hero',56,86,30);
-  g.font='22px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(O.face,82,108);
+  rr(16,48,80,92,12);fs('#FFF8EC',2);if(!hudAvatar()){avatar(custOf()||'hero',56,86,30);
+  g.font='22px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(O.face,82,108);}
   const mx=O.d.patMax||4,sw=12,gp=4,tw=mx*sw+(mx-1)*gp,x0=56-tw/2;
   for(let i=0;i<mx;i++){rr(x0+i*(sw+gp),124,sw,8,3);g.fillStyle=i<O.pat?(O.pat<=1?'#D9413A':'#5DBB63'):'#E6D9C3';g.fill();}}
  // 金币胶囊：右16 上48 高40
@@ -557,8 +557,8 @@ function drawHUD(){ // ui-spec v1.1 §HUD
   const tw2=80,tx=W-64-8-tw2;rr(tx,96,tw2,48,12);fs('#FFF8EC',2);txt('本单 ¥'+O.d.base,tx+tw2/2,O.startT!=null?112:120,14,'#5A4030','center','700');
   if(O.startT!=null){const el=(O.anim&&O.anim.type==='win')||O.phase==='done'||(S.screen!=='play'&&S.screen!=='lock')?O.elapsed:S.t-O.startT;txt(el.toFixed(1)+'s',tx+tw2/2,131,12,'#8A6F5A','center','400');}}
  // 旧手机：右16 下32，64×96，−10°
- g.save();g.translate(W-16-32,H-32-48);g.rotate(-10*Math.PI/180);rr(-32,-48,64,96,10);fs('#2d2d33');rr(-26,-38,52,70,5);g.fillStyle='#4a6a80';g.fill();
- g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1;g.beginPath();g.moveTo(-18,-30);g.lineTo(10,20);g.stroke();g.restore();
+ if(!phoneArt()){g.save();g.translate(W-16-32,H-32-48);g.rotate(-10*Math.PI/180);rr(-32,-48,64,96,10);fs('#2d2d33');rr(-26,-38,52,70,5);g.fillStyle='#4a6a80';g.fill();
+ g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1;g.beginPath();g.moveTo(-18,-30);g.lineTo(10,20);g.stroke();g.restore();}
  if(PH.unread>0){g.beginPath();g.arc(W-22,H-124,10,0,7);g.fillStyle='#D9413A';g.fill();txt(String(PH.unread),W-22,H-124,12,'#fff','center','700');}
  if(O&&!O.lock&&S.screen==='play'&&!S.ad&&!S.callUI)drawMasterBtn();
 }
@@ -586,13 +586,14 @@ function drawSettings(){if(!S.settings)return;g.fillStyle='rgba(20,12,8,.5)';g.f
  txt(`老钱求助：今日免费 ${left} 次`,W/2,Y+PHh-24,12,'#7a5a48','center','600');}
 function drawMasterBtn(){if((O.masterCalls||0)>=CM().maxPerOrder)return;const ready=masterReady(); // ui-spec：56圆，右20 上560
  const cx=W-20-28,cy=588,wob=ready?Math.sin(S.t*14)*Math.max(0,Math.sin(S.t*2.2))*3:0;g.save();g.translate(wob,0);
- g.beginPath();g.arc(cx,cy,28,0,7);fs(ready?'#FFF8EC':'rgba(220,210,195,.75)',2);avatar('lao_qian',cx,cy-4,17);txt('问老钱',cx,cy+19,10,ready?'#5A4030':'#9a8a7a','center','700');
+ if(masterBtnArt(cx,cy,ready))txt('问老钱',cx,cy+38,12,ready?'#5A4030':'#9a8a7a','center','700');else{g.beginPath();g.arc(cx,cy,28,0,7);fs(ready?'#FFF8EC':'rgba(220,210,195,.75)',2);avatar('lao_qian',cx,cy-4,17);txt('问老钱',cx,cy+19,10,ready?'#5A4030':'#9a8a7a','center','700');}
  if(ready){const free=masterFree(),lab=free?'今日免费':'▶广告',bw=free?54:42;rr(cx-bw/2,cy-42,bw,18,9);fs(free?'#5DBB63':'#F5B92E');txt(lab,cx,cy-33,10,free?'#fff':'#5A4030','center','700');}
  g.restore();if(ready)buttons.push({x:cx-28,y:cy-42,w:56,h:70,fn:()=>{audioInit();SFX.click();askMaster();}});}
 function drawAd(){if(S.callUI){const c=S.callUI;g.fillStyle='rgba(20,12,8,.55)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:callTap});
-  rr(30,170,W-60,250,20);fs('#2b2b33',2);avatar('lao_qian',W/2,220,28);txt(cname('lao_qian')+' · 通话中',W/2,266,14,'#bbb','center','600');
-  let yy=298;for(let i=0;i<=c.i;i++){const L=bubbleText(c.lines[i],W-120);L.forEach(l=>{txt(l,W/2,yy,15,i===c.i?'#fff':'#999','center','600');yy+=21;});yy+=6;}
-  txt(c.i<c.lines.length-1?'点一下继续':'点一下挂断',W/2,402,12,'#888','center','500');}
+  const art=callBgArt();const Y0=art?520:170;if(art){const gr=g.createLinearGradient(0,440,0,H);gr.addColorStop(0,'rgba(20,12,8,0)');gr.addColorStop(.35,'rgba(20,12,8,.75)');gr.addColorStop(1,'rgba(20,12,8,.9)');g.fillStyle=gr;g.fillRect(0,440,W,H-440);}
+  else{rr(30,170,W-60,250,20);fs('#2b2b33',2);avatar('lao_qian',W/2,220,28);}txt(cname('lao_qian')+' · 通话中',W/2,Y0+(art?0:96),14,'#bbb','center','600');
+  let yy=Y0+(art?32:128);for(let i=0;i<=c.i;i++){const L=bubbleText(c.lines[i],W-120);L.forEach(l=>{txt(l,W/2,yy,15,i===c.i?'#fff':'#999','center','600');yy+=21;});yy+=6;}
+  txt(c.i<c.lines.length-1?'点一下继续':'点一下挂断',W/2,art?H-40:402,12,'#888','center','500');}
  if(!S.ad)return;g.fillStyle='rgba(10,10,14,.88)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:()=>{}});
  rr(40,250,W-80,240,18);fs('#2b2b33',2);txt('广告占位',W/2,300,15,'#aaa');txt('（正式版这里播激励视频）',W/2,328,13,'#888','center','500');
  txt('📞 正在接通'+cname('lao_qian')+'…',W/2,390,18,'#fff');otxt(String(Math.ceil(S.ad.dur-S.ad.t)),W/2,440,34,'#ffcf3f');}
@@ -735,7 +736,7 @@ function drawNotify(m,k,t,onTap){
  g.restore();g.globalAlpha=1;}
 function drawResult(){
  const r=S.result;panel(150,430);
- g.font='60px sans-serif';g.textAlign='center';g.fillText(r.face,W/2,215);
+ if(!resultAvatar(r)){g.font='60px sans-serif';g.textAlign='center';g.fillText(r.face,W/2,215);}
  txt(r.d.who+'：'+(r.said||(r.face==='👍'?'师傅手艺真好！':'行，通了就好。')),W/2,252,15,INK,'center','600');if(r.heroSaid)txt('你：'+r.heroSaid,W/2,276,13,'#7a5a48','center','500');
  txt('工钱',90,305,15,'#7a5a48','left');txt('¥'+r.base,W-90,305,15,INK,'right');
  txt('好评',90,333,15,'#7a5a48','left');txt('★'.repeat(r.stars)+'☆'.repeat(Math.max(0,PAT().max-r.stars)),W-90,333,16,'#e0a020','right');

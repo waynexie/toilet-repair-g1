@@ -34,3 +34,20 @@ function artTray(ids){A('ui_toolbox_lid_lv1',{x:TB.x+(TB.w-270)/2,y:TB.y-14});A(
   if(sel){rr(x-34,TB.slotTop-10,68,TB.slotBot-TB.slotTop+12,12);g.strokeStyle='#FFE27A';g.lineWidth=3;g.stroke();}
   txt(TOOLS[id]?TOOLS[id].name:id,x,742,12,'#fff3d8','center','700');});}
 artLoad();
+// —— 头像 / 老钱按钮 / 手机（portraits_v1）——
+const PIMG={};function pimg(src){if(!(src in PIMG)){PIMG[src]=null;const im=new Image();im.onload=()=>{PIMG[src]=im;};im.src=src;}return PIMG[src];}
+const PORTRAIT_IDS=['wang_ayi','xiao_xu','li_jie','zhao_jie'];
+function portrait(id,n,big){if(id==='lao_qian')return pimg('assets/characters/avatar_lao_qian'+(big?'_256.png':'@2x.png'));
+ if(!PORTRAIT_IDS.includes(id))return null;n=Math.max(1,Math.min(4,n||1));return pimg(`assets/characters/avatar_${id}_p${n}`+(big?'_256.png':'@2x.png'));}
+function patLevel(pat){return Math.max(1,Math.min(4,5-pat));} // 剩余耐心 r → 第 5−r 张
+function drawPortraitSq(im,x,y,s,rad){g.save();rr(x,y,s,s,rad);g.clip();g.drawImage(im,x,y,s,s);g.restore();rr(x,y,s,s,rad);g.strokeStyle='#5A4030';g.lineWidth=2;g.stroke();}
+const _avatarFallback=avatar;
+avatar=function(id,x,y,r){const im=portrait(id,1);if(!im)return _avatarFallback(id,x,y,r);g.save();g.beginPath();g.arc(x,y,r,0,7);g.clip();g.drawImage(im,x-r,y-r,r*2,r*2);g.restore();};
+function hudAvatar(){const id=custOf();const im=id&&portrait(id,patLevel(O.pat));if(!im)return false;drawPortraitSq(im,26,56,60,8);return true;}
+function resultAvatar(r){const id=r.d.client||((NAR.orders||{})[r.d.key]||{}).client;const im=id&&portrait(id,patLevel(r.stars),true);if(!im)return false;drawPortraitSq(im,W/2-40,152,80,8);return true;}
+function masterBtnArt(cx,cy,ready){const im=pimg(ready&&ptr.down&&Math.hypot(ptr.x-cx,ptr.y-cy)<28?'assets/ui/btn_laoqian_pressed@2x.png':'assets/ui/btn_laoqian@2x.png')||pimg('assets/ui/btn_laoqian@2x.png');if(!im)return false;
+ if(!ready)g.globalAlpha=.55;g.drawImage(im,cx-28,cy-28,56,56);g.globalAlpha=1;return true;}
+function phoneArt(){const im=pimg(PH.unread>0?'assets/ui/phone_floor_notify@2x.png':'assets/ui/phone_floor_idle@2x.png');if(!im)return false;
+ g.save();g.translate(W-16-32,H-32-48);g.rotate(-10*Math.PI/180);g.drawImage(im,-32,-48,64,96);g.restore();return true;}
+function callBgArt(){const im=pimg('assets/characters/laoqian_call@2x.png');if(!im)return false;const s=Math.max(W/(im.width/2),H/(im.height/2)),w=im.width/2*s,h=im.height/2*s;g.drawImage(im,(W-w)/2,(H-h)/2,w,h);return true;}
+['btn_laoqian','btn_laoqian_pressed','phone_floor_idle','phone_floor_notify'].forEach(n=>pimg('assets/ui/'+n+'@2x.png'));pimg('assets/characters/laoqian_call@2x.png');
