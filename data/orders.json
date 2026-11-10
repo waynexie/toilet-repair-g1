@@ -86,7 +86,7 @@
       "tipMax": 15,
       "urgent": true,
       "flushClue": "水快溢到马桶圈，水面晃荡",
-      "customerLine": "快点啊，九点要进考场！",
+      "customerLine": "快点啊，八点我得出车！",
       "requiredOrder": [
         "scoop_to_below_0.6",
         "plunger"
@@ -115,7 +115,7 @@
       "tipMax": 15,
       "urgent": true,
       "flushClue": "水快溢到马桶圈，水面晃荡",
-      "customerLine": "又是你啊师傅！这次是面试。",
+      "customerLine": "又是你啊师傅！我得去高铁站接闺女。",
       "requiredOrder": [
         "scoop_to_below_0.6",
         "plunger"
