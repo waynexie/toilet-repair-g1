@@ -1,0 +1,35 @@
+{
+  "_note": "G1 订单与数值配置（策划维护）。时间单位毫秒，金额单位元。数值为初版，待原型实测后调整。",
+  "patience": { "max": 3, "wrongToolCost": 1, "splashCost": 1, "tipByPatience": { "3": 1.0, "2": 0.5, "1": 0.2, "0": 0 } },
+  "tools": {
+    "plunger": {
+      "name": "旧皮搋子", "gesture": "rhythm_pump",
+      "worksOn": ["soft"],
+      "suctionRadiusPx": 60,
+      "rhythm": { "rebounceMs": 600, "windowMs": 160, "perfectWindowMs": 60, "progressPerHit": 0.2, "progressPerPerfect": 0.3, "overPressSplashIfWaterAbove": 0.85 },
+      "wrongFeedback": { "hard": "咚咚声，水不动，堵点更深" }
+    },
+    "plunger_pro": {
+      "name": "加压皮搋子", "gesture": "rhythm_pump", "upgradeOf": "plunger", "price": 100,
+      "worksOn": ["soft"],
+      "suctionRadiusPx": 90,
+      "rhythm": { "rebounceMs": 600, "windowMs": 260, "perfectWindowMs": 110, "progressPerHit": 0.3, "progressPerPerfect": 0.6, "overPressSplashIfWaterAbove": 0.85 }
+    },
+    "scoop": { "name": "水瓢", "gesture": "drag_scoop", "lowersWaterPerScoop": 0.2 },
+    "snake": { "name": "弹簧疏通器", "gesture": "rotate_then_pull", "worksOn": ["hard"], "rotationsToReach": 3, "pullHoldMs": 1200 }
+  },
+  "orders": [
+    { "id": "o1", "fault": "soft", "object": "paper", "waterLevel": 0.5, "basePay": 30, "tipMax": 10,
+      "flushClue": "水位慢慢上涨，水面打旋往下渗", "customerLine": "师傅，冲不下去了，你看看。", "tutorial": true },
+    { "id": "o2", "fault": "soft", "object": "paper", "waterLevel": 0.92, "basePay": 45, "tipMax": 15, "urgent": true,
+      "flushClue": "水快溢到马桶圈，水面晃荡", "customerLine": "快点啊，马上要出门了！",
+      "requiredOrder": ["scoop_to_below_0.6", "plunger"] },
+    { "id": "o3", "fault": "hard", "object": "rubber_duck", "waterLevel": 0.6, "basePay": 60, "tipMax": 20,
+      "flushClue": "水完全不动，冒一个闷泡，水下隐约有异物轮廓", "customerLine": "孩子刚在厕所玩了半天……",
+      "unlockCollection": "rubber_duck" },
+    { "id": "o4", "fault": "soft", "object": "paper", "waterLevel": 0.92, "basePay": 45, "tipMax": 15, "urgent": true,
+      "flushClue": "水快溢到马桶圈，水面晃荡", "customerLine": "又是你啊师傅，这次也拜托快点！",
+      "requiredOrder": ["scoop_to_below_0.6", "plunger"], "compareTimeWith": "o2", "requiresUpgrade": "plunger_pro" }
+  ],
+  "shop": { "upgradeOfferAfter": "o3", "items": ["plunger_pro"] }
+}
