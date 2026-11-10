@@ -780,8 +780,8 @@ function drawEnd(){
  txt('图鉴：'+(S.dex.length?'小黄鸭 ×1':'空'),W/2,260,15,INK);
  if(S.times[2]&&S.times[4])txt(`满水堵：${S.times[2].toFixed(1)}s → ${S.times[4].toFixed(1)}s`,W/2,290,14,'#2c5fb0');
   if(/[?&]debug=1/.test(location.search))button(S.copied>0?'已复制 ✔':'复制用时',W/2-55,314,110,28,copyTimes,'#fff8eb');
- txt('第 1 天',W/2,400,13,'#7a5a48');
- button('第 2 天 ▶',W/2-90,440,180,52,()=>G2nextDay(),'#4fc26f','#fff');
+ 
+ primaryBtn('继续开工',W/2-90,440,180,()=>G2nextDay());
  button('再玩一遍',W/2-70,510,140,40,()=>{S.screen='title';O=null;S.copied=0;},'#ffb53d');
 }
 
