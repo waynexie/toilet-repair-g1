@@ -869,5 +869,271 @@
     "notes": "来消息态：屏幕亮起、外圈暖光、屏上是原创喂信单气泡图标（无文字、非微信）；红点数字由 UI 叠加"
    }
   ]
+ },
+ "screens_fx_v1": {
+  "_note": "首页、过场、引导动效素材（美术 v1）。只记文件、尺寸、锚点和动画说明；位置以 ui-spec.md v1.2 为准。背景按 390×780 铺满（与 bg_bathroom_base 同规格），无烘焙 UI 文字。jpg 为同图压缩版（约 1/5 体积），小游戏包体用 jpg 即可。",
+  "preview": "design/art/screens_fx_v1_preview.png",
+  "screens": [
+   {
+    "file": "assets/screens/title_bg@2x.png",
+    "file_jpg": "assets/screens/title_bg@2x.jpg",
+    "pixel_size": [
+     780,
+     1560
+    ],
+    "size_1x": [
+     390,
+     780
+    ],
+    "anchor": "topleft",
+    "opaque": true,
+    "notes": "首页。县城小区巷子黄昏，主角扛皮搋子提工具箱走来。右上 0–44 为天空，胶囊区干净；logo 放上方天空区（建议中心 x195 y175）；开工按钮区 y540–640 压在主角小腿/脚上，主角头和工具箱都在按钮区以上；y650 小字和 y686 ⚙ 下面是素净地面（底部已轻微压暗利于文字）。"
+   },
+   {
+    "file": "assets/screens/trans_stairwell@2x.png",
+    "file_jpg": "assets/screens/trans_stairwell@2x.jpg",
+    "pixel_size": [
+     780,
+     1560
+    ],
+    "size_1x": [
+     390,
+     780
+    ],
+    "anchor": "topleft",
+    "opaque": true,
+    "notes": "到客户家门口：老楼楼道，绿墙裙、电表箱、扶手楼梯。墙上的「疏通管道 1XX-XXXX-XXXX」小广告是唯一允许出现的环境字（假号码）。中部偏上墙面较空，可叠客户名/地点小字。"
+   },
+   {
+    "file": "assets/screens/trans_morning@2x.png",
+    "file_jpg": "assets/screens/trans_morning@2x.jpg",
+    "pixel_size": [
+     780,
+     1560
+    ],
+    "size_1x": [
+     390,
+     780
+    ],
+    "anchor": "topleft",
+    "opaque": true,
+    "notes": "workday_beats.morning：家里早饭桌（粥、包子、咸菜、鸡蛋、豆浆），门边凳子上放着工具箱和暖水瓶，窗外县城晨光。上方 40% 是暖色晨雾，留给「第 N 天」等代码文字。"
+   },
+   {
+    "file": "assets/screens/trans_road@2x.png",
+    "file_jpg": "assets/screens/trans_road@2x.jpg",
+    "pixel_size": [
+     780,
+     1560
+    ],
+    "size_1x": [
+     390,
+     780
+    ],
+    "anchor": "topleft",
+    "opaque": true,
+    "notes": "workday_beats.commute：主角骑电动车穿过县城街道，后座绑着工具箱和皮搋子，路边有小吃摊（大壮的摊可对应）。上方 35% 是天空。店招均为空白色块，无字。"
+   },
+   {
+    "file": "assets/screens/trans_evening@2x.png",
+    "file_jpg": "assets/screens/trans_evening@2x.jpg",
+    "pixel_size": [
+     780,
+     1560
+    ],
+    "size_1x": [
+     390,
+     780
+    ],
+    "anchor": "topleft",
+    "opaque": true,
+    "notes": "workday_beats.evening：晚上回家，桌上扣着盘子留的饭、电饭锅保温灯亮着，门边放下的工具箱和皮搋子、换下的球鞋。窗外夜空可叠文字。对应妈妈「锅里给你留了饭」。"
+   },
+   {
+    "file": "assets/screens/doorway_zhao@2x.png",
+    "file_jpg": "assets/screens/doorway_zhao@2x.jpg",
+    "pixel_size": [
+     780,
+     1560
+    ],
+    "size_1x": [
+     390,
+     780
+    ],
+    "anchor": "topleft",
+    "opaque": true,
+    "notes": "G2 开锁单：赵姐家门口正面。门上有福字（门板 1x 约 x103–313、y112–632；福字中心约 x207 y253），左侧鞋柜和绿植，门垫。门上原来的把手已抹掉，锁具全部由代码叠画：建议锁体放在门板把手侧，中心约 x130 y388（1x），不要放在门正中。g2.js 里代码画的门和福字在用这张图时应关掉。",
+    "customer_id": "zhao_jie"
+   }
+  ],
+  "ui": [
+   {
+    "file": "assets/ui/logo_title@2x.png",
+    "pixel_size": [
+     680,
+     400
+    ],
+    "size_1x": [
+     340,
+     200
+    ],
+    "anchor": "center",
+    "notes": "游戏 logo「重生之我在 / 澳洲修马桶」，思源黑体 Bold 重绘描边+手绘抖动，透明底。不要用代码再叠标题字。"
+   },
+   {
+    "file": "assets/ui/btn_primary_normal@2x.png",
+    "pixel_size": [
+     240,
+     112
+    ],
+    "size_1x": [
+     120,
+     56
+    ],
+    "anchor": "topleft",
+    "nine_slice_px": {
+     "left": 40,
+     "right": 40,
+     "top": 40,
+     "bottom": 40
+    },
+    "notes": "主按钮皮肤，ui-spec 主按钮：高 56、金色渐变、2px 暖棕描边、圆角 16、底部内阴影。9 宫格拉伸到任意宽（最小宽 80），高固定 56。按钮文字由代码写（T2 Bold #5A4030）。外投影由代码画。"
+   },
+   {
+    "file": "assets/ui/btn_primary_pressed@2x.png",
+    "pixel_size": [
+     240,
+     112
+    ],
+    "size_1x": [
+     120,
+     56
+    ],
+    "anchor": "topleft",
+    "nine_slice_px": {
+     "left": 40,
+     "right": 40,
+     "top": 40,
+     "bottom": 40
+    },
+    "notes": "按下态，同尺寸同切片；按下时整体下移 2px（ui-spec）。"
+   },
+   {
+    "file": "assets/ui/ui_guide_hand@2x.png",
+    "pixel_size": [
+     80,
+     96
+    ],
+    "size_1x": [
+     40,
+     48
+    ],
+    "anchor": "pivot",
+    "pivot_px": [
+     13,
+     6
+    ],
+    "pivot_norm": [
+     0.165,
+     0.063
+    ],
+    "notes": "点击引导的手，奶油白 #FFF3DA + 约 2px（1x）暖棕描边，指尖朝左上。pivot=指尖。放在按钮右下，指尖对准按钮边缘。"
+   },
+   {
+    "file": "assets/ui/ui_guide_hand_tap@2x.png",
+    "pixel_size": [
+     80,
+     96
+    ],
+    "size_1x": [
+     40,
+     48
+    ],
+    "anchor": "pivot",
+    "pivot_px": [
+     13,
+     14
+    ],
+    "notes": "点下去的那一帧：绕指尖缩到 0.92 并整体下移 4px（1x），与 ui_guide_hand 同画布同位置绘制即可，不用再加 transform。节奏：1.2 s 一循环，在圆放大开始时切到 tap 帧约 0.15 s。也可只用 ui_guide_hand 按 ui-spec 代码做下压+缩放。"
+   },
+   {
+    "file": "assets/ui/ui_guide_ring@2x.png",
+    "pixel_size": [
+     128,
+     128
+    ],
+    "size_1x": [
+     64,
+     64
+    ],
+    "anchor": "center",
+    "notes": "双线圆：奶油白粗线（1x 4px）+ 两侧各 2px 暖棕描边，线宽带轻微手绘起伏，无虚线。冲水引导直接用 64（放大到 1.4 并淡出；外圈 50%）。落点（146×122）和节奏目标圈（120×72）可拉伸使用，椭圆越扁上下线越细，觉得不匀可改用代码画同样的三层线。"
+   },
+   {
+    "file": "assets/ui/ui_guide_ring_ok@2x.png",
+    "pixel_size": [
+     128,
+     128
+    ],
+    "size_1x": [
+     64,
+     64
+    ],
+    "anchor": "center",
+    "notes": "同上，中线改为绿色 #9BE08F，用于落点进入范围/节奏判定窗口内。"
+   },
+   {
+    "file": "assets/ui/ui_guide_ring_gold@2x.png",
+    "pixel_size": [
+     128,
+     128
+    ],
+    "size_1x": [
+     64,
+     64
+    ],
+    "anchor": "center",
+    "notes": "同上，中线金色 #FFD45E，用于节奏引导的收缩圈（1.4→1.0）。"
+   },
+   {
+    "file": "assets/ui/ui_sparkle@2x.png",
+    "pixel_size": [
+     32,
+     32
+    ],
+    "size_1x": [
+     16,
+     16
+    ],
+    "anchor": "center",
+    "notes": "四角星，奶油白+暖棕描边，ui-spec 里的 ui_sparkle@2x（=ui_sparkle_32）。落点 ok 时闪 3 颗：放大 0→1→0 约 0.4 s，错开 0.1 s，可旋转 ±15°。"
+   },
+   {
+    "file": "assets/ui/ui_sparkle_32@2x.png",
+    "pixel_size": [
+     32,
+     32
+    ],
+    "size_1x": [
+     16,
+     16
+    ],
+    "anchor": "center",
+    "notes": "同 ui_sparkle@2x。"
+   },
+   {
+    "file": "assets/ui/ui_sparkle_24@2x.png",
+    "pixel_size": [
+     24,
+     24
+    ],
+    "size_1x": [
+     12,
+     12
+    ],
+    "anchor": "center",
+    "notes": "小号星星，和 32 混用让三颗大小不一。"
+   }
+  ]
  }
 }
