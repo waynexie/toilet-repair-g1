@@ -49,7 +49,7 @@
       "id": "S4_react",
       "type": "avatar_bubble",
       "lineKey": "orders.o1.bubbles.dont_flush",
-      "mood": "p3",
+      "mood": "shock",
       "autoHideMs": 2000,
       "trigger": "flush_anim_done",
       "target": null,
@@ -186,7 +186,13 @@
       "idle_8000": "urge",
       "cleared": "thanks"
     },
-    "chatOnce": true
+    "chatOnce": true,
+    "moodAssets": {
+      "wang_ayi": {
+        "shock": "assets/characters/avatar_wang_ayi_shock@2x.png"
+      },
+      "_note": "额外表情，不占 p 档位；没有对应图的客户 fallback 到当前 p 档"
+    }
   },
   "repeat": {
     "flag": "tutorialDone",
