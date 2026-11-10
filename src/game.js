@@ -40,7 +40,9 @@ const SFX={
  hook(){tone(1800,.05,'square',.12);tone(900,.06,'square',.1,null,.05);},
  wrong(){tone(220,.12,'square',.12,160);},
  click(){tone(800,.04,'triangle',.15);},
- notify(){tone(1175,.08,'sine',.2);tone(1568,.1,'sine',.2,null,.1);}
+ notify(){tone(1175,.08,'sine',.2);tone(1568,.1,'sine',.2,null,.1);},
+ ring(){[0,.18].forEach(d=>{tone(880,.12,'sine',.18,null,d);tone(660,.12,'sine',.12,null,d+.06);});},
+ ad(){tone(440,.1,'triangle',.15);}
 };
 const CAN_VIBRATE=typeof navigator.vibrate==='function'&&!/iP(hone|ad|od)/.test(navigator.userAgent);
 // iOS 等不支持震动的设备：用低频"咚"声 + 轻微画面抖动代替
@@ -69,8 +71,30 @@ Promise.all(['data/orders.json','data/narrative.json'].map(u=>fetch(u).then(r=>r
 function rhythm(up){return CFG.tools[up?'plunger_pro':'plunger'].rhythm;}
 function win(up){const r=rhythm(up);return {ws:(r.rebounceMs-r.windowMs/2)/1000,wl:r.windowMs/1000,ps:(r.rebounceMs-r.perfectWindowMs/2)/1000,pl:r.perfectWindowMs/1000};}
 function splashAbove(){return rhythm(S.upgraded).overPressSplashIfWaterAbove;}
-function socialAfter(key){if(!NAR)return [];return NAR.social.filter(m=>m.after===key).map(m=>{const ch=CHANNEL[m.channel]||m.channel;const who=(NAR.characters[m.sender]||{}).name||'';
- const text=m.text.replace('{HERO}',heroName());return {ch,group:m.channel==='family_group',text:m.channel==='family_group'?who+'：'+text:text};});}
+function cname(id){return ((NAR&&NAR.characters[id])||{}).name||id;}
+function socialAfter(key){if(!NAR)return [];return NAR.social.filter(m=>m.after===key).map(m=>{const ch=CHANNEL[m.channel]||m.channel;const who=cname(m.sender);
+ const text=m.text.replace('{HERO}',heroName());const msg={ch,channel:m.channel,group:m.channel==='family_group',sender:m.sender,raw:text,text:m.channel==='family_group'?who+'：'+text:text};
+ deliver(msg);return msg;});}
+// ---------- 喂信 ----------
+const PH={open:false,view:'list',chats:{},order:[],unread:0,toastT:0};
+function appName(){return (NAR&&NAR.app&&NAR.app.chat_app_name)||'喂信';}
+function phoneReset(){PH.open=false;PH.view='list';PH.chats={};PH.order=[];PH.unread=0;
+ if(!NAR)return;const fg=NAR.family_group;chat('family_group').msgs=fg.history.map(h=>({sender:h.sender,text:h.text}));}
+function chat(ch){if(!PH.chats[ch]){PH.chats[ch]={ch,msgs:[],unread:0};PH.order.unshift(ch);}return PH.chats[ch];}
+function deliver(m){const c=chat(m.channel);c.msgs.push({sender:m.sender,text:m.raw,isNew:true});c.unread++;PH.unread++;PH.order=[m.channel,...PH.order.filter(x=>x!==m.channel)];}
+function chatTitle(ch){return ch==='family_group'?((NAR.app&&NAR.app.family_group_name)||'相亲相爱一家人')+'('+NAR.family_group.member_count_display+')':(CHANNEL[ch]||ch);}
+function canOpenPhone(){return S.screen!=='play'&&S.screen!=='title'&&!S.dexCard;}
+function openPhone(view){if(!canOpenPhone())return;PH.open=true;PH.view=view||'list';PH.toastT=0;SFX.click();if(PH.view.startsWith('chat:'))readChat(PH.view.slice(5));}
+function readChat(ch){const c=PH.chats[ch];if(c){PH.unread-=c.unread;c.unread=0;}}
+// ---------- 问老师傅（激励广告占位） ----------
+function masterHint(){const d=O.d,h=held;
+ if(O.phase==='observe')return '老师傅：“先冲一下水，看看水怎么走。”';
+ if(O.phase==='verify')return '老师傅：“通了就再冲一次，验一下。”';
+ if(O.water>splashAbove()&&!O.usedScoop)return '老师傅：“水太满别急着压，先拿水瓢舀到桶里。”';
+ if(d.clog==='hard'&&!O.usedSnake)return '老师傅：“咚咚响、水不动，是硬东西卡住了，换弹簧的，转到底再往上拉。”';
+ if(d.clog==='hard')return '老师傅：“转到底，钩住了就往上拉。”';
+ return '老师傅：“皮搋子压到底，别急着拉，等圈变绿那一下再提。”';}
+function askMaster(){S.ad={t:0,dur:3};SFX.ad();}
 const TOOLS={plunger:{name:'皮搋子'},scoop:{name:'水瓢'},snake:{name:'弹簧疏通器'}};
 
 // ---------- 布局常量 ----------
@@ -201,7 +225,7 @@ function scoopMove(){
  const h=held;
  const inWater=((h.x-BOWL.x)**2/(INNER.rx**2)+(h.y-WATER_Y)**2/(INNER.ry**2))<1;
  if(inWater&&!h.scoopFull){
-  if(O.water>.4){h.scoopFull=true;O.water-=.2;O.wTarget=O.water;SFX.fill();buzz(15);burst(h.x,h.y,8,'#bfe9ff',120,3);
+  if(O.water>.4){h.scoopFull=true;O.usedScoop=true;O.water-=.2;O.wTarget=O.water;SFX.fill();buzz(15);burst(h.x,h.y,8,'#bfe9ff',120,3);
    if(O.water<=splashAbove()&&O.water+.2>splashAbove()){float('水位安全',BOWL.x,WATER_Y-70,'#7dffb0',18);}}
   else if(!h.scraped){h.scraped=true;float('舀不动了',h.x,h.y-30,'#ddd',16);}
  }
@@ -271,7 +295,9 @@ function update(dt){
  if(S.screen==='result'){S.resultT+=dt;const r=S.result;const tgt=Math.min(r.total,Math.floor(S.resultT*60));
   if(tgt>r.coinsShown&&S.resultT>.4){if(Math.floor(tgt/5)!==Math.floor(r.coinsShown/5))SFX.coin();r.coinsShown=tgt;}
   if(S.resultT>.4&&!r.paid&&r.coinsShown>=r.total){r.paid=true;S.money+=r.total;buzz(30);}
-  if(S.resultT>1.4&&S.phoneQueue.length&&!S.phoneShown){S.phoneShown=true;SFX.notify();buzz([15,60,15]);}}
+  if(S.resultT>1.4&&S.phoneQueue.length&&!S.phoneShown){S.phoneShown=true;PH.toastT=3.4;SFX.notify();buzz([15,60,15]);}}
+ if(PH.toastT>0)PH.toastT-=dt;
+ if(S.ad){S.ad.t+=dt;if(O&&O.startT!=null)O.startT+=dt;if(S.ad.t>=S.ad.dur){S.ad=null;if(O)say(masterHint(),5);SFX.notify();}return;}
  if(!O||S.screen!=='play')return;
  if(O.hintT>0)O.hintT-=dt;
  if(O.ghost>0)O.ghost-=dt;
@@ -447,12 +473,56 @@ function drawHUD(){
  button(save.reduced?'🐢':'✨',W-84,84,34,30,()=>{save.reduced=!save.reduced;persist();},'#fff8eb');
  // 旧手机角
  rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#4a6a80';g.fill();g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=1;g.beginPath();g.moveTo(344,640);g.lineTo(362,668);g.stroke();
+ if(PH.unread>0){g.beginPath();g.arc(374,630,9,0,7);g.fillStyle='#e8453c';g.fill();txt(String(PH.unread),374,630,11,'#fff');}
+ if(O&&S.screen==='play'&&O.phase==='work'&&!O.anim&&!S.ad)button('📞 问老师傅',14,540,104,34,askMaster,'#fff8eb');
 }
 function drawHintBubble(){
  if(!O||O.hintT<=0||!O.hint)return;const a=Math.min(1,O.hintT*2);g.globalAlpha=a;
- g.font='700 15px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';const w=Math.min(W-40,g.measureText(O.hint).width+30);
- rr(W/2-w/2,600,w,40,20);fs('#fffdf6',2.5);txt(O.hint,W/2,620,15,INK);g.globalAlpha=1;
+ const L=bubbleText(O.hint,W-80);g.font='500 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';
+ const fsz=L.length>1?14:15;g.font=`700 ${fsz}px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif`;const w=Math.min(W-30,Math.max(...L.map(l=>g.measureText(l).width))+30),h=L.length*20+20;
+ rr(W/2-w/2,640-h,w,h,18);fs('#fffdf6',2.5);L.forEach((l,i)=>txt(l,W/2,640-h+20+i*20,fsz,INK));g.globalAlpha=1;
 }
+function phoneBtn(){if(canOpenPhone()&&!PH.open)buttons.push({x:330,y:620,w:52,h:70,fn:()=>openPhone('list')});}
+function drawAd(){if(!S.ad)return;g.fillStyle='rgba(10,10,14,.88)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:()=>{}});
+ rr(40,250,W-80,240,18);fs('#2b2b33',2);txt('广告占位',W/2,300,15,'#aaa');txt('（正式版这里播激励视频）',W/2,328,13,'#888','center','500');
+ txt('📞 正在接通老师傅…',W/2,390,18,'#fff');otxt(String(Math.ceil(S.ad.dur-S.ad.t)),W/2,440,34,'#ffcf3f');}
+function avatar(id,x,y,r){const nm=cname(id);let hsh=0;for(const c of id)hsh=(hsh*31+c.charCodeAt(0))%360;g.beginPath();g.arc(x,y,r,0,7);g.fillStyle=id==='hero'?'#7aa7c7':`hsl(${hsh},45%,62%)`;g.fill();
+ txt(id==='hero'?'我':nm.slice(-1),x,y+1,r*.95,'#fff','center','700');}
+function bubbleText(t,maxW){g.font='500 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';const out=[];let cur='';for(const ch of t){if(g.measureText(cur+ch).width>maxW){out.push(cur);cur=ch;}else cur+=ch;}if(cur)out.push(cur);return out;}
+function drawPhone(){if(!PH.open)return;
+ g.fillStyle='rgba(20,12,8,.6)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:()=>{PH.open=false;SFX.click();}});
+ const X=28,Y=96,PW=W-56,PHh=650;rr(X-8,Y-8,PW+16,PHh+16,26);fs('#1e1e22',3);
+ g.save();rr(X,Y,PW,PHh,18);g.clip();g.fillStyle='#ededed';g.fillRect(X,Y,PW,PHh);
+ buttons.push({x:X,y:Y,w:PW,h:PHh,fn:()=>{}});
+ // 顶栏
+ g.fillStyle='#f7f7f7';g.fillRect(X,Y,PW,46);g.fillStyle='#ddd';g.fillRect(X,Y+46,PW,1);
+ const v=PH.view;const back=v!=='list';
+ if(back){txt('‹',X+18,Y+23,26,'#222');buttons.push({x:X,y:Y,w:60,h:46,fn:()=>{PH.view=v==='members'?'chat:family_group':'list';SFX.click();}});}
+ txt(v==='list'?appName()+(PH.unread?`(${PH.unread})`:''):v==='members'?'群成员('+NAR.family_group.member_count_display+')':chatTitle(v.slice(5)),X+PW/2,Y+23,15,'#222');
+ txt('✕',X+PW-20,Y+23,16,'#666');buttons.push({x:X+PW-50,y:Y,w:50,h:46,fn:()=>{PH.open=false;SFX.click();}});
+ const top=Y+47;
+ if(v==='list'){PH.order.forEach((ch,i)=>{const c=PH.chats[ch];const y=top+i*64;g.fillStyle='#fff';g.fillRect(X,y,PW,63);
+   if(ch==='family_group'){rr(X+12,y+10,44,44,6);g.fillStyle='#d9d9d9';g.fill();NAR.family_group.members.slice(0,4).forEach((id,j)=>avatar(id,X+23+(j%2)*22,y+21+Math.floor(j/2)*22,9));}
+   else avatar(ch.replace('dm_',''),X+34,y+32,22);
+   const last=c.msgs[c.msgs.length-1];txt(chatTitle(ch),X+66,y+22,14,'#222','left','600');
+   let pv=last?(ch==='family_group'?cname(last.sender)+'：':'')+last.text:'';const L=bubbleText(pv,PW-110);txt(L[0]+(L.length>1?'…':''),X+66,y+44,12,'#999','left','500');
+   if(c.unread){g.beginPath();g.arc(X+52,y+12,8,0,7);g.fillStyle='#e8453c';g.fill();txt(String(c.unread),X+52,y+12,10,'#fff');}
+   buttons.push({x:X,y,w:PW,h:63,fn:()=>{PH.view='chat:'+ch;readChat(ch);SFX.click();}});});
+  txt('朋友圈（之后开放）',X+PW/2,Y+PHh-24,12,'#aaa','center','500');}
+ else if(v==='members'){const mem=NAR.family_group.members;mem.forEach((id,i)=>{const cx=X+40+(i%5)*((PW-40)/5),cy=top+40+Math.floor(i/5)*72;avatar(id,cx,cy,22);txt(id==='hero'?'我':cname(id),cx,cy+34,12,'#555','center','500');});
+  const n=mem.length,cx=X+40+(n%5)*((PW-40)/5),cy=top+40+Math.floor(n/5)*72;g.beginPath();g.arc(cx,cy,22,0,7);g.fillStyle='#ccc';g.fill();txt('+'+(NAR.family_group.member_count_display-n),cx,cy,13,'#fff');}
+ else{const ch=v.slice(5),c=PH.chats[ch];let y=top+6;
+  if(ch==='family_group'){g.fillStyle='#f7f7f7';g.fillRect(X,top,PW,40);NAR.family_group.members.slice(0,9).forEach((id,i)=>avatar(id,X+20+i*27,top+20,11));txt('+'+(NAR.family_group.member_count_display-9)+' ›',X+PW-24,top+20,12,'#888');
+   buttons.push({x:X,y:top,w:PW,h:40,fn:()=>{PH.view='members';SFX.click();}});y=top+48;}
+  // 只显示最近能放下的消息
+  const items=c.msgs.map(m=>{const L=bubbleText(m.text,PW-120);return {m,L,h:Math.max(40,L.length*18+22)+(ch==='family_group'?14:0)};});
+  const maxH=Y+PHh-40-y;let sum=0,start=items.length;while(start>0&&sum+items[start-1].h<=maxH){sum+=items[start-1].h;start--;}
+  if(start>0){txt('· · ·',X+PW/2,y+6,12,'#aaa');y+=14;}
+  items.slice(start).forEach(({m,L,h})=>{avatar(m.sender,X+24,y+18,15);let by=y;if(ch==='family_group'){txt(cname(m.sender),X+46,y+6,11,'#999','left','500');by+=14;}
+   g.font='500 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';const bw=Math.max(...L.map(l=>g.measureText(l).width))+20;rr(X+46,by,bw,L.length*18+14,6);g.fillStyle=m.isNew?'#fff':'#fafafa';g.fill();
+   L.forEach((l,i)=>txt(l,X+56,by+16+i*18,13,'#222','left','500'));y+=h;});
+  txt(ch==='family_group'?'你：'+(NAR.family_group.hero_status||'已读不回'):'已读',X+PW/2,Y+PHh-20,12,'#aaa','center','500');}
+ g.restore();}
 function drawObserveHint(){
  if(!O||O.phase!=='observe'||O.anim)return;
  const y=FLUSH.y+40+Math.sin(S.t*6)*6;g.font='34px sans-serif';g.textAlign='center';g.fillText('👆',FLUSH.x+30,y);
@@ -488,26 +558,32 @@ function draw(){
  if(S.screen==='upgrade')drawUpgrade();
  if(S.screen==='end')drawEnd();
  if(S.dexCard)drawDexCard();
+ phoneBtn();drawPhone();drawAd();
 }
 function drawTitle(){
  g.fillStyle='#efe2c4';g.fillRect(0,0,W,H);g.fillStyle='#a9d3c0';g.fillRect(0,H*.55,W,H*.45);
  otxt('重生之我在',W/2,170,30,'#fff8eb');otxt('澳洲修马桶',W/2,215,42,'#ffcf3f');
  txt('G1 玩法原型 · 占位美术',W/2,262,14,'#6b4a36','center','600');
  drawPlunger(W/2,470+Math.sin(S.t*3)*6,(Math.sin(S.t*3)+1)/2*.6,false,1.4);
- button('开 工',W/2-90,560,180,60,()=>{S.money=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};startOrder(0);},'#ffb53d');
+ button('开 工',W/2-90,560,180,60,()=>{S.money=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();startOrder(0);},'#ffb53d');
  txt('建议用手机竖屏打开，戴耳机体验更好',W/2,650,13,'#6b4a36','center','500');
  button(save.muted?'🔇 声音关':'🔊 声音开',W/2-120,690,110,36,()=>{save.muted=!save.muted;persist();},'#fff8eb');
  button(save.reduced?'减少动效：开':'减少动效：关',W/2+10,690,120,36,()=>{save.reduced=!save.reduced;persist();},'#fff8eb');
 }
 function panel(y,h){g.fillStyle='rgba(20,12,8,.5)';g.fillRect(0,0,W,H);rr(24,y,W-48,h,22);fs('#fff8eb',4);}
 function drawBrief(){
- const d=O.d;panel(200,330);
- txt('📱 新订单',W/2,236,15,'#7a5a48');txt(d.place,W/2,272,22,INK,'center','800');
+ const d=O.d;const call=NAR&&NAR.calls&&NAR.calls[d.key];
+ if(call&&!O.callAccepted){O.ringT=(O.ringT||0);if(O.ringT<=0){O.ringT=1.4;if(call.type==='call')SFX.ring();else SFX.notify();}O.ringT-=1/60;
+  panel(200,330);const k=1+Math.sin(S.t*12)*.04;g.save();g.translate(W/2,300);g.scale(k,k);avatar(call.caller,0,0,38);g.restore();
+  txt(cname(call.caller),W/2,362,20,INK,'center','800');txt(call.type==='call'?'来电…':appName()+' · 语音消息',W/2,392,14,'#7a5a48');
+  button(call.type==='call'?'📞 接听':'▶ 听语音',W/2-80,488,160,48,()=>{O.callAccepted=true;},'#4fc26f','#fff');return;}
+ panel(200,330);
+ txt(call?(call.type==='call'?'📞 通话中':'🔊 语音'):'📱 新订单',W/2,236,15,'#7a5a48');txt(d.place,W/2,272,22,INK,'center','800');
  g.font='54px sans-serif';g.textAlign='center';g.fillText(d.face,W/2,335);
  txt(d.who,W/2,380,15,'#7a5a48');
- const lines=wrap(`“${d.line}”`,W-100,16);lines.forEach((l,i)=>txt(l,W/2,412+i*24,16,INK,'center','600'));
+ const lines=wrap(`“${call?call.text.replace(/^\[语音\]\s*/,''):d.line}”`,W-100,16);lines.forEach((l,i)=>txt(l,W/2,412+i*24,16,INK,'center','600'));
  txt(`工钱 ¥${d.base} · 小费最多 ¥${d.tip}`,W/2,470,13,'#2f8a4a');
- button('上门',W/2-80,488,160,48,()=>{S.screen='play';},'#ffb53d');
+ button('上门',W/2-80,488,160,48,()=>{S.screen='play';if(call&&d.id>1&&d.line)say('“'+d.line+'”',2.6);},'#ffb53d');
 }
 function wrap(t,maxW,size){g.font=`600 ${size}px sans-serif`;const out=[];let cur='';for(const ch of t){if(g.measureText(cur+ch).width>maxW){out.push(cur);cur=ch;}else cur+=ch;}if(cur)out.push(cur);return out;}
 // 右下角旧手机亮起 + 微信样式通知预览（可忽略，不承载玩法）
@@ -516,9 +592,11 @@ function wxIcon(x,y,s){rr(x,y,s,s,s*.24);g.fillStyle='#07c160';g.fill();g.fillSt
  g.fillStyle='#07c160';[[.34,.42],[.5,.42]].forEach(([a,b])=>{g.beginPath();g.arc(x+s*a,y+s*b,s*.035,0,7);g.fill();});}
 function drawNotify(m,k,t){
  const wob=t<.6?Math.sin(t*60)*2:0;g.save();g.translate(wob,0);rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#bfe3ff';g.fill();wxIcon(346,642,20);g.restore();
+
  const rows=[];m.forEach(n=>{let r=rows.find(r=>r.ch===n.ch);if(!r){r={ch:n.ch,n:0};rows.push(r);}r.n++;r.text=n.text;});
  const h=40+rows.length*20,x=30,y=686-h;g.save();g.globalAlpha=k;g.translate(0,(1-k)*30);
- rr(x,y,296,h,12);fs('rgba(250,250,250,.97)',2);wxIcon(x+10,y+9,18);txt('喂信',x+34,y+18,12,'#888','left','600');txt('现在',x+284,y+18,11,'#aaa','right','500');
+ buttons.push({x,y,w:296,h,fn:()=>openPhone(rows.length===1?'chat:'+m[m.length-1].channel:'list')});
+ rr(x,y,296,h,12);fs('rgba(250,250,250,.97)',2);wxIcon(x+10,y+9,18);txt(appName(),x+34,y+18,12,'#888','left','600');txt('现在',x+284,y+18,11,'#aaa','right','500');
  rows.forEach((r,i)=>{const yy=y+40+i*20;const head=(r.n>1?`[${r.n}条]`:'')+r.ch+'：';txt(head,x+12,yy,13,'#222','left','700');g.font='700 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';const hw=g.measureText(head).width;
   g.font='500 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';let t=r.text;const max=272-hw;if(g.measureText(t).width>max){while(t.length&&g.measureText(t+'…').width>max)t=t.slice(0,-1);t+='…';}txt(t,x+12+hw,yy,13,'#444','left','500');});
  g.restore();g.globalAlpha=1;}
@@ -533,7 +611,7 @@ function drawResult(){
   rr(50,380,W-100,34,10);fs(diff>0?'#d8ffe6':'#ffe3dc',2);txt(diff>0?`比第 2 单（同款满水堵）快了 ${diff.toFixed(1)} 秒`:`比第 2 单慢了 ${(-diff).toFixed(1)} 秒`,W/2,397,14,INK);}
  otxt('+¥'+r.coinsShown,W/2,450,40,'#ffcf3f');
  // 手机通知
- if(S.phoneShown&&S.phoneQueue.length){const m=S.phoneQueue;const k=Math.min(1,(S.resultT-1.4)*4);
+ if(S.phoneShown&&S.phoneQueue.length&&PH.toastT>0&&!PH.open){const m=S.phoneQueue;const k=Math.min(1,(S.resultT-1.4)*4,PH.toastT*3);
   drawNotify(m,k,S.resultT-1.4);}
  const next=r.d.id===ORDERS.length?'收工':'接下一单 ▶';
  if(S.resultT>1)button(next,W/2-90,505,180,52,()=>{S.phoneShown=false;
@@ -566,5 +644,5 @@ function drawEnd(){
 }
 
 // 调试/测试钩子
-window.__G={S,win,get CFG(){return CFG;},timesText,get save(){return save;},get O(){return O;},ORDERS,startOrder,setUpgraded:v=>S.upgraded=v};
+window.__G={S,PH,openPhone,win,get CFG(){return CFG;},timesText,get save(){return save;},get O(){return O;},ORDERS,startOrder,setUpgraded:v=>S.upgraded=v};
 requestAnimationFrame(loop);
