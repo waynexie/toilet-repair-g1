@@ -173,7 +173,7 @@
         "防盗门锁芯有点锈"
       ],
       "call": {
-        "type": "call",
+        "type": "weixin_msg",
         "caller": "wang_ayi",
         "text": "师傅，又是我，厨房下水慢。"
       },
@@ -376,26 +376,26 @@
     "hero_status": "已读不回"
   },
   "calls": {
-    "_note": "G1.5 接单改为来电/语音。每单开始前弹来电，接听后显示一句，自动生成订单卡。",
+    "_note": "接单入口：普通单走喂信私聊消息（type=weixin_msg），只有紧急/大活儿才来电（type=call）。o2/o4 在 orders.json 里是 urgent:true，保留来电。",
     "o1": {
-      "type": "call",
+      "type": "weixin_msg",
       "caller": "wang_ayi",
-      "text": "喂，师傅吗？我家马桶冲不下去了。"
+      "text": "师傅，我家马桶冲不下去了，今天能来吗？"
     },
     "o2": {
-      "type": "voice",
+      "type": "call",
       "caller": "xiao_xu",
-      "text": "[语音] 师傅能马上来吗，我九点考试！"
+      "text": "师傅能马上来吗？我九点考试！"
     },
     "o3": {
-      "type": "call",
+      "type": "weixin_msg",
       "caller": "li_jie",
       "text": "师傅，厕所堵了，孩子刚在里面玩。"
     },
     "o4": {
-      "type": "voice",
+      "type": "call",
       "caller": "xiao_xu",
-      "text": "[语音] 师傅，又是我……又堵了。"
+      "text": "师傅，又是我！又堵了，我要去面试！"
     }
   },
   "call_master": {
