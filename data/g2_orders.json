@@ -1,0 +1,118 @@
+{
+  "_note": "G2 订单、营业日与门锁配置草案（策划维护）。复用 观察→选工具→手势→验收 框架。台词以 narrative.json 为准，这里只放 id。",
+  "days": [
+    {
+      "day": 1,
+      "fixedOrders": [
+        "o1",
+        "o2",
+        "o3",
+        "o4"
+      ],
+      "note": "G1 四单作为第一天，教学期不出接单板"
+    },
+    {
+      "day": 2,
+      "board": [
+        "o5",
+        "o6",
+        "o7"
+      ],
+      "pickCount": 2,
+      "note": "接单板挂 3 张挑 2；o5 必在其中且标注老客户王阿姨"
+    }
+  ],
+  "orders": [
+    {
+      "id": "o5",
+      "customer": "wang_ayi",
+      "target": "toilet",
+      "fault": "soft",
+      "object": "paper",
+      "waterLevel": 0.7,
+      "clogHp": 5,
+      "basePay": 40,
+      "tipMax": 12,
+      "boardHint": "马桶不走水",
+      "followUp": "lock_wang"
+    },
+    {
+      "id": "o6",
+      "target": "toilet",
+      "fault": "hard",
+      "object": "toothbrush",
+      "waterLevel": 0.9,
+      "clogHp": 1,
+      "basePay": 70,
+      "tipMax": 20,
+      "boardHint": "马桶完全冲不动",
+      "note": "满水+硬物复合：先舀水再用弹簧，第一次两种判断叠加",
+      "unlockCollection": "toothbrush"
+    },
+    {
+      "id": "o7",
+      "target": "toilet",
+      "fault": "soft",
+      "object": "paper",
+      "waterLevel": 0.5,
+      "clogHp": 4,
+      "basePay": 35,
+      "tipMax": 10,
+      "distance": "far",
+      "boardHint": "马桶有点堵",
+      "note": "低难度远单，报酬低，用来制造挑单取舍"
+    },
+    {
+      "id": "lock_wang",
+      "type": "side_job",
+      "customer": "wang_ayi",
+      "target": "door_lock",
+      "fault": "stiff_cylinder",
+      "basePay": 25,
+      "tipMax": 10,
+      "trigger": "after_o5_settlement",
+      "declinable": true,
+      "observe": {
+        "action": "tap_key",
+        "clue": "钥匙插进去拧不动，发出涩涩的摩擦声"
+      },
+      "steps": [
+        "lube_spray",
+        "turn_key"
+      ],
+      "verify": "door_opens_clean_click",
+      "unlocksReferral": "lock_referral_1"
+    }
+  ],
+  "tools": {
+    "lube_spray": {
+      "name": "润滑喷剂",
+      "gesture": "long_press",
+      "holdMs": 900,
+      "overHoldMs": 2200,
+      "overHoldFeedback": "喷多了往下滴，客户皱眉"
+    },
+    "turn_key": {
+      "name": "钥匙",
+      "gesture": "rotate",
+      "degreesToOpen": 180,
+      "stiffBeforeLube": true,
+      "wrongFeedback": "拧不动，咯吱一声"
+    },
+    "screwdriver": {
+      "name": "螺丝刀",
+      "gesture": "rotate",
+      "note": "G2 先不用，留给第二种门锁故障：把手松动"
+    }
+  },
+  "toolGrants": {
+    "lube_spray": "lock_wang_start",
+    "turn_key": "lock_wang_start"
+  },
+  "nextFault": {
+    "id": "loose_handle",
+    "tool": "screwdriver",
+    "gesture": "rotate",
+    "note": "转介绍单使用，验证门锁框架可扩展"
+  }
+}
