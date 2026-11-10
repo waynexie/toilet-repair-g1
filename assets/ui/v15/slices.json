@@ -183,6 +183,51 @@
    "margin_2x": 32,
    "note": "接听按钮 72（不含图标；按下态已含下移 2px）"
   },
+  "btn_secondary_s_normal": {
+   "file": "assets/ui/v15/btn_secondary_s_normal@2x.png",
+   "size_2x": [
+    168,
+    128
+   ],
+   "margin_2x": 32,
+   "nine_slice_2x": {
+    "left": 60,
+    "top": 64,
+    "right": 60,
+    "bottom": 64
+   },
+   "note": "小号次按钮 高 32（瓷面，圆角 12，2px 描边；字 T5 Bold 由代码画，左右内边距 12 含描边外 10+2）；按下态已含下移 2px；禁用字色 #A8957E。点击区上下各扩 8 → 高 48"
+  },
+  "btn_secondary_s_pressed": {
+   "file": "assets/ui/v15/btn_secondary_s_pressed@2x.png",
+   "size_2x": [
+    168,
+    128
+   ],
+   "margin_2x": 32,
+   "nine_slice_2x": {
+    "left": 60,
+    "top": 64,
+    "right": 60,
+    "bottom": 64
+   },
+   "note": "小号次按钮 高 32（瓷面，圆角 12，2px 描边；字 T5 Bold 由代码画，左右内边距 12 含描边外 10+2）；按下态已含下移 2px；禁用字色 #A8957E。点击区上下各扩 8 → 高 48"
+  },
+  "btn_secondary_s_disabled": {
+   "file": "assets/ui/v15/btn_secondary_s_disabled@2x.png",
+   "size_2x": [
+    168,
+    128
+   ],
+   "margin_2x": 32,
+   "nine_slice_2x": {
+    "left": 60,
+    "top": 64,
+    "right": 60,
+    "bottom": 64
+   },
+   "note": "小号次按钮 高 32（瓷面，圆角 12，2px 描边；字 T5 Bold 由代码画，左右内边距 12 含描边外 10+2）；按下态已含下移 2px；禁用字色 #A8957E。点击区上下各扩 8 → 高 48"
+  },
   "icon_phone_32": {
    "file": "assets/ui/v15/icon_phone_32@2x.png",
    "size_2x": [

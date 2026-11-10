@@ -130,22 +130,33 @@ screen('hifi_v15_day_end', f'第 {N} 天收工（G2 drawDayEnd，dayDisplay.sett
                 dict(t='pos', n='主按钮', e='#btn', k=['h', 'w'], ex=dict(h=56, w=294)),
                 dict(t='pad', n='卡片(标题行)', c='#card', k='#dTitle', sides=[0, 1, 3], e=[24, 24, None, 24]),
                 dict(t='pad', n='卡片底(到主按钮)', c='#card', k='#btn', sides=[2], e=[None, None, 24, None])])
-def settings(re):
-    rows = '<div class="stg" id="sg0"><span class="k">声音</span><div class="sw"></div></div>' \
-           '<div class="stg" id="sg1"><span><span class="k">省动效</span><span class="s">减少抖动和闪光</span></span><div class="sw off"></div></div>' \
-           '<div class="stg dis" id="sg2"><span><span class="k">震动</span><span class="s">本机不支持</span></span><div class="sw off"></div></div>'
-    inner = f'<div class="srow0" id="sRow"><span class="sp" style="text-align:left"></span><span class="dttl" id="sTitle">设置<i class="blm" id="blA"></i></span><span class="sp"><span class="dday" id="sDay">{DD["settingsPanel"]["format"].replace("{n}", str(N))}<i class="blm" id="blB"></i></span></span></div>' \
-            f'<div id="sRows" style="margin-top:8px">{rows}</div><div class="stip" id="sTip" style="margin-top:16px">卡住了？问老钱 · 今日免费 1 次</div>' + inbtn('继续干活', re, 16) + \
-            '<div class="sfoot" id="sFoot" style="margin-top:8px">点卡片外也能关闭 · 打开时游戏暂停</div>'
-    return base(re, client='wang_ayi', money=238, pay='¥40', phone_on=False) + '<div class="scrim"></div>' + card(inner, 176, 400, re) + phone(False)
-screen('hifi_v15_settings', f'设置面板（dayDisplay.settingsPanel）：第 {N} 天某单进行中点齿轮打开，金币 238、本单 ¥40（示意）；标题「设置」居中，「第 {N} 天」在标题行右端、与标题基线对齐；遮罩 rgba(43,30,20,.6) 压住场景和 HUD，手机在遮罩上方（弹层打开时不弹通知条）',
-       settings, [dict(t='pos', n='卡片', e='#card', k=['l', 't', 'r', 'h'], ex=dict(l=24, t=176, r=24, h=400)), dict(t='center', n='标题「设置」', e='#sTitle'),
-                  dict(t='base', n='「第 N 天」与标题', a='#blA', b='#blB'), dict(t='style', n='「第 N 天」', e='#sDay', ex=dict(fs='12px', lh='16px', fw='400', c='rgb(122, 90, 64)', num='tabular-nums')),
-                  dict(t='pad', n='卡片(「第 N 天」右)', c='#card', k='#sDay', sides=[1], e=[None, 24, None, None]), dict(t='pad', n='卡片(标题行)', c='#card', k='#sRow', sides=[0], e=[24, None, None, None]),
-                  dict(t='gap', n='标题行→开关', a='#sRow', b='#sRows', ax='v', e=8), dict(t='gap', n='开关→提示条', a='#sRows', b='#sTip', ax='v', e=16),
-                  dict(t='gap', n='提示条→主按钮', a='#sTip', b='#btn', ax='v', e=16), dict(t='pos', n='主按钮', e='#btn', k=['h'], ex=dict(h=56)),
-                  dict(t='gap', n='主按钮→说明', a='#btn', b='#sFoot', ax='v', e=8), dict(t='pad', n='卡片底', c='#card', k='#sFoot', sides=[2], e=[None, None, 24, None])])
-# 参考图（不进 qa/pixel）：S4 用 shock 表情
+RP = json.load(open(ROOT + '/data/onboarding.json'))
+def settings_fn(replayed):
+    def settings(re):
+        rows = '<div class="stg" id="sg0"><span class="k">声音</span><div class="sw"><i></i></div></div>' \
+               '<div class="stg" id="sg1"><span><span class="k">省动效</span><span class="s">减少抖动和闪光</span></span><div class="sw off"><i></i></div></div>' \
+               '<div class="stg dis" id="sg2"><span><span class="k">震动</span><span class="s">本机不支持</span></span><div class="sw off"><i></i></div></div>' \
+               f'<div class="stg" id="sg3"><span id="rpL"><span class="k" id="rpK">重新看新手引导</span>{"<span class=s id=rpS>下次开工时重新引导</span>" if replayed else ""}</span>' + sbtn('重看', 'disabled' if replayed else 'normal', re) + '</div>'
+        inner = f'<div class="srow0" id="sRow"><span class="sp" style="text-align:left"></span><span class="dttl" id="sTitle">设置<i class="blm" id="blA"></i></span><span class="sp"><span class="dday" id="sDay">{DD["settingsPanel"]["format"].replace("{n}", str(N))}<i class="blm" id="blB"></i></span></span></div>' \
+                f'<div id="sRows" style="margin-top:8px">{rows}</div><div class="stip" id="sTip" style="margin-top:16px">卡住了？问老钱 · 今日免费 1 次</div>' + inbtn('继续干活', re, 16) + \
+                '<div class="sfoot" id="sFoot" style="margin-top:8px">点卡片外也能关闭 · 打开时游戏暂停</div>'
+        return base(re, client='wang_ayi', money=238, pay='¥40', phone_on=False) + '<div class="scrim"></div>' + card(inner, 162, 456, re) + phone(False)
+    return settings
+SET_ANN = [dict(t='pos', n='卡片（垂直居中）', e='#card', k=['l', 't', 'r', 'h', 'b'], ex=dict(l=24, t=162, r=24, h=456, b=162)), dict(t='center', n='标题「设置」', e='#sTitle'),
+           dict(t='base', n='「第 N 天」与标题', a='#blA', b='#blB'), dict(t='style', n='「第 N 天」', e='#sDay', ex=dict(fs='12px', lh='16px', fw='400', c='rgb(122, 90, 64)', num='tabular-nums')),
+           dict(t='pad', n='卡片(「第 N 天」右)', c='#card', k='#sDay', sides=[1], e=[None, 24, None, None]), dict(t='pad', n='卡片(标题行)', c='#card', k='#sRow', sides=[0], e=[24, None, None, None]),
+           dict(t='gap', n='标题行→开关', a='#sRow', b='#sRows', ax='v', e=8),
+           dict(t='pos', n='「重看」行高（同开关行）', e='#sg3', k=['h'], ex=dict(h=56)), dict(t='gap', n='震动行→重看行', a='#sg2', b='#sg3', ax='v', e=0),
+           dict(t='style', n='行标题「重新看新手引导」（T3 同开关行）', e='#rpK', ex=dict(fs='16px', lh='24px', fw='700')),
+           dict(t='pos', n='「重看」按钮', e='#sbtn', k=['h', 'w'], ex=dict(h=32, w=48)), dict(t='pad', n='「重看」左右（含 2px 描边，同全局内边距口径）', c='#sbtn', k='#sbtnT', sides=[1, 3], e=[None, 12, None, 12]),
+           dict(t='pad', n='「重看」右边距（同开关）', c='#sg3', k='#sbtn', sides=[1], e=[None, 0, None, None]),
+           dict(t='gap', n='重看行→提示条', a='#sg3', b='#sTip', ax='v', e=16),
+           dict(t='gap', n='提示条→主按钮', a='#sTip', b='#btn', ax='v', e=16), dict(t='pos', n='主按钮', e='#btn', k=['h'], ex=dict(h=56)),
+           dict(t='gap', n='主按钮→说明', a='#btn', b='#sFoot', ax='v', e=8), dict(t='pad', n='卡片底', c='#card', k='#sFoot', sides=[2], e=[None, None, 24, None])]
+screen('hifi_v15_settings', f'设置面板（dayDisplay.settingsPanel + settingsReplay）：第 {N} 天某单进行中点齿轮打开，金币 238、本单 ¥40（示意）；「第 {N} 天」在标题行右端、与标题基线对齐；震动行后新增「重新看新手引导」+「重看」（常态）；遮罩 rgba(43,30,20,.6) 压住场景和 HUD，手机在遮罩上方（弹层打开时不弹通知条）；玩家版不画「复制用时」（仅 ?debug=1）',
+       settings_fn(False), SET_ANN)
+screen('hifi_v15_settings_replayed', f'设置面板：点「重看」后（已清 tutorialDone）：按钮禁用，行内说明「下次开工时重新引导」T5 #7A5A40；不弹确认框；其余同常态',
+       settings_fn(True), SET_ANN + [dict(t='style', n='行内说明', e='#rpS', ex=dict(fs='12px', lh='16px', fw='400', c='rgb(122, 90, 64)'))])# 参考图（不进 qa/pixel）：S4 用 shock 表情
 REF = {}
 
 TAILJS = '''ANN.filter(a=>a.t==='base').forEach(a=>{const A=R(Q(a.a)),B=R(Q(a.b));chk(eqv(A.t,B.t),`${a.n} 基线 y ${f(A.t)} / ${f(B.t)}（应相同）`);if(SHOW)hseg(A.l-4,B.l+4,A.t,'基线 '+f(A.t))});ANN.filter(a=>a.t==='style').forEach(a=>{const c=getComputedStyle(Q(a.e));const v={fs:c.fontSize,lh:c.lineHeight,fw:c.fontWeight,c:c.color,num:c.fontVariantNumeric};const ok=Object.keys(a.ex).every(k=>v[k]===a.ex[k]);chk(ok,`${a.n} 字 ${v.fs}/${v.lh} 字重 ${v.fw} ${v.c} ${v.num}`)});ANN.filter(a=>a.t==='inset').forEach(a=>{const r=R(Q(a.e));const ir=a.fr-r.r,it=r.t-a.ft;chk(eqv(ir,a.ex)&&eqv(it,a.ex),`${a.n}：右 ${f(ir)} / 上 ${f(it)}（应 ${a.ex}；内沿实测 x ${a.fr}、y ${a.ft}；角标完全在格内，不压箱沿）`);if(SHOW){hseg(r.r,a.fr,r.t+12,f(ir));vseg(a.ft,r.t,r.l+12,f(it))}});ANN.filter(a=>a.t==='tail').length&&(()=>{const b=R(Q('.bb')),s=R(Q('.bb .tail'));const base=s.l+2-b.l,apex=s.t;chk(eqv(base,24)&&eqv(apex,152),`尖角：底边起点离气泡左边 ${f(base)}（应 24），宽 16，尖顶 y ${f(apex)}（贴客户卡底 152）`);if(SHOW){hseg(b.l,s.l+2,b.t-12,f(base))}})();'''

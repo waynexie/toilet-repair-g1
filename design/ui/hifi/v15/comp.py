@@ -10,6 +10,7 @@ NS = {
  'chip24': dict(slice=(48, 48, 48, 48), width=(24, 24, 24, 24), out=(12, 12, 12, 12)),
  'card':   dict(slice=(120, 120, 120, 120), width=(60, 60, 60, 60), out=(36, 36, 36, 36)),
  'btn':    dict(slice=(64, 64, 64, 64), width=(32, 32, 32, 32), out=(16, 16, 16, 16)),
+ 'sbtn':   dict(slice=(64, 60, 64, 60), width=(32, 30, 32, 30), out=(16, 16, 16, 16)),
 }
 def bimg(kind, url):
     n = NS[kind]; s = ' '.join(map(str, n['slice'])); w = ' '.join(f'{v}px' for v in n['width']); o = ' '.join(f'{v}px' for v in n['out'])
@@ -89,3 +90,9 @@ def wave(kind='caller', idle=False, seed=3):
         bars += f'<i style="height:{hgt}px"></i>'
     op = 'opacity:.5;' if idle else ''
     return f'<div class="wave {"hero" if kind=="hero" else ""}" id="wave" style="left:113px;{op}">{bars}</div>'
+
+def sbtn(label, state='normal', re=False, idd='sbtn'):
+    st = bimg('sbtn', f'{V15}btn_secondary_s_{state}@2x.png') if re else ''
+    cls = {'normal': '', 'pressed': 'pressed', 'disabled': 'disabled'}[state]
+    col = 'color:#A8957E;' if state == 'disabled' else ''
+    return f'<div class="sbtn {cls} {"re" if re else ""}" id="{idd}" style="{st}{col}"><span id="{idd}T">{label}</span></div>'

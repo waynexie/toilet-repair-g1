@@ -17,6 +17,9 @@ for st in ['normal', 'pressed', 'disabled']:
 for st in ['normal', 'pressed', 'disabled']:
     cls = {'normal': '', 'pressed': 'pressed', 'disabled': 'disabled'}[st]
     add(f'btn_answer_{st}', 104, 104, 16, f'<div class="ans {cls}" style="left:16px;top:16px"></div>', None, note='接听按钮 72（不含图标；按下态已含下移 2px）')
+for st in ['normal', 'pressed', 'disabled']:
+    cls = {'normal': '', 'pressed': 'pressed', 'disabled': 'disabled'}[st]
+    add(f'btn_secondary_s_{st}', 84, 64, 16, f'<div class="sbtn L {cls}" style="left:16px;top:16px;width:52px"></div>', NS['sbtn']['slice'], note='小号次按钮 高 32（瓷面，圆角 12，2px 描边；字 T5 Bold 由代码画，左右内边距 12 含描边外 10+2）；按下态已含下移 2px；禁用字色 #A8957E。点击区上下各扩 8 → 高 48')
 add('icon_phone_32', 32, 32, 0, f'<div style="position:absolute;left:0;top:0;width:32px;height:32px">{PHONE}</div>')
 add('icon_phone_32_disabled', 32, 32, 0, f'<div style="position:absolute;left:0;top:0;width:32px;height:32px;opacity:.45">{PHONE}</div>')
 add('icon_coin_40', 40, 40, 0, f'<div class="coinbig" style="left:0;top:0">{COIN}</div>')
