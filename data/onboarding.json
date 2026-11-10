@@ -1,28 +1,201 @@
 {
   "_note": "开局流程 v2 配置，见 docs/onboarding_v2.md。台词由叙事在 narrative.json 的 onboarding / bubbles 下填，这里只放键。",
-  "firstLaunch": { "skipTitle": true, "skipMorningTransitionDay1": true, "startScene": "home_wang", "firstOrder": "o1" },
+  "firstLaunch": {
+    "skipTitle": true,
+    "skipMorningTransitionDay1": true,
+    "startScene": "home_wang",
+    "firstOrder": "o1"
+  },
   "steps": [
-    { "id": "S1_need_bubble", "on": "scene_ready", "delayMs": 400, "type": "avatar_bubble", "lineKey": "bubbles.o1.need", "autoHideMs": 2400, "skippable": true },
-    { "id": "S2_task_card", "on": "S1_need_bubble", "delayMs": 800, "type": "task_card", "title": "王阿姨家·马桶堵了", "payFrom": "o1", "dismiss": "tap_any" },
-    { "id": "S3_guide_flush", "on": "S2_task_card.closed", "type": "guide_mask", "target": "flush_button", "hand": "tap", "hintKey": "hints.flush_first", "blocking": true },
-    { "id": "S4_react", "on": "flush_anim_done", "type": "avatar_bubble", "lineKey": "bubbles.o1.dont_flush", "mood": "shock", "autoHideMs": 2000 },
-    { "id": "S5_guide_tool", "on": "S4_react", "delayMs": 600, "type": "guide_mask", "target": "toolbox_slot_plunger", "hand": "drag", "dragTo": "bowl_rim", "blocking": true },
-    { "id": "S6_guide_rhythm", "on": "tool_placed", "type": "guide_hint", "hintKey": "hints.ring_match", "tutorialAssist": { "hits": 3, "rebounceScale": 1.3, "windowScale": 1.5, "noPatienceLoss": true } },
-    { "id": "S7_clear", "on": "clog_cleared", "type": "fx", "fx": ["swirl_drain", "screen_shake_light"], "lineKey": "bubbles.o1.thanks" },
-    { "id": "S8_coins", "on": "S7_clear", "delayMs": 800, "type": "coin_fly", "to": "coin_capsule" },
-    { "id": "S9_result", "on": "coin_fly_done", "type": "result_card", "showAdButton": false },
-    { "id": "S10_ring", "on": "result_closed", "delayMs": 600, "type": "phone_ring", "handAfterMs": 4000, "autoAnswer": false },
-    { "id": "S11_call", "on": "phone_tapped", "type": "call_screen", "caller": "xiao_xu", "lineKeys": "calls.xu_urgent", "typewriter": true, "tapToComplete": true, "hangup": false, "confirm": "马上到" },
-    { "id": "S12_order_card", "on": "call_confirmed", "type": "order_card", "order": "o2", "autoHideMs": 2000 },
-    { "id": "S13_stairwell", "on": "S12_order_card.closed", "type": "transition", "scene": "trans_stairwell", "durationMs": 1200, "skippable": true },
-    { "id": "S14_guide_scoop", "on": "o2_start", "type": "guide_mask_conditional", "when": "picked_plunger_at_water_gt_0.85 || idle_3000", "target": "toolbox_slot_scoop", "hintKey": "hints.too_full_scoop", "until": "water_le_0.6", "once": true }
+    {
+      "id": "S1_need_bubble",
+      "delayMs": 400,
+      "type": "avatar_bubble",
+      "lineKey": "orders.o1.bubbles.need",
+      "autoHideMs": 2400,
+      "skippable": true,
+      "trigger": "scene_ready",
+      "target": null
+    },
+    {
+      "id": "S2_task_card",
+      "delayMs": 800,
+      "type": "task_card",
+      "title": "王阿姨家·马桶堵了",
+      "payFrom": "o1",
+      "dismiss": "tap_any",
+      "trigger": "S1_need_bubble",
+      "target": null,
+      "skippable": true,
+      "fields": [
+        "customer",
+        "problem",
+        "pay"
+      ]
+    },
+    {
+      "id": "S3_guide_flush",
+      "type": "guide_mask",
+      "target": "flush_button",
+      "hand": "tap",
+      "hintKey": "hints.flush_first",
+      "blocking": true,
+      "trigger": "S2_task_card.closed",
+      "skippable": false
+    },
+    {
+      "id": "S4_react",
+      "type": "avatar_bubble",
+      "lineKey": "orders.o1.bubbles.dont_flush",
+      "mood": "shock",
+      "autoHideMs": 2000,
+      "trigger": "flush_anim_done",
+      "target": null,
+      "skippable": true
+    },
+    {
+      "id": "S5_guide_tool",
+      "delayMs": 600,
+      "type": "guide_mask",
+      "target": "toolbox_slot_plunger",
+      "hand": "drag",
+      "dragTo": "bowl_rim",
+      "blocking": true,
+      "trigger": "S4_react",
+      "skippable": false
+    },
+    {
+      "id": "S6_guide_rhythm",
+      "type": "guide_hint",
+      "hintKey": "hints.ring_match",
+      "tutorialAssist": {
+        "hits": 3,
+        "rebounceScale": 1.3,
+        "windowScale": 1.5,
+        "noPatienceLoss": true
+      },
+      "trigger": "tool_placed",
+      "target": null,
+      "skippable": true
+    },
+    {
+      "id": "S7_clear",
+      "type": "fx",
+      "fx": [
+        "swirl_drain",
+        "screen_shake_light"
+      ],
+      "lineKey": "orders.o1.bubbles.thanks",
+      "trigger": "clog_cleared",
+      "target": null,
+      "skippable": true
+    },
+    {
+      "id": "S8_coins",
+      "delayMs": 800,
+      "type": "coin_fly",
+      "to": "coin_capsule",
+      "trigger": "S7_clear",
+      "target": null,
+      "skippable": true
+    },
+    {
+      "id": "S9_result",
+      "type": "result_card",
+      "showAdButton": false,
+      "trigger": "coin_fly_done",
+      "target": null,
+      "skippable": true
+    },
+    {
+      "id": "S10_ring",
+      "delayMs": 600,
+      "type": "phone_ring",
+      "handAfterMs": 4000,
+      "autoAnswer": false,
+      "trigger": "result_closed",
+      "target": null,
+      "skippable": false,
+      "noAnswerFallback": {
+        "afterMs": 8000,
+        "action": "weixin_then_recall",
+        "patienceLoss": false
+      }
+    },
+    {
+      "id": "S11_call",
+      "type": "call_screen",
+      "caller": "xiao_xu",
+      "lineKeys": "calls.o2.script",
+      "typewriter": true,
+      "tapToComplete": true,
+      "hangup": false,
+      "confirm": "马上到",
+      "trigger": "phone_tapped",
+      "target": null,
+      "skippable": false
+    },
+    {
+      "id": "S12_order_card",
+      "type": "order_card",
+      "order": "o2",
+      "autoHideMs": 2000,
+      "trigger": "call_confirmed",
+      "target": null,
+      "skippable": true
+    },
+    {
+      "id": "S13_stairwell",
+      "type": "transition",
+      "scene": "trans_stairwell",
+      "durationMs": 1200,
+      "skippable": true,
+      "trigger": "S12_order_card.closed",
+      "target": null
+    },
+    {
+      "id": "S14_guide_scoop",
+      "type": "guide_mask_conditional",
+      "when": "picked_plunger_at_water_gt_0.85 || idle_3000",
+      "target": "toolbox_slot_scoop",
+      "hintKey": "hints.too_full_scoop",
+      "until": "water_le_0.6",
+      "once": true,
+      "trigger": "o2_start",
+      "skippable": true
+    }
   ],
   "avatarBubbles": {
-    "maxConcurrent": 1, "showMs": 2400, "minGapMs": 3000, "yieldToGuideHint": true,
+    "maxConcurrent": 1,
+    "showMs": 2400,
+    "minGapMs": 4000,
+    "yieldToGuideHint": true,
     "events": {
-      "order_start": "need", "patience_lost_1": "chat", "patience_lost_2": "urge", "patience_last": "anxious",
-      "wrong_tool": "confused", "idle_8000": "urge", "cleared": "thanks"
-    }
+      "order_start": "need",
+      "patience_lost_1": "chat",
+      "patience_lost_2": "urge",
+      "patience_last": "anxious",
+      "wrong_tool": "confused",
+      "idle_8000": "urge",
+      "cleared": "thanks"
+    },
+    "chatOnce": true
   },
-  "repeat": { "flag": "tutorialDone", "settingsReplay": true }
+  "repeat": {
+    "flag": "tutorialDone",
+    "settingsReplay": true
+  },
+  "transitions": {
+    "day1": [
+      "trans_stairwell",
+      "trans_evening"
+    ],
+    "day2plus": [
+      "trans_morning",
+      "trans_road",
+      "trans_stairwell",
+      "trans_evening"
+    ],
+    "_note": "第1天只保留楼道1.2s（o1→o2之间）；收工晚上过场第1天也保留，作为一天结束"
+  }
 }
