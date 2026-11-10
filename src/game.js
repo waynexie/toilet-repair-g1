@@ -49,7 +49,7 @@ function buzz(p){if(save.reduced)return;try{navigator.vibrate&&navigator.vibrate
 let ORDERS=[],CFG=null;
 const LOOK={o1:{who:'王阿姨',place:'老小区三楼',face:'👵'},o2:{who:'出租屋小刘',place:'城中村单间',face:'🧑'},o3:{who:'李姐',place:'新楼盘两居室',face:'👩'},o4:{who:'出租屋小刘',place:'城中村单间',face:'🧑'}};
 function buildOrders(c){CFG=c;ORDERS=c.orders.map((o,i)=>({id:i+1,key:o.id,who:LOOK[o.id].who,place:LOOK[o.id].place,face:LOOK[o.id].face,line:o.customerLine,
- water:o.waterLevel,clog:o.fault,hp:o.fault==='hard'?1:(i===3?5:3),base:o.basePay,tip:o.tipMax,hurry:!!o.urgent,obj:o.object==='rubber_duck'?'duck':null,
+ water:o.waterLevel,clog:o.fault,hp:o.fault==='hard'?1:3,base:o.basePay,tip:o.tipMax,hurry:!!o.urgent,obj:o.object==='rubber_duck'?'duck':null,
  tools:i===0?['plunger']:i===1?['plunger','scoop']:['plunger','scoop','snake']}));}
 fetch('data/orders.json').then(r=>r.json()).then(buildOrders);
 const PHONE_AFTER={
