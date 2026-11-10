@@ -586,7 +586,8 @@ function drawSettings(){if(!S.settings)return;g.fillStyle='rgba(20,12,8,.5)';g.f
  txt(`老钱求助：今日免费 ${left} 次`,W/2,Y+PHh-24,12,'#7a5a48','center','600');}
 function drawMasterBtn(){if((O.masterCalls||0)>=CM().maxPerOrder)return;const ready=masterReady(); // ui-spec：56圆，右20 上560
  const cx=W-20-28,cy=588,wob=ready?Math.sin(S.t*14)*Math.max(0,Math.sin(S.t*2.2))*3:0;g.save();g.translate(wob,0);
- if(masterBtnArt(cx,cy,ready))txt('问老钱',cx,cy+38,12,ready?'#5A4030':'#9a8a7a','center','700');else{g.beginPath();g.arc(cx,cy,28,0,7);fs(ready?'#FFF8EC':'rgba(220,210,195,.75)',2);avatar('lao_qian',cx,cy-4,17);txt('问老钱',cx,cy+19,10,ready?'#5A4030':'#9a8a7a','center','700');}
+ if(ready&&!S.masterHinted){S.masterHinted=true;say('卡住了？问问老钱',3);} // ui-spec：首次亮起时在提示位说一句
+ if(masterBtnArt(cx,cy,ready)){if(ready){g.beginPath();g.arc(cx,cy,31,0,7);g.strokeStyle=`rgba(255,226,122,${.6+.4*Math.sin(S.t*6)})`;g.lineWidth=3;g.stroke();}}else{g.beginPath();g.arc(cx,cy,28,0,7);fs(ready?'#FFF8EC':'rgba(220,210,195,.75)',2);avatar('lao_qian',cx,cy-4,17);txt('问老钱',cx,cy+19,10,ready?'#5A4030':'#9a8a7a','center','700');}
  if(ready){const free=masterFree(),lab=free?'今日免费':'▶广告',bw=free?54:42;rr(cx-bw/2,cy-42,bw,18,9);fs(free?'#5DBB63':'#F5B92E');txt(lab,cx,cy-33,10,free?'#fff':'#5A4030','center','700');}
  g.restore();if(ready)buttons.push({x:cx-28,y:cy-42,w:56,h:70,fn:()=>{audioInit();SFX.click();askMaster();}});}
 function drawAd(){if(S.callUI){const c=S.callUI;g.fillStyle='rgba(20,12,8,.55)';g.fillRect(0,0,W,H);buttons.push({x:0,y:0,w:W,h:H,fn:callTap});
@@ -677,7 +678,6 @@ function draw(){
 function drawTitle(){
  g.fillStyle='#efe2c4';g.fillRect(0,0,W,H);g.fillStyle='#a9d3c0';g.fillRect(0,H*.55,W,H*.45);
  otxt('重生之我在',W/2,170,30,'#fff8eb');otxt('澳洲修马桶',W/2,215,42,'#ffcf3f');
- txt('G1 玩法原型 · 占位美术',W/2,262,14,'#6b4a36','center','600');
  drawPlunger(W/2,470+Math.sin(S.t*3)*6,(Math.sin(S.t*3)+1)/2*.6,false,1.4);
  button('开 工',W/2-90,560,180,60,()=>{S.money=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);},'#ffb53d');
  txt('建议用手机竖屏打开，戴耳机体验更好',W/2,650,13,'#6b4a36','center','500');

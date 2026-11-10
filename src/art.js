@@ -44,7 +44,7 @@ function drawPortraitSq(im,x,y,s,rad){g.save();rr(x,y,s,s,rad);g.clip();g.drawIm
 const _avatarFallback=avatar;
 avatar=function(id,x,y,r){const im=portrait(id,1);if(!im)return _avatarFallback(id,x,y,r);g.save();g.beginPath();g.arc(x,y,r,0,7);g.clip();g.drawImage(im,x-r,y-r,r*2,r*2);g.restore();};
 function hudAvatar(){const id=custOf();const im=id&&portrait(id,patLevel(O.pat));if(!im)return false;drawPortraitSq(im,26,56,60,8);return true;}
-function resultAvatar(r){const id=r.d.client||((NAR.orders||{})[r.d.key]||{}).client;const im=id&&portrait(id,patLevel(r.stars),true);if(!im)return false;drawPortraitSq(im,W/2-40,152,80,8);return true;}
+function resultAvatar(r){const id=r.d.client||((NAR.orders||{})[r.d.key]||{}).client;const im=id&&portrait(id,patLevel(r.stars),true);if(!im)return false;drawPortraitSq(im,W/2-40,152,80,16);return true;}
 function masterBtnArt(cx,cy,ready){const im=pimg(ready&&ptr.down&&Math.hypot(ptr.x-cx,ptr.y-cy)<28?'assets/ui/btn_laoqian_pressed@2x.png':'assets/ui/btn_laoqian@2x.png')||pimg('assets/ui/btn_laoqian@2x.png');if(!im)return false;
  if(!ready)g.globalAlpha=.55;g.drawImage(im,cx-28,cy-28,56,56);g.globalAlpha=1;return true;}
 function phoneArt(){const im=pimg(PH.unread>0?'assets/ui/phone_floor_notify@2x.png':'assets/ui/phone_floor_idle@2x.png');if(!im)return false;
