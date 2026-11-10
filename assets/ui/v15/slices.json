@@ -240,6 +240,38 @@
   "hud_*": "HUD 四件照 v14 不变。"
  },
  "code_drawn": {
+  "day_subtitle": {
+   "text": "dayDisplay.settlement.format → 「第 {n} 天」",
+   "font": "400 12px/16px，等宽数字",
+   "color": "#7A5A40",
+   "pos": "结算卡「收工」(T2 20/28 Bold) 下方 4，水平居中；下一块（虚线）从副标题下沿隔 16",
+   "anim": "无，随卡片一起出现"
+  },
+  "settings_day": {
+   "text": "dayDisplay.settingsPanel.format",
+   "font": "400 12px/16px，等宽数字",
+   "color": "#7A5A40",
+   "pos": "设置标题行（高 28）右端，右边距卡片内沿 24（= 卡片右沿 −24），与「设置」T2 基线对齐；Canvas 用 textBaseline=alphabetic，两者基线 y 222.5（卡片顶 176 +24 +22.5，DOM 实测），右对齐 x 342"
+  },
+  "dash_line": {
+   "h": 2,
+   "dash": [
+    6,
+    4
+   ],
+   "color": "#E6D6BC"
+  },
+  "switch": {
+   "size_1x": [
+    48,
+    28
+   ],
+   "on": "#5DBB63",
+   "off": "#D8C8AD",
+   "stroke": "2px #5A4030",
+   "knob": "20 白，内缩 2",
+   "disabled": "整行 opacity .45"
+  },
   "avatar_bubble": {
    "pos_1x": [
     16,

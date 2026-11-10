@@ -21,6 +21,8 @@ def cr(a, b): la, lb = sorted([lum(a), lum(b)], reverse=True); return (la + .05)
 def over(top, a, bg): return tuple(round(a * t + (1 - a) * b) for t, b in zip(top, bg))
 def brightest(im, x, y, w, h):
     px = im.crop((x * 2, y * 2, (x + w) * 2, (y + h) * 2)).getdata(); return max(px, key=lum)
+def darkest(im, x, y, w, h):
+    px = im.crop((x * 2, y * 2, (x + w) * 2, (y + h) * 2)).getdata(); return min(px, key=lum)
 C = (hx('#302014'), .75)            # 方案 C 暗底
 MASK = (hx('#2B1E14'), .6); DIM = (hx('#241810'), .8)
 rows = []
@@ -57,5 +59,17 @@ row('接听图标 白 / 绿底中段 #46A24E（非文字 3:1）', W, [(hx('#46A2
 row('锁图标 #4E2E0C / 黄铜最深处 #B97828（非文字 3:1）', hx('#4E2E0C'), [(hx('#B97828'), 1)], nontext=True)
 row('开锁图标 #4E2E0C / 金色最深处 #E0A21C（非文字 3:1）', hx('#4E2E0C'), [(hx('#E0A21C'), 1)], nontext=True)
 row('角标描边 #5A4030 / 格内木板（非文字 3:1）', hx('#5A4030'), [], S1, (262, 644, 24, 24), nontext=True, opaque=True)
-for r in rows: print('✔' if r['ok'] else '✘', r['item'], {k: v for k, v in r.items() if k in ('实际最亮处', '纯白极限')})
+DE = Image.open('hifi/hifi_v15_day_end.png').convert('RGB'); ST = Image.open('hifi/hifi_v15_settings.png').convert('RGB')
+def solid(name, fg, im, rect, nontext=False):
+    bg = darkest(im, *rect); rows.append(dict(item=name + f'（实测底 #{bg[0]:02X}{bg[1]:02X}{bg[2]:02X}，取区域最暗像素）', need=3 if nontext else 4.5, 实测最暗处=round(cr(fg, bg), 2), ok=cr(fg, bg) >= (3 if nontext else 4.5)))
+solid('结算页 副标题「第 3 天」#7A5A40 / 卡片', hx('#7A5A40'), DE, (60, 204, 64, 16))
+solid('结算页 标题「收工」#5A4030 / 卡片', hx('#5A4030'), DE, (60, 184, 64, 16))
+solid('结算页 明细 #5A4030 / 卡片', hx('#5A4030'), DE, (230, 260, 40, 20))
+solid('结算页「今日收入」「余额」#7A5A40 / 卡片', hx('#7A5A40'), DE, (60, 380, 64, 16))
+solid('结算页 金额描边 #8A5A00 / 卡片（T1 金字靠描边成形，非文字 3:1 之外另算 4.5）', hx('#8A5A00'), DE, (60, 400, 64, 40))
+solid('结算页「再玩一遍」#7A5A40 / 卡片', hx('#7A5A40'), DE, (60, 560, 64, 20))
+solid('设置面板「第 3 天」#7A5A40 / 面板', hx('#7A5A40'), ST, (230, 204, 56, 16))
+solid('设置面板 说明 #7A5A40 / 面板', hx('#7A5A40'), ST, (36, 548, 40, 16))
+rows.append(dict(item='（对照）游戏现用设置面板底 #FFF8EB 上 #7A5A40', need=4.5, 纯色=round(cr(hx('#7A5A40'), hx('#FFF8EB')), 2), ok=cr(hx('#7A5A40'), hx('#FFF8EB')) >= 4.5))
+for r in rows: print('✔' if r['ok'] else '✘', r['item'], {k: v for k, v in r.items() if k in ('实际最亮处', '纯白极限', '实测最暗处', '纯色')})
 json.dump(rows, open('hifi/contrast.json', 'w'), ensure_ascii=False, indent=1)

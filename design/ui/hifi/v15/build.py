@@ -102,10 +102,54 @@ screen('hifi_v15_s11_end', 'S11 5 句说完 0.4s 后出「马上到」（不点�
        CALL_ANN(3) + [dict(t='pos', n='马上到', e='#btn', k=['t', 'w', 'h'], ex=dict(t=648, w=200, h=56)), dict(t='center', n='马上到', e='#btn')])
 screen('hifi_v15_o3_pro_ready', 'o3 观察阶段：金币 103（o1 ¥30 + o2 ¥68 + 打赏 ¥5），本单 ¥60，李姐 p1，耐心 4；专业皮搋子「可解锁」态（金色开锁角标 + 「点击解锁」白字）',
        lambda re: base(re, client='li_jie', money=103, pay='¥60', water=.6, clog='hard', hp=1, tools=('plunger', 'scoop', 'snake'), pro='ready'), TB_ANN)
+
+# ===== 天数做轻（onboarding.json dayDisplay，策划 b36027e）：N=3 示例 =====
+DD = json.load(open(ROOT + '/data/onboarding.json'))['dayDisplay']; N = 3
+DAYTXT = DD['settlement']['format'].replace('{n}', str(N))
+def inbtn(label, re, mt):
+    b = btn(label, 0, 0, 0, 'normal', re, 'btn')
+    return b.replace('class="btn  L"', 'class="btn"').replace('class="btn re L"', 'class="btn re"').replace('left:0px;top:0px;width:0px;', f'margin-top:{mt}px;')
+ROWS = [('赵姐', '门把手松了', 30), ('新客户', '马桶有点堵', 35), ('新客户', '马桶完全冲不动', 70)]
+def dayend(re):
+    rows = ''.join(f'<div class="kv2" id="kv{i}"><span class="k">{w}<span class="sep"> · </span>{h}</span><span class="v">¥{v}</span></div>' for i, (w, h, v) in enumerate(ROWS))
+    tot = sum(r[2] for r in ROWS)
+    inner = f'<div class="dttl" id="dTitle"><span id="dTitleT">{DD["settlement"]["title"]}</span></div>' \
+            f'<div class="dday" id="dSub" style="margin-top:4px"><span id="dSubT">{DAYTXT}</span></div>' \
+            f'<div class="dhr" id="hr1" style="margin-top:16px"></div><div id="rows" style="margin-top:8px">{rows}</div><div class="dhr" id="hr2" style="margin-top:8px"></div>' \
+            f'<div class="dlab" id="dLab" style="margin-top:16px">今日收入</div><div class="damt" id="dAmt" style="margin-top:4px"><span id="dAmtT">+¥{tot}</span></div>' \
+            f'<div class="dbal" id="dBal" style="margin-top:4px">余额 ¥238</div>' + inbtn(DD['nextButton'], re, 16) + \
+            '<div class="dlink" id="dLink" style="margin-top:4px">再玩一遍</div>'
+    return img('screens/trans_evening@2x.jpg', 0, 0, 390, 780) + '<div class="scrim"></div>' + card(inner, 160, 460, re)
+screen('hifi_v15_day_end', f'第 {N} 天收工（G2 drawDayEnd，dayDisplay.settlement）：标题「收工」+ 副标题「{DAYTXT}」同卡片一起出现（不单独动画）；3 单明细（第 3 天 o8/o9 待定，金额用 o7/o6 示意）；今日收入 +¥135、余额 ¥238；主按钮「继续开工」；HUD 不显示天数',
+       dayend, [dict(t='pos', n='卡片', e='#card', k=['l', 't', 'r', 'h'], ex=dict(l=24, t=160, r=24, h=460)),
+                dict(t='center', n='标题「收工」', e='#dTitleT'), dict(t='center', n='副标题', e='#dSubT'),
+                dict(t='gap', n='标题→副标题', a='#dTitle', b='#dSub', ax='v', e=4), dict(t='style', n='副标题', e='#dSubT', ex=dict(fs='12px', lh='16px', fw='400', c='rgb(122, 90, 64)', num='tabular-nums')),
+                dict(t='gap', n='副标题→虚线（原标题→下一块 16，改从副标题下沿算）', a='#dSub', b='#hr1', ax='v', e=16),
+                dict(t='gap', n='虚线→明细', a='#hr1', b='#rows', ax='v', e=8), dict(t='gap', n='明细→虚线', a='#rows', b='#hr2', ax='v', e=8),
+                dict(t='gap', n='虚线→今日收入', a='#hr2', b='#dLab', ax='v', e=16), dict(t='gap', n='金额→余额', a='#dAmt', b='#dBal', ax='v', e=4),
+                dict(t='center', n='金额 T1', e='#dAmtT'), dict(t='gap', n='余额→主按钮', a='#dBal', b='#btn', ax='v', e=16),
+                dict(t='pos', n='主按钮', e='#btn', k=['h', 'w'], ex=dict(h=56, w=294)), dict(t='pos', n='「再玩一遍」点击区', e='#dLink', k=['h'], ex=dict(h=48)),
+                dict(t='pad', n='卡片(标题/再玩一遍)', c='#card', k='#dTitle', sides=[0, 1, 3], e=[24, 24, None, 24]),
+                dict(t='pad', n='卡片底', c='#card', k='#dLink', sides=[2], e=[None, None, 24, None])])
+def settings(re):
+    rows = '<div class="stg" id="sg0"><span class="k">声音</span><div class="sw"></div></div>' \
+           '<div class="stg" id="sg1"><span><span class="k">省动效</span><span class="s">减少抖动和闪光</span></span><div class="sw off"></div></div>' \
+           '<div class="stg dis" id="sg2"><span><span class="k">震动</span><span class="s">本机不支持</span></span><div class="sw off"></div></div>'
+    inner = f'<div class="srow0" id="sRow"><span class="sp" style="text-align:left"></span><span class="dttl" id="sTitle">设置<i class="blm" id="blA"></i></span><span class="sp"><span class="dday" id="sDay">{DD["settingsPanel"]["format"].replace("{n}", str(N))}<i class="blm" id="blB"></i></span></span></div>' \
+            f'<div id="sRows" style="margin-top:8px">{rows}</div><div class="stip" id="sTip" style="margin-top:16px">卡住了？问老钱 · 今日免费 1 次</div>' + inbtn('继续干活', re, 16) + \
+            '<div class="sfoot" id="sFoot" style="margin-top:8px">点卡片外也能关闭 · 打开时游戏暂停</div>'
+    return base(re, client='wang_ayi', money=238, pay='¥40', phone_on=False) + '<div class="scrim"></div>' + card(inner, 176, 400, re) + phone(False)
+screen('hifi_v15_settings', f'设置面板（dayDisplay.settingsPanel）：第 {N} 天某单进行中点齿轮打开，金币 238、本单 ¥40（示意）；标题「设置」居中，「第 {N} 天」在标题行右端、与标题基线对齐；手机在遮罩上方（弹层打开时不弹通知条）',
+       settings, [dict(t='pos', n='卡片', e='#card', k=['l', 't', 'r', 'h'], ex=dict(l=24, t=176, r=24, h=400)), dict(t='center', n='标题「设置」', e='#sTitle'),
+                  dict(t='base', n='「第 N 天」与标题', a='#blA', b='#blB'), dict(t='style', n='「第 N 天」', e='#sDay', ex=dict(fs='12px', lh='16px', fw='400', c='rgb(122, 90, 64)', num='tabular-nums')),
+                  dict(t='pad', n='卡片(「第 N 天」右)', c='#card', k='#sDay', sides=[1], e=[None, 24, None, None]), dict(t='pad', n='卡片(标题行)', c='#card', k='#sRow', sides=[0], e=[24, None, None, None]),
+                  dict(t='gap', n='标题行→开关', a='#sRow', b='#sRows', ax='v', e=8), dict(t='gap', n='开关→提示条', a='#sRows', b='#sTip', ax='v', e=16),
+                  dict(t='gap', n='提示条→主按钮', a='#sTip', b='#btn', ax='v', e=16), dict(t='pos', n='主按钮', e='#btn', k=['h'], ex=dict(h=56)),
+                  dict(t='gap', n='主按钮→说明', a='#btn', b='#sFoot', ax='v', e=8), dict(t='pad', n='卡片底', c='#card', k='#sFoot', sides=[2], e=[None, None, 24, None])])
 # 参考图（不进 qa/pixel）：S4 用 shock 表情
 REF = {}
 
-TAILJS = '''ANN.filter(a=>a.t==='inset').forEach(a=>{const r=R(Q(a.e));const ir=a.fr-r.r,it=r.t-a.ft;chk(eqv(ir,a.ex)&&eqv(it,a.ex),`${a.n}：右 ${f(ir)} / 上 ${f(it)}（应 ${a.ex}；内沿实测 x ${a.fr}、y ${a.ft}；角标完全在格内，不压箱沿）`);if(SHOW){hseg(r.r,a.fr,r.t+12,f(ir));vseg(a.ft,r.t,r.l+12,f(it))}});ANN.filter(a=>a.t==='tail').length&&(()=>{const b=R(Q('.bb')),s=R(Q('.bb .tail'));const base=s.l+2-b.l,apex=s.t;chk(eqv(base,24)&&eqv(apex,152),`尖角：底边起点离气泡左边 ${f(base)}（应 24），宽 16，尖顶 y ${f(apex)}（贴客户卡底 152）`);if(SHOW){hseg(b.l,s.l+2,b.t-12,f(base))}})();'''
+TAILJS = '''ANN.filter(a=>a.t==='base').forEach(a=>{const A=R(Q(a.a)),B=R(Q(a.b));chk(eqv(A.t,B.t),`${a.n} 基线 y ${f(A.t)} / ${f(B.t)}（应相同）`);if(SHOW)hseg(A.l-4,B.l+4,A.t,'基线 '+f(A.t))});ANN.filter(a=>a.t==='style').forEach(a=>{const c=getComputedStyle(Q(a.e));const v={fs:c.fontSize,lh:c.lineHeight,fw:c.fontWeight,c:c.color,num:c.fontVariantNumeric};const ok=Object.keys(a.ex).every(k=>v[k]===a.ex[k]);chk(ok,`${a.n} 字 ${v.fs}/${v.lh} 字重 ${v.fw} ${v.c} ${v.num}`)});ANN.filter(a=>a.t==='inset').forEach(a=>{const r=R(Q(a.e));const ir=a.fr-r.r,it=r.t-a.ft;chk(eqv(ir,a.ex)&&eqv(it,a.ex),`${a.n}：右 ${f(ir)} / 上 ${f(it)}（应 ${a.ex}；内沿实测 x ${a.fr}、y ${a.ft}；角标完全在格内，不压箱沿）`);if(SHOW){hseg(r.r,a.fr,r.t+12,f(ir));vseg(a.ft,r.t,r.l+12,f(it))}});ANN.filter(a=>a.t==='tail').length&&(()=>{const b=R(Q('.bb')),s=R(Q('.bb .tail'));const base=s.l+2-b.l,apex=s.t;chk(eqv(base,24)&&eqv(apex,152),`尖角：底边起点离气泡左边 ${f(base)}（应 24），宽 16，尖顶 y ${f(apex)}（贴客户卡底 152）`);if(SHOW){hseg(b.l,s.l+2,b.t-12,f(base))}})();'''
 def write(name, body, state, ann, mode):
     js = open('layout.js').read()
     if mode == 'ann':

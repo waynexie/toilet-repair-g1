@@ -45,6 +45,10 @@ J['slices']['tool_plunger_pro_locked'] = {'file': 'assets/ui/v15/tool_plunger_pr
 J['reuse_v14'] = {'hud_tag_c': '操作提示底（radius 16）和来电标签条（高 32）直接用 assets/ui/v14/hud_tag_c@2x.png 九宫格，margin 24、四边 56。',
                   'hud_*': 'HUD 四件照 v14 不变。'}
 J['code_drawn'] = {
+ 'day_subtitle': {'text': 'dayDisplay.settlement.format → 「第 {n} 天」', 'font': '400 12px/16px，等宽数字', 'color': '#7A5A40', 'pos': '结算卡「收工」(T2 20/28 Bold) 下方 4，水平居中；下一块（虚线）从副标题下沿隔 16', 'anim': '无，随卡片一起出现'},
+ 'settings_day': {'text': 'dayDisplay.settingsPanel.format', 'font': '400 12px/16px，等宽数字', 'color': '#7A5A40', 'pos': '设置标题行（高 28）右端，右边距卡片内沿 24（= 卡片右沿 −24），与「设置」T2 基线对齐；Canvas 用 textBaseline=alphabetic，两者基线 y 222.5（卡片顶 176 +24 +22.5，DOM 实测），右对齐 x 342'},
+ 'dash_line': {'h': 2, 'dash': [6, 4], 'color': '#E6D6BC'},
+ 'switch': {'size_1x': [48, 28], 'on': '#5DBB63', 'off': '#D8C8AD', 'stroke': '2px #5A4030', 'knob': '20 白，内缩 2', 'disabled': '整行 opacity .45'},
  'avatar_bubble': {'pos_1x': [16, 160], 'padding_1x': [12, 16, 12, 16], 'font': '700 16px/24px Noto Sans CJK SC', 'color': '#5A4030', 'text_max_w': 160, 'text_max_w_fallback': 176, 'max_lines': 2,
    'tail': {'base_left_from_bubble_left': 24, 'base_w': 16, 'h': 8, 'apex_abs': [48, 152]},
    'styles': {'calm': {'bg': '#FFF8EC', 'stroke': '#5A4030'}, 'urge': {'bg': '#FFF1D0', 'stroke': '#C77F0A'}, 'panic': {'bg': '#FFEBE4', 'stroke': '#C8372F'}, 'happy': {'bg': '#EDF7E6', 'stroke': '#3F9946'}},

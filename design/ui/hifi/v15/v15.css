@@ -96,3 +96,28 @@ body{font-family:"Noto Sans CJK SC",sans-serif;font-variant-numeric:tabular-nums
 .box{position:absolute;z-index:49;border:.75px dashed rgba(255,45,85,.95)}
 body.annmode{width:760px!important;background:#2b211b}.note{position:absolute;left:398px;top:8px;width:354px;background:#F6EAD3;border-radius:8px;padding:8px 10px;font:400 9px/14px "Noto Sans CJK SC";color:#5A4030}
 .note b{color:#1f7a2e}.note .x{color:#D9413A;font-weight:700}
+/* ===== 天数做轻（dayDisplay）：结算页副标题 / 设置面板 ===== */
+.dttl{display:block;font-size:20px;line-height:28px;font-weight:700;color:#5A4030;height:28px}
+.dday{display:block;font-size:12px;line-height:16px;font-weight:400;color:#7A5A40;font-variant-numeric:tabular-nums;height:16px}
+.dhr{height:2px;background:repeating-linear-gradient(90deg,#E6D6BC 0 6px,transparent 6px 10px)}
+.kv2{display:flex;justify-content:space-between;align-items:center;height:32px;text-align:left}
+.kv2 .k{font-size:14px;line-height:20px;font-weight:400;color:#5A4030}.kv2 .k .sep{color:#7A5A40}
+.kv2 .v{font-size:16px;line-height:24px;font-weight:700;color:#5A4030}
+.dlab{display:block;font-size:12px;line-height:16px;font-weight:400;color:#7A5A40;height:16px}
+.damt{display:block;font-size:40px;line-height:48px;font-weight:700;color:#FFC83D;-webkit-text-stroke:1.5px #8A5A00;paint-order:stroke fill;height:48px}
+.dbal{display:block;font-size:14px;line-height:20px;font-weight:400;color:#7A5A40;height:20px}
+.dlink{display:block;height:48px;font-size:14px;line-height:48px;font-weight:700;color:#7A5A40}
+.srow0{display:flex;align-items:baseline;height:28px}
+.srow0 .sp{flex:1;text-align:right}
+.srow0 .dttl{display:inline-block}
+.srow0 .dday{display:inline;height:auto}
+.blm{display:inline-block;width:0;height:0;vertical-align:baseline}
+.stg{display:flex;justify-content:space-between;align-items:center;height:56px;border-bottom:2px dashed #E6D6BC;text-align:left}
+.stg .k{font-size:16px;line-height:24px;font-weight:700;color:#5A4030}
+.stg .s{display:block;font-size:12px;line-height:16px;font-weight:400;color:#7A5A40}
+.stg.dis{opacity:.45}
+.sw{position:relative;width:48px;height:28px;border-radius:14px;background:#5DBB63;border:2px solid #5A4030;flex:none}
+.sw::after{content:"";position:absolute;right:2px;top:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.sw.off{background:#D8C8AD}.sw.off::after{left:2px;right:auto}
+.stip{height:36px;border-radius:12px;background:#FFF3C4;padding:8px 16px;font-size:14px;line-height:20px;font-weight:700;color:#5A4030;text-align:left}
+.sfoot{display:block;height:16px;font-size:12px;line-height:16px;font-weight:400;color:#7A5A40}
