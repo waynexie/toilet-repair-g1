@@ -71,9 +71,9 @@ def answer(state='normal', re=False):
     cls = {'normal': '', 'pressed': 'pressed', 'disabled': 'disabled'}[state]
     return f'<div class="ans {cls}" id="ans">{PHONE}</div>'
 
-def pill(re=False):
+def pill(re=False, mult=1.5, pay=68):
     st = bimg('tag', f'{V14}hud_tag_c@2x.png') if re else ''
-    return f'<div class="pill {"re" if re else ""}" id="pill" data-cx="195" style="{st}"><span class="urg" id="urg">加急 ×1.5</span><span class="plab" id="plab">工钱</span><span class="pval" id="pval">¥68</span></div>'
+    return f'<div class="pill {"re" if re else ""}" id="pill" data-cx="195" style="{st}"><span class="urg" id="urg">加急 ×{mult:g}</span><span class="plab" id="plab">工钱</span><span class="pval" id="pval">¥{pay}</span></div>'
 
 def callbubble(text, who, shown=None, old=False, re=False, idx=0):
     st = bimg('cb', f'{V15}call_bubble_{who}@2x.png') if re else ''

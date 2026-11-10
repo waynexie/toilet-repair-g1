@@ -11,8 +11,8 @@ import re as _re
 def strip_hud(h): return h.split('<div class="who">')[0]
 def strip_lab(h): return _re.sub(r'<div id="proLabel"[^>]*>[^<]*</div>','',h)
 S1 = render('cs_o1', strip_lab(strip_hud(base(False))))
-S1d = render('cs_o1d', base(False, money=30, observed=True, hp=0, phone_on=False))  # 来电时暗层下面（含 HUD）
-S3 = render('cs_o3', strip_lab(strip_hud(base(False, client='li_jie', money=103, pay='¥60', water=.6, clog='hard', hp=1, tools=('plunger', 'scoop', 'snake'), pro='ready'))))
+S1d = render('cs_o1d', base(False, money=30, cleared=True, phone_on=False))  # 来电时暗层下面（含 HUD）
+S3 = render('cs_o3', strip_lab(strip_hud(base(False, order='o3', money=103))))
 def hx(c): c = c.lstrip('#'); return tuple(int(c[i:i + 2], 16) for i in (0, 2, 4))
 def lum(c):
     f = lambda v: (v / 255 / 12.92) if v / 255 <= .04045 else ((v / 255 + .055) / 1.055) ** 2.4

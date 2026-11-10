@@ -62,7 +62,7 @@ def tool_in_slot(src, pw, ph, x, extra=''):
     sc = min(72 / (ph / 2), 64 / (pw / 2), 1); w = pw / 2 * sc; h = ph / 2 * sc
     return img(src, x - w / 2, TB['slotBot'] - 2 - h, w, h, extra)
 
-def toolbox(tools, pro='locked', re=False):
+def toolbox(tools, pro='locked', re=False, price=100):
     """tools: 本单可用工具；pro: 'locked' | 'ready' —— 第 4 格专业皮搋子预览"""
     o = [L('ui_toolbox_lid_lv1', x=TB['x'] + (TB['w'] - 270) / 2, y=TB['y'] - 14), L('ui_toolbox_body_lv1', x=TB['x'], y=TB['y'], w=TB['w'], h=TB['h'])]
     cy = (TB['slotTop'] + TB['slotBot']) / 2
@@ -73,15 +73,17 @@ def toolbox(tools, pro='locked', re=False):
         else:
             o.append(L('ui_toolbox_lockplate', x=x, y=cy))  # 群里定：木牌只留挂锁，下方不写字（到时候送）
     x = TB['slots'][3]
+    o.append(f'<div id="proSlot" data-state="{pro}" class="G" style="position:absolute;left:{x-32}px;top:640px;width:64px;height:80px"></div>')
+    if pro == 'bought':   # 已购：第 4 格换回挂锁木牌（不写字），1 号格换专业版（这里只画第 4 格；1 号格由 tools 传 plunger_pro）
+        o.append(L('ui_toolbox_lockplate', x=x, y=cy)); return '\n'.join(o)
     src = 'ui/v15/tool_plunger_pro_locked@2x.png' if pro == 'locked' else 'tools/tool_plunger_pro@2x.png'
-    o.append(f'<div id="proSlot" class="G" style="position:absolute;left:{x-32}px;top:640px;width:64px;height:80px"></div>')
     o.append(tool_in_slot(src, 108, 234, x - PRO_DX, f'opacity:{.6 if pro=="locked" else .85}'))
     badge = 'badge_lock' if pro == 'locked' else 'badge_unlock'
     inner = LOCK if pro == 'locked' else UNLOCK
     BX, BY = FRAME4['r'] - 4 - 24, FRAME4['t'] + 4
     if re: o.append(img(f'ui/v15/{badge}@2x.png', BX - 8, BY - 8, 40, 40, cls='L'))
     o.append(f'<div id="lockBadge" class="bdg G {"rdy" if pro!="locked" else ""} {"re" if re else ""}" style="left:{BX}px;top:{BY}px">{"" if re else inner}</div>')
-    o.append(f'<div id="proLabel" class="tbn pro {"rdy" if pro!="locked" else ""}" style="left:{x-32}px">{"¥100 解锁" if pro=="locked" else "点击解锁"}</div>')
+    o.append(f'<div id="proLabel" class="tbn pro {"rdy" if pro!="locked" else ""}" style="left:{x-32}px">{f"¥{price} 解锁" if pro=="locked" else "点击解锁"}</div>')
     return '\n'.join(o)
 
 def phone(notify=False, rot=-10, extra=''):
