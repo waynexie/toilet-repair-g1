@@ -20,7 +20,7 @@
       ],
       "suctionRadiusPx": 60,
       "rhythm": {
-        "rebounceMs": 600,
+        "rebounceMs": 420,
         "windowMs": 160,
         "perfectWindowMs": 60,
         "overPressSplashIfWaterAbove": 0.85,
@@ -41,7 +41,7 @@
       ],
       "suctionRadiusPx": 90,
       "rhythm": {
-        "rebounceMs": 600,
+        "rebounceMs": 420,
         "windowMs": 260,
         "perfectWindowMs": 110,
         "overPressSplashIfWaterAbove": 0.85,

@@ -1,0 +1,42 @@
+{
+  "_note": "G2 商业化与营业日配置草案（策划维护）。广告均为玩家自愿触发。",
+  "workday": {
+    "ordersPerDay": 4,
+    "overtimeOrdersViaAd": 1,
+    "nextDayWait": "none",
+    "interstitialAt": "day_end_only",
+    "firstAdFreeMinutes": 15
+  },
+  "rewardedAds": {
+    "doubleTip": {
+      "where": "settlement_secondary_button",
+      "multiplier": 2
+    },
+    "retryKeepRating": {
+      "trigger": "splash_or_patience_zero",
+      "maxPerOrder": 1
+    },
+    "tryUpgradeOnce": {
+      "where": "shop_before_purchase",
+      "orders": 1
+    },
+    "rushOrder": {
+      "where": "order_board",
+      "maxPerDay": 1,
+      "payMultiplier": 1.8
+    },
+    "callMaster": {
+      "name": "打电话问老师傅",
+      "showWhen": {
+        "wrongToolCount": 2,
+        "idleMs": 12000
+      },
+      "freePerDay": 1,
+      "effect": [
+        "voice_hint_line_by_fault",
+        "highlight_correct_tool_3s"
+      ],
+      "neverBlocksProgress": true
+    }
+  }
+}
