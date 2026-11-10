@@ -54,7 +54,7 @@
     },
     "call": {
       "payMultiplier": 1.5,
-      "patienceMax": 2,
+      "patienceMax": 3,
       "useFor": [
         "urgent",
         "big_job"
