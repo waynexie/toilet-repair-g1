@@ -182,14 +182,10 @@
     "o5": {
       "client": "wang_ayi",
       "_g2": true,
-      "props": [
-        "门口鞋柜上放着备用钥匙",
-        "防盗门锁芯有点锈"
-      ],
       "call": {
         "type": "weixin_msg",
         "caller": "wang_ayi",
-        "text": "师傅，又是我，厨房下水慢。"
+        "text": "师傅，又是我，马桶又不走水了。"
       },
       "lines": {
         "arrive": {
@@ -205,7 +201,11 @@
           "text": "还是你靠谱。"
         }
       },
-      "post_event": "evt_doorlock_first"
+      "post_event": "lock_wang",
+      "props": [
+        "门口鞋柜上放着备用钥匙",
+        "防盗门锁孔有点锈"
+      ]
     }
   },
   "social": [
@@ -260,8 +260,13 @@
     }
   ],
   "g2_hooks": {
-    "_note": "门锁转折（Wen 已定稿台词）。o5 修完、主角收拾工具时触发，场景内对话，不走手机。",
-    "evt_doorlock_first": {
+    "_note": "键名对齐 g2_orders.json：lock_wang（王阿姨顺手单）、lock_referral_1（赵姐转介绍单）。",
+    "social_after_referral": {
+      "channel": "dm_mom",
+      "sender": "mom",
+      "text": "听说你还会修锁了？也得按时吃饭。"
+    },
+    "lock_wang": {
       "after": "o5",
       "blocking": true,
       "dialogue": [
@@ -306,12 +311,7 @@
         "amount_from": "economy.json"
       }
     },
-    "evt_doorlock_referral": {
-      "trigger": {
-        "afterOrdersSince": "evt_doorlock_first",
-        "count": 2,
-        "_note": "=几天后；营业日上线后可改成第N天早上"
-      },
+    "lock_referral_1": {
       "as": "order_card_on_board",
       "channel_preview": "weixin_dm",
       "sender": {
@@ -323,25 +323,33 @@
         "business_door_lock"
       ],
       "_rule": "必须以接单板卡片出现，不读消息也能接；消息只是同步预览",
-      "card_badge": "王阿姨介绍"
-    },
-    "order_lock_001": {
-      "client": "zhao_jie",
+      "card_badge": "王阿姨介绍",
+      "appearsOn": "day3_board",
       "lines": {
         "arrive": {
           "speaker": "zhao_jie",
           "text": "王阿姨说你人实在。"
         },
+        "wrong_tool_lube_spray": {
+          "speaker": "zhao_jie",
+          "text": "这不是没用吗？"
+        },
         "done": {
           "speaker": "zhao_jie",
           "text": "我存你电话了，以后有事还找你。"
+        },
+        "done_hero": {
+          "speaker": "hero",
+          "text": "螺丝松了，拧紧就行。"
         }
+      },
+      "on_accept": {
+        "channel": "dm_laoqian",
+        "sender": "lao_qian",
+        "text": "你包里没螺丝刀吧？拿我那把去。",
+        "grants": "screwdriver",
+        "_note": "接下这张卡时弹出，喂信私聊老钱；工具直接进托盘，不读也拿得到"
       }
-    },
-    "social_after_referral": {
-      "channel": "dm_mom",
-      "sender": "mom",
-      "text": "听说你还会修锁了？也得按时吃饭。"
     }
   },
   "app": {
