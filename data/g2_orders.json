@@ -20,6 +20,16 @@
       ],
       "pickCount": 2,
       "note": "接单板挂 3 张挑 2；o5 必在其中且标注老客户王阿姨"
+    },
+    {
+      "day": 3,
+      "board": [
+        "lock_referral_1",
+        "o8",
+        "o9"
+      ],
+      "pickCount": 3,
+      "note": "第三天接单板：赵姐门锁转介绍(蓝角标)+两张马桶单；o8/o9 待定，可放第一张来电大活儿"
     }
   ],
   "orders": [
@@ -82,6 +92,33 @@
       ],
       "verify": "door_opens_clean_click",
       "unlocksReferral": "lock_referral_1"
+    },
+    {
+      "id": "lock_referral_1",
+      "type": "referral",
+      "customer": "zhao_jie",
+      "referredBy": "wang_ayi",
+      "target": "door_lock",
+      "fault": "loose_handle",
+      "source": "referral",
+      "boardHint": "门把手松了",
+      "appearsOn": "day3_board",
+      "observe": {
+        "action": "wiggle_handle",
+        "clue": "把手一晃就歪，螺丝露出半截"
+      },
+      "steps": [
+        "screwdriver_tighten_x2",
+        "turn_handle_verify"
+      ],
+      "tool": "screwdriver",
+      "gesture": "rotate",
+      "rotationsPerScrew": 2,
+      "wrongFeedback": {
+        "lube_spray": "喷了油还是晃，客户：这不是没用吗"
+      },
+      "verify": "handle_snaps_back_level",
+      "note": "第一次需要在门锁里做工具判断：喷剂对卡涩有效，对松动无效"
     }
   ],
   "tools": {
@@ -102,7 +139,7 @@
     "screwdriver": {
       "name": "螺丝刀",
       "gesture": "rotate",
-      "note": "G2 先不用，留给第二种门锁故障：把手松动"
+      "note": "第三天赵姐转介绍单首次使用；获得方式：接下转介绍单时赠送（老钱：拿我那把去）"
     }
   },
   "toolGrants": {
