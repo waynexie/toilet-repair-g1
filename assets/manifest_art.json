@@ -572,12 +572,12 @@
     "category": "avatar",
     "name": "avatar_wang_ayi_p1",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "wang_ayi",
     "patience_stage": 1,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。calm 平静。套袖；p3/p4 双手叉腰"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。calm 平静。套袖；p3/p4 双手叉腰"
    },
    {
     "file": "assets/characters/avatar_wang_ayi_p1_256.png",
@@ -596,12 +596,12 @@
     "category": "avatar",
     "name": "avatar_wang_ayi_p2",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "wang_ayi",
     "patience_stage": 2,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。slightly impatient 有点急。套袖；p3/p4 双手叉腰"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。slightly impatient 有点急。套袖；p3/p4 双手叉腰"
    },
    {
     "file": "assets/characters/avatar_wang_ayi_p2_256.png",
@@ -620,12 +620,12 @@
     "category": "avatar",
     "name": "avatar_wang_ayi_p3",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "wang_ayi",
     "patience_stage": 3,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。impatient 不耐烦。套袖；p3/p4 双手叉腰"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。impatient 不耐烦。套袖；p3/p4 双手叉腰"
    },
    {
     "file": "assets/characters/avatar_wang_ayi_p3_256.png",
@@ -644,12 +644,12 @@
     "category": "avatar",
     "name": "avatar_wang_ayi_p4",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "wang_ayi",
     "patience_stage": 4,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。about to explode 快爆了。套袖；p3/p4 双手叉腰"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。about to explode 快爆了。套袖；p3/p4 双手叉腰"
    },
    {
     "file": "assets/characters/avatar_wang_ayi_p4_256.png",
@@ -668,12 +668,12 @@
     "category": "avatar",
     "name": "avatar_xiao_xu_p1",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "xiao_xu",
     "patience_stage": 1,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。calm 平静。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。calm 平静。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
    },
    {
     "file": "assets/characters/avatar_xiao_xu_p1_256.png",
@@ -692,12 +692,12 @@
     "category": "avatar",
     "name": "avatar_xiao_xu_p2",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "xiao_xu",
     "patience_stage": 2,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。slightly impatient 有点急。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。slightly impatient 有点急。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
    },
    {
     "file": "assets/characters/avatar_xiao_xu_p2_256.png",
@@ -716,12 +716,12 @@
     "category": "avatar",
     "name": "avatar_xiao_xu_p3",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "xiao_xu",
     "patience_stage": 3,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。impatient 不耐烦。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。impatient 不耐烦。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
    },
    {
     "file": "assets/characters/avatar_xiao_xu_p3_256.png",
@@ -740,12 +740,12 @@
     "category": "avatar",
     "name": "avatar_xiao_xu_p4",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "xiao_xu",
     "patience_stage": 4,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。about to explode 快爆了。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。about to explode 快爆了。黑夹克敞开、反光背心在里面、胸前挂手机；p2 看手机，p3 看手表"
    },
    {
     "file": "assets/characters/avatar_xiao_xu_p4_256.png",
@@ -764,12 +764,12 @@
     "category": "avatar",
     "name": "avatar_li_jie_p1",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "li_jie",
     "patience_stage": 1,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。calm 平静。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。calm 平静。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
    },
    {
     "file": "assets/characters/avatar_li_jie_p1_256.png",
@@ -788,12 +788,12 @@
     "category": "avatar",
     "name": "avatar_li_jie_p2",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "li_jie",
     "patience_stage": 2,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。slightly impatient 有点急。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。slightly impatient 有点急。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
    },
    {
     "file": "assets/characters/avatar_li_jie_p2_256.png",
@@ -812,12 +812,12 @@
     "category": "avatar",
     "name": "avatar_li_jie_p3",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "li_jie",
     "patience_stage": 3,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。impatient 不耐烦。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。impatient 不耐烦。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
    },
    {
     "file": "assets/characters/avatar_li_jie_p3_256.png",
@@ -836,12 +836,12 @@
     "category": "avatar",
     "name": "avatar_li_jie_p4",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "li_jie",
     "patience_stage": 4,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。about to explode 快爆了。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。about to explode 快爆了。围裙、牵着3岁女儿，不拿小黄鸭；p4 孩子哭"
    },
    {
     "file": "assets/characters/avatar_li_jie_p4_256.png",
@@ -860,12 +860,12 @@
     "category": "avatar",
     "name": "avatar_zhao_jie_p1",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "zhao_jie",
     "patience_stage": 1,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。calm 平静。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。calm 平静。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
    },
    {
     "file": "assets/characters/avatar_zhao_jie_p1_256.png",
@@ -884,12 +884,12 @@
     "category": "avatar",
     "name": "avatar_zhao_jie_p2",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "zhao_jie",
     "patience_stage": 2,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。slightly impatient 有点急。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。slightly impatient 有点急。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
    },
    {
     "file": "assets/characters/avatar_zhao_jie_p2_256.png",
@@ -908,12 +908,12 @@
     "category": "avatar",
     "name": "avatar_zhao_jie_p3",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "zhao_jie",
     "patience_stage": 3,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。impatient 不耐烦。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。impatient 不耐烦。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
    },
    {
     "file": "assets/characters/avatar_zhao_jie_p3_256.png",
@@ -932,12 +932,12 @@
     "category": "avatar",
     "name": "avatar_zhao_jie_p4",
     "pixel_size": [
-     120,
-     120
+     128,
+     128
     ],
     "customer_id": "zhao_jie",
     "patience_stage": 4,
-    "notes": "客户卡头像 60×60@2x，透明底，胸像紧裁。about to explode 快爆了。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
+    "notes": "客户卡头像 64×64@2x（HUD v1.4 头像框内 64），透明底，胸像紧裁。about to explode 快爆了。利落短发、珍珠耳钉、藏青开衫；p2/p3 抱臂"
    },
    {
     "file": "assets/characters/avatar_zhao_jie_p4_256.png",
