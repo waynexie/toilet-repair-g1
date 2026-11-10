@@ -518,7 +518,7 @@ function drawNotify(m,k,t){
  const wob=t<.6?Math.sin(t*60)*2:0;g.save();g.translate(wob,0);rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#bfe3ff';g.fill();wxIcon(346,642,20);g.restore();
  const rows=[];m.forEach(n=>{let r=rows.find(r=>r.ch===n.ch);if(!r){r={ch:n.ch,n:0};rows.push(r);}r.n++;r.text=n.text;});
  const h=40+rows.length*20,x=30,y=686-h;g.save();g.globalAlpha=k;g.translate(0,(1-k)*30);
- rr(x,y,296,h,12);fs('rgba(250,250,250,.97)',2);wxIcon(x+10,y+9,18);txt('微信',x+34,y+18,12,'#888','left','600');txt('现在',x+284,y+18,11,'#aaa','right','500');
+ rr(x,y,296,h,12);fs('rgba(250,250,250,.97)',2);wxIcon(x+10,y+9,18);txt('喂信',x+34,y+18,12,'#888','left','600');txt('现在',x+284,y+18,11,'#aaa','right','500');
  rows.forEach((r,i)=>{const yy=y+40+i*20;const head=(r.n>1?`[${r.n}条]`:'')+r.ch+'：';txt(head,x+12,yy,13,'#222','left','700');g.font='700 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';const hw=g.measureText(head).width;
   g.font='500 13px -apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif';let t=r.text;const max=272-hw;if(g.measureText(t).width>max){while(t.length&&g.measureText(t+'…').width>max)t=t.slice(0,-1);t+='…';}txt(t,x+12+hw,yy,13,'#444','left','500');});
  g.restore();g.globalAlpha=1;}
