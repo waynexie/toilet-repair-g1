@@ -40,12 +40,22 @@ def scene(client='wang_ayi', water=0.5, observed=False, clog='soft', hp=3, hpmax
     return '\n'.join(o)
 
 # —— 工具箱（ui-spec 工具箱托盘 + art.js TB）——
+PRO_DX = 6  # 第 4 格预览工具锚点左移 6，让手柄（右沿 267.2→261.2）避开角标（左沿 262.5）
+FRAME4 = dict(r=290.5, t=640.5)  # 第 4 格木框内沿（实测 2x 渲染：右内沿 x 581/2，上内沿 y 1281/2）
 TB = dict(x=16, y=636, w=288, h=128, slots=[56, 125, 192, 262], slotTop=640, slotBot=721)
 TOOLIMG = {'plunger': ('tools/tool_plunger_old@2x.png', 112, 223), 'scoop': ('tools/tool_scoop@2x.png', 120, 101),
            'snake': ('tools/tool_snake@2x.png', 128, 140)}
 TOOLNAME = {'plunger': '皮搋子', 'scoop': '水瓢', 'snake': '疏通器'}
-LOCK = '''<svg viewBox="0 0 24 24"><path d="M8 11V8.5a4 4 0 0 1 8 0V11" fill="none" stroke="#5A4030" stroke-width="2.4" stroke-linecap="round"/><rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5" fill="#5A4030"/><circle cx="12" cy="14.6" r="1.6" fill="#FFF3DA"/><path d="M12 15.4v2" stroke="#FFF3DA" stroke-width="1.6" stroke-linecap="round"/></svg>'''
-UNLOCK = '''<svg viewBox="0 0 24 24"><path d="M8 11V8.5a4 4 0 0 1 7.6-1.8" fill="none" stroke="#5A4030" stroke-width="2.4" stroke-linecap="round"/><rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5" fill="#5A4030"/><circle cx="12" cy="14.6" r="1.6" fill="#FFD45E"/><path d="M12 15.4v2" stroke="#FFD45E" stroke-width="1.6" stroke-linecap="round"/></svg>'''
+# 锁形图标：深棕 #4E2E0C，锁眼镂空透出黄铜底（和美术挂锁同一套：黄铜锁体 + 深色锁眼）
+def _lock(open_):
+    sh = 'M8 11V8.5a4 4 0 0 1 7.6-1.8' if open_ else 'M8 11V8.5a4 4 0 0 1 8 0V11'
+    mid = 'lku' if open_ else 'lkl'
+    return (f'<svg viewBox="0 0 24 24"><defs><mask id="{mid}"><rect width="24" height="24" fill="#fff"/><circle cx="12" cy="14.6" r="1.7" fill="#000"/>'
+            f'<path d="M12 15.4v2.2" stroke="#000" stroke-width="1.7" stroke-linecap="round"/></mask></defs>'
+            f'<path d="{sh}" fill="none" stroke="#4E2E0C" stroke-width="2.4" stroke-linecap="round"/>'
+            f'<rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5" fill="#4E2E0C" mask="url(#{mid})"/></svg>')
+LOCK = _lock(False)
+UNLOCK = _lock(True)
 PHONE = '''<svg viewBox="0 0 24 24"><path fill="#FFFFFF" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>'''
 
 def tool_in_slot(src, pw, ph, x, extra=''):
@@ -65,12 +75,13 @@ def toolbox(tools, pro='locked', re=False):
     x = TB['slots'][3]
     src = 'ui/v15/tool_plunger_pro_locked@2x.png' if pro == 'locked' else 'tools/tool_plunger_pro@2x.png'
     o.append(f'<div id="proSlot" class="G" style="position:absolute;left:{x-32}px;top:640px;width:64px;height:80px"></div>')
-    o.append(tool_in_slot(src, 108, 234, x, f'opacity:{.6 if pro=="locked" else .85}'))
+    o.append(tool_in_slot(src, 108, 234, x - PRO_DX, f'opacity:{.6 if pro=="locked" else .85}'))
     badge = 'badge_lock' if pro == 'locked' else 'badge_unlock'
     inner = LOCK if pro == 'locked' else UNLOCK
-    if re: o.append(img(f'ui/v15/{badge}@2x.png', x + 32 - 24 + 6 - 8, 640 - 6 - 8, 40, 40, cls='L'))
-    o.append(f'<div id="lockBadge" class="bdg G {"rdy" if pro!="locked" else ""} {"re" if re else ""}" style="left:{x+32-24+6}px;top:{640-6}px">{"" if re else inner}</div>')
-    o.append(f'<div id="proLabel" class="tbn pro {"rdy" if pro!="locked" else ""}" style="left:{x-32}px">¥100 解锁</div>')
+    BX, BY = FRAME4['r'] - 4 - 24, FRAME4['t'] + 4
+    if re: o.append(img(f'ui/v15/{badge}@2x.png', BX - 8, BY - 8, 40, 40, cls='L'))
+    o.append(f'<div id="lockBadge" class="bdg G {"rdy" if pro!="locked" else ""} {"re" if re else ""}" style="left:{BX}px;top:{BY}px">{"" if re else inner}</div>')
+    o.append(f'<div id="proLabel" class="tbn pro {"rdy" if pro!="locked" else ""}" style="left:{x-32}px">{"¥100 解锁" if pro=="locked" else "点击解锁"}</div>')
     return '\n'.join(o)
 
 def phone(notify=False, rot=-10, extra=''):

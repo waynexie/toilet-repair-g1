@@ -20,8 +20,8 @@ for st in ['normal', 'pressed', 'disabled']:
 add('icon_phone_32', 32, 32, 0, f'<div style="position:absolute;left:0;top:0;width:32px;height:32px">{PHONE}</div>')
 add('icon_phone_32_disabled', 32, 32, 0, f'<div style="position:absolute;left:0;top:0;width:32px;height:32px;opacity:.45">{PHONE}</div>')
 add('icon_coin_40', 40, 40, 0, f'<div class="coinbig" style="left:0;top:0">{COIN}</div>')
-add('badge_lock', 40, 40, 8, f'<div class="bdg" style="left:8px;top:8px">{LOCK}</div>', note='锁定角标 24')
-add('badge_unlock', 40, 40, 8, f'<div class="bdg rdy" style="left:8px;top:8px">{UNLOCK}</div>', note='可解锁角标 24')
+add('badge_lock', 40, 40, 8, f'<div class="bdg" style="left:8px;top:8px">{LOCK}</div>', note='锁定角标 24：实底黄铜渐变 135° #F7C673→#E3A040(55%)→#B97828，2px #5A4030 描边，锁 #4E2E0C（锁孔镂空）；放第 4 格木框内沿右上内缩 4，1x 左上 (262.5,644.5)，切图带 8 外边距所以贴图左上 (254.5,636.5)')
+add('badge_unlock', 40, 40, 8, f'<div class="bdg rdy" style="left:8px;top:8px">{UNLOCK}</div>', note='可解锁角标 24：金色渐变 #FFF0A8→#FFD45E(55%)→#E0A21C，2px #5A4030 描边，开锁 #4E2E0C；位置同 badge_lock，每 2400ms 上跳 4px')
 # 排版到一张大图
 x = y = 8; rowh = 0; W = 1000
 for it in items:
@@ -42,7 +42,7 @@ for it in items:
     if it['note']: e['note'] = it['note']
     J['slices'][it['name']] = e
 J['slices']['tool_plunger_pro_locked'] = {'file': 'assets/ui/v15/tool_plunger_pro_locked@2x.png', 'size_2x': [108, 234], 'margin_2x': 0, 'note': '专业皮搋子灰度版（Rec.709 亮度），锁定态再乘 opacity .6；锚点、缩放同 tool_plunger_pro（bottom-center，格内最大 64×72）。小游戏 Canvas 不支持 filter，所以出图不用代码去色。'}
-J['reuse_v14'] = {'hud_tag_c': '操作提示底（radius 16）、来电标签条（高 32）和金币金额牌（高 32）直接用 assets/ui/v14/hud_tag_c@2x.png 九宫格，margin 24、四边 56。',
+J['reuse_v14'] = {'hud_tag_c': '操作提示底（radius 16）和来电标签条（高 32）直接用 assets/ui/v14/hud_tag_c@2x.png 九宫格，margin 24、四边 56。',
                   'hud_*': 'HUD 四件照 v14 不变。'}
 J['code_drawn'] = {
  'avatar_bubble': {'pos_1x': [16, 160], 'padding_1x': [12, 16, 12, 16], 'font': '700 16px/24px Noto Sans CJK SC', 'color': '#5A4030', 'text_max_w': 160, 'text_max_w_fallback': 176, 'max_lines': 2,
@@ -54,7 +54,7 @@ J['code_drawn'] = {
  'hint': {'slot_1x': [16, 160], 'padding_1x': [12, 16, 12, 16], 'font': '700 16px/24px', 'color': '#FFFFFF', 'text_max_w': 208, 'base': 'v14 hud_tag_c 九宫格', 'in': 'opacity 0→1 + translateY 4→0，160ms ease-out', 'out': 'opacity 120ms ease-in'},
  'mask': {'color': 'rgba(43,30,20,.6)', 'edge': '孔外沿向外：2px #5A4030 + 4px #FFF3DA + 2px #5A4030（共 8）', 'flush_hole': {'circle': [195, 240, 32]}, 'in': 'opacity 240ms ease-out；孔半径 96→32，320ms cubic-bezier(.2,.8,.2,1)', 'out': '160ms，孔 32→96 同时淡出'},
  'tap_hand': {'size_1x': [40, 48], 'offset_from_target_center': {'flush(r32)': [16, 16], 'answer(r36)': [24, 24]}},
- 'coin_drop': {'coin_1x': 40, 'rest_box_1x': [232, 216, 40, 40], 'hit_1x': [224, 208, 56, 56], 'halo_1x': [216, 200, 72, 72], 'label': '¥30 金额牌 高 32（hud_tag_c），底边离金币 8'},
+ 'coin_drop': {'coin_1x': 40, 'rest_box_1x': [232, 216, 40, 40], 'hit_1x': [224, 208, 56, 56], 'halo_1x': [216, 200, 72, 72], 'label': '无常驻金额牌（会压窗台盆栽/肥皂碟）；点中时飘字「+¥30」T3 Bold #FFD45E + 2px #5A4030 描边，从金币中心上方 8 起上浮 16，480ms ease-out 淡出'},
  'call': {'dim': 'rgba(36,24,16,.8)', 'avatar_96_1x': [147, 144], 'wave': {'bars': 21, 'w': 4, 'gap': 4, 'radius': 2, 'h_range': [4, 32], 'box_1x': [113, 328, 164, 40], 'caller': '#FFD45E', 'hero': '#E9D9C0 ×0.6 幅度', 'idle': '全部 4，opacity .5'},
    'typewriter': {'char_ms': 60, 'punct_extra_ms': 120, 'hold_ms': 1600, 'bubble_in_ms': 160, 'button_after_last_ms': 400, 'total_ms_no_tap': 12040}},
 }

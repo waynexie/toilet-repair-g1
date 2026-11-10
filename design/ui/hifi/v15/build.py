@@ -12,7 +12,7 @@ def base(re, client='wang_ayi', p=1, pat=4, patmax=4, money=0, pay='¥30', water
     return h + hh
 
 TB_ANN = [dict(t='pos', n='锁定格点击区', e='#proSlot', ex=dict(l=230, t=640, w=64, h=80)),
-          dict(t='pos', n='锁定角标', e='#lockBadge', k=['l', 't', 'w', 'h'], ex=dict(l=276, t=634, w=24, h=24)),
+          dict(t='pos', n='锁角标', e='#lockBadge', k=['l', 't', 'w', 'h'], ex=dict(l=262.5, t=644.5, w=24, h=24)), dict(t='inset', n='锁角标距第 4 格木框内沿', e='#lockBadge', fr=290.5, ft=640.5, ex=4),
           dict(t='pos', n='价格字', e='#proLabel', k=['t', 'h'], ex=dict(t=734, h=16))]
 def BUB_ANN(n='头像气泡'):
     return [dict(t='pos', n=n + '位置', e='.bb', k=['l', 't'], ex=dict(l=16, t=160)), dict(t='pad', n=n, c='.bb', k='.bb .tx', e=[12, 16, 12, 16]),
@@ -62,11 +62,9 @@ screen('hifi_v15_s3_guide_mask', 'S3 第 3 级：6 秒没点，压遮罩，冲�
 # 8 S8 金币落在水箱盖
 def s8(re):
     return base(re, observed=True, hp=0) + bubble(B['thanks']['text'], 'happy', re) + \
-        '<div class="halo" style="left:216px;top:200px;width:72px;height:72px"></div>' + ring_pulse(252, 236, 67.2, .5, gold=True) + coin40(232, 216, re).replace('class="L coinbig"', 'class="L coinbig" id="coin40"') + \
-        chip24('<span id="chipT">¥30</span>', 252, 176, re) + '<div id="tap" class="L" style="left:224px;top:208px;width:56px;height:56px"></div>'
+        '<div class="halo" style="left:216px;top:200px;width:72px;height:72px"></div>' + ring_pulse(252, 236, 67.2, .5, gold=True) + coin40(232, 216, re).replace('class="L coinbig"', 'class="L coinbig" id="coin40"') + '<div id="tap" class="L" style="left:224px;top:208px;width:56px;height:56px"></div>'
 screen('hifi_v15_s8_coin_tap', 'S8 o1 疏通后 0.8s：金币落在水箱盖上等玩家点（4 秒不点自动收），胶囊仍是 0，本单 ¥30，耐心 4，王阿姨 p1；S7 感谢气泡「满意」还在',
-       s8, BUB_ANN('感谢气泡') + [dict(t='pos', n='金币 40', e='#coin40', ex=dict(l=232, t=216, w=40, h=40)), dict(t='pos', n='点击区 56', e='#tap', ex=dict(l=224, t=208, w=56, h=56)),
-             dict(t='gap', n='金额牌→金币', a='#chip', b='#coin40', ax='v', e=8), dict(t='center', n='金额牌', e='#chip', cx=252), dict(t='pad', n='金额牌', c='#chip', k='#chipT', e=[4, 12, 4, 12]), dict(t='pos', n='金额牌高', e='#chip', k=['t', 'h'], ex=dict(t=176, h=32))])
+       s8, BUB_ANN('感谢气泡') + [dict(t='pos', n='金币 40', e='#coin40', ex=dict(l=232, t=216, w=40, h=40)), dict(t='pos', n='点击区 56', e='#tap', ex=dict(l=224, t=208, w=56, h=56))])
 # 9 S10 来电
 def ring(re):
     return base(re, money=30, observed=True, hp=0, phone_on=False) + '<div class="dim"></div><div class="edge"></div>' + \
@@ -102,12 +100,12 @@ screen('hifi_v15_s11_hero', 'S11 主角回话「能。地址发我。」打完�
 screen('hifi_v15_s11_end', 'S11 5 句说完 0.4s 后出「马上到」（不点跳过约 12.0s）：通话 00:15，波形静止；金币 30',
        call([(2, None, True), (3, None, True), (4, None, False)], 'idle', '通话中 00:12', True),
        CALL_ANN(3) + [dict(t='pos', n='马上到', e='#btn', k=['t', 'w', 'h'], ex=dict(t=648, w=200, h=56)), dict(t='center', n='马上到', e='#btn')])
-screen('hifi_v15_o3_pro_ready', 'o3 观察阶段：金币 103（o1 ¥30 + o2 ¥68 + 打赏 ¥5），本单 ¥60，李姐 p1，耐心 4；专业皮搋子「可解锁」态',
+screen('hifi_v15_o3_pro_ready', 'o3 观察阶段：金币 103（o1 ¥30 + o2 ¥68 + 打赏 ¥5），本单 ¥60，李姐 p1，耐心 4；专业皮搋子「可解锁」态（金色开锁角标 + 「点击解锁」白字）',
        lambda re: base(re, client='li_jie', money=103, pay='¥60', water=.6, clog='hard', hp=1, tools=('plunger', 'scoop', 'snake'), pro='ready'), TB_ANN)
 # 参考图（不进 qa/pixel）：S4 用 shock 表情
 REF = {}
 
-TAILJS = '''ANN.filter(a=>a.t==='tail').length&&(()=>{const b=R(Q('.bb')),s=R(Q('.bb .tail'));const base=s.l+2-b.l,apex=s.t;chk(eqv(base,24)&&eqv(apex,152),`尖角：底边起点离气泡左边 ${f(base)}（应 24），宽 16，尖顶 y ${f(apex)}（贴客户卡底 152）`);if(SHOW){hseg(b.l,s.l+2,b.t-12,f(base))}})();'''
+TAILJS = '''ANN.filter(a=>a.t==='inset').forEach(a=>{const r=R(Q(a.e));const ir=a.fr-r.r,it=r.t-a.ft;chk(eqv(ir,a.ex)&&eqv(it,a.ex),`${a.n}：右 ${f(ir)} / 上 ${f(it)}（应 ${a.ex}；内沿实测 x ${a.fr}、y ${a.ft}；角标完全在格内，不压箱沿）`);if(SHOW){hseg(r.r,a.fr,r.t+12,f(ir));vseg(a.ft,r.t,r.l+12,f(it))}});ANN.filter(a=>a.t==='tail').length&&(()=>{const b=R(Q('.bb')),s=R(Q('.bb .tail'));const base=s.l+2-b.l,apex=s.t;chk(eqv(base,24)&&eqv(apex,152),`尖角：底边起点离气泡左边 ${f(base)}（应 24），宽 16，尖顶 y ${f(apex)}（贴客户卡底 152）`);if(SHOW){hseg(b.l,s.l+2,b.t-12,f(base))}})();'''
 def write(name, body, state, ann, mode):
     js = open('layout.js').read()
     if mode == 'ann':
@@ -132,7 +130,8 @@ def main():
         re_ = write(name, s['fn'](True), s['state'], s['ann'], 're'); shot(re_, f'/tmp/{name}_re.png')
         a = Image.open(f'hifi/{name}.png').convert('RGB'); b = Image.open(f'/tmp/{name}_re.png').convert('RGB')
         df = ImageChops.difference(a, b).convert('L'); px = df.getdata(); bad = sum(1 for p in px if p > 24)
-        res['recomp'] = dict(bad_pct=round(bad / len(px) * 100, 3), max=max(px), size=a.size)
+        res['recomp'] = dict(bad_pct=round(bad / len(px) * 100, 3), max=max(px), size=a.size, bad_px=bad)
+        if bad / len(px) > 1e-5: res['ok'] = False
         a.save(QA + name + '.png')
         report[name] = dict(state=s['state'], **res)
         print(name, 'OK' if res['ok'] else 'FAIL', res['recomp'], [c[1] for c in res['checks'] if not c[0]])

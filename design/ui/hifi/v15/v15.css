@@ -21,10 +21,10 @@ body{font-family:"Noto Sans CJK SC",sans-serif;font-variant-numeric:tabular-nums
 .re.who,.re.cc,.re.tg,.re.gr{background:none;border-color:transparent;box-shadow:none}
 /* 工具箱 */
 .tbn{position:absolute;top:734px;width:64px;height:16px;font-size:12px;line-height:16px;font-weight:700;text-align:center;color:#FFF3D8;white-space:nowrap}
-.tbn.pro{color:#FFE27A}
-.bdg{position:absolute;width:24px;height:24px;border-radius:12px;background:#FFF3DA;border:2px solid #5A4030;box-shadow:0 2px 4px rgba(30,20,10,.35);padding:2px}
+.tbn.pro{color:#FFE27A}.tbn.pro.rdy{color:#FFFFFF}
+.bdg{position:absolute;width:24px;height:24px;border-radius:12px;background:linear-gradient(135deg,#F7C673,#E3A040 55%,#B97828);border:2px solid #5A4030;box-shadow:inset 0 1px 0 rgba(255,244,214,.7),0 1px 2px rgba(60,30,10,.35);padding:2px}
 .bdg svg{display:block;width:16px;height:16px}
-.bdg.rdy{background:#FFD45E}
+.bdg.rdy{background:linear-gradient(135deg,#FFF0A8,#FFD45E 55%,#E0A21C)}
 .bdg.re{background:none;border-color:transparent;box-shadow:none}
 /* ===== v1.5 头像气泡（客户说话）===== */
 .bb{position:absolute;left:16px;top:160px;border:2px solid #5A4030;border-radius:16px;padding:10px 14px;background:#FFF8EC;filter:drop-shadow(0 2px 4px rgba(30,20,10,.25));width:max-content}

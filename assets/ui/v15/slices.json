@@ -214,7 +214,7 @@
     80
    ],
    "margin_2x": 16,
-   "note": "锁定角标 24"
+   "note": "锁定角标 24：实底黄铜渐变 135° #F7C673→#E3A040(55%)→#B97828，2px #5A4030 描边，锁 #4E2E0C（锁孔镂空）；放第 4 格木框内沿右上内缩 4，1x 左上 (262.5,644.5)，切图带 8 外边距所以贴图左上 (254.5,636.5)"
   },
   "badge_unlock": {
    "file": "assets/ui/v15/badge_unlock@2x.png",
@@ -223,7 +223,7 @@
     80
    ],
    "margin_2x": 16,
-   "note": "可解锁角标 24"
+   "note": "可解锁角标 24：金色渐变 #FFF0A8→#FFD45E(55%)→#E0A21C，2px #5A4030 描边，开锁 #4E2E0C；位置同 badge_lock，每 2400ms 上跳 4px"
   },
   "tool_plunger_pro_locked": {
    "file": "assets/ui/v15/tool_plunger_pro_locked@2x.png",
@@ -236,7 +236,7 @@
   }
  },
  "reuse_v14": {
-  "hud_tag_c": "操作提示底（radius 16）、来电标签条（高 32）和金币金额牌（高 32）直接用 assets/ui/v14/hud_tag_c@2x.png 九宫格，margin 24、四边 56。",
+  "hud_tag_c": "操作提示底（radius 16）和来电标签条（高 32）直接用 assets/ui/v14/hud_tag_c@2x.png 九宫格，margin 24、四边 56。",
   "hud_*": "HUD 四件照 v14 不变。"
  },
  "code_drawn": {
@@ -371,7 +371,7 @@
     72,
     72
    ],
-   "label": "¥30 金额牌 高 32（hud_tag_c），底边离金币 8"
+   "label": "无常驻金额牌（会压窗台盆栽/肥皂碟）；点中时飘字「+¥30」T3 Bold #FFD45E + 2px #5A4030 描边，从金币中心上方 8 起上浮 16，480ms ease-out 淡出"
   },
   "call": {
    "dim": "rgba(36,24,16,.8)",
