@@ -42,7 +42,14 @@ const SFX={
  click(){tone(800,.04,'triangle',.15);},
  notify(){tone(1175,.08,'sine',.2);tone(1568,.1,'sine',.2,null,.1);}
 };
-function buzz(p){if(save.reduced)return;try{navigator.vibrate&&navigator.vibrate(p);}catch(e){}}
+const CAN_VIBRATE=typeof navigator.vibrate==='function'&&!/iP(hone|ad|od)/.test(navigator.userAgent);
+// iOS 等不支持震动的设备：用低频"咚"声 + 轻微画面抖动代替
+function buzz(p){const arr=Array.isArray(p)?p:[p];let on=0;arr.forEach((v,i)=>{if(i%2===0)on+=v;});
+ if(CAN_VIBRATE){if(save.reduced)return;try{navigator.vibrate(p);}catch(e){}return;}
+ if(on<10)return;const k=Math.min(1,on/120);
+ tone(70+k*40,.05+k*.07,'sine',.18+k*.22,45);
+ if(arr.length>1)arr.forEach((v,i)=>{if(i>1&&i%2===0){let d=0;for(let j=0;j<i;j++)d+=arr[j];tone(70+k*40,.05,'sine',.15+k*.15,45,d/1000);}});
+ if(on>=25)doShake(2+k*6);}
 
 // ---------- 订单数据 ----------
 // 订单来自 data/orders.json（策划维护），这里只补表现层字段
@@ -110,7 +117,8 @@ function clogCleared(){
 function returnTool(){if(held){held=null;}}
 function finishOrder(){
  const d=O.d,total=d.base+O.tip;S.times[d.id]=O.elapsed;
- S.result={d,base:d.base,tip:O.tip,total,elapsed:O.elapsed,pen:O.penalties,coinsShown:0,face:O.tip>=d.tip*.8?'👍':'🙂'};
+ save.best=save.best||{};const bk='o'+d.id+(d.id===4?'':'');const prev=save.best[bk];const isBest=prev==null||O.elapsed<prev;if(isBest)save.best[bk]=O.elapsed;persist();
+ S.result={d,base:d.base,tip:O.tip,total,elapsed:O.elapsed,pen:O.penalties,prevBest:prev,isBest:isBest&&prev!=null,coinsShown:0,face:O.tip>=d.tip*.8?'👍':'🙂'};
  S.screen='result';S.resultT=0;
  const msgs=PHONE_AFTER[d.id]||[];S.phoneQueue=msgs.slice();
  if(d.obj&&!S.dex.includes(d.obj))S.dex.push(d.obj);
@@ -249,7 +257,7 @@ function loop(now){
  update(dt);draw();requestAnimationFrame(loop);
 }
 function update(dt){
- shake=Math.max(0,shake-dt*40);
+ shake=Math.max(0,shake-dt*40);if(S.copied>0)S.copied-=dt;
  parts=parts.filter(p=>{p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=(p.g||400)*dt;return p.life>0;});
  floats=floats.filter(f=>{f.life-=dt;f.y-=40*dt;return f.life>0;});
  flashes=flashes.filter(f=>{f.life-=dt;f.r+=260*dt;return f.life>0;});
@@ -427,7 +435,7 @@ function drawHUD(){
  rr(10,10,W-20,64,16);fs('rgba(255,248,235,.95)');
  txt('¥'+S.money,30,30,20,'#2f8a4a','left','800');txt(O?`第 ${O.d.id} 单 · ${O.d.who}`:'',30,55,13,INK,'left','600');
  if(O){g.font='34px sans-serif';g.textAlign='center';g.fillText(O.face,W-140,44);
-  txt('小费 ¥'+O.tip,W-80,30,14,INK);if(O.startT!=null){const el=(O.anim&&O.anim.type==='win')||O.phase==='done'?O.elapsed:S.t-O.startT;txt(el.toFixed(1)+'s',W-80,54,13,'#7a5a48','center','600');}}
+  txt('小费 ¥'+O.tip,W-80,30,14,INK);if(O.startT!=null){const el=(O.anim&&O.anim.type==='win')||O.phase==='done'||S.screen!=='play'?O.elapsed:S.t-O.startT;txt(el.toFixed(1)+'s',W-80,54,13,'#7a5a48','center','600');}}
  // 设置
  button(save.muted?'🔇':'🔊',W-44,84,34,30,()=>{save.muted=!save.muted;persist();},'#fff8eb');
  button(save.reduced?'🐢':'✨',W-84,84,34,30,()=>{save.reduced=!save.reduced;persist();},'#fff8eb');
@@ -502,7 +510,7 @@ function drawResult(){
  txt(r.d.who+(r.face==='👍'?'：师傅手艺真好！':'：行，通了就好。'),W/2,262,15,INK,'center','600');
  txt('工钱',90,305,15,'#7a5a48','left');txt('¥'+r.base,W-90,305,15,INK,'right');
  txt('小费',90,333,15,'#7a5a48','left');txt('¥'+r.tip+(r.tip<r.d.tip?`（满 ¥${r.d.tip}）`:''),W-90,333,15,INK,'right');
- txt('用时',90,361,15,'#7a5a48','left');txt(r.elapsed.toFixed(1)+' 秒',W-90,361,15,INK,'right');
+ txt('用时',90,361,15,'#7a5a48','left');txt(r.elapsed.toFixed(1)+' 秒',W-90,361,15,INK,'right');if(r.isBest)txt('新纪录！',W/2,361,13,'#2f8a4a');else if(r.prevBest!=null)txt('最佳 '+r.prevBest.toFixed(1)+'s',W/2,361,12,'#a08878','center','500');
  if(r.d.id===4&&S.times[2]){const diff=S.times[2]-r.elapsed;
   rr(50,380,W-100,34,10);fs(diff>0?'#d8ffe6':'#ffe3dc',2);txt(diff>0?`比第 2 单（同款满水堵）快了 ${diff.toFixed(1)} 秒`:`比第 2 单慢了 ${(-diff).toFixed(1)} 秒`,W/2,397,14,INK);}
  otxt('+¥'+r.coinsShown,W/2,450,40,'#ffcf3f');
@@ -512,7 +520,7 @@ function drawResult(){
   m.forEach((x,i)=>{txt(x[0]+'  '+x[1],44,112+i*22,12.5,'#f1f1f1','left','500');});g.restore();g.globalAlpha=1;}
  const next=r.d.id===3?'去五金店看看':r.d.id===4?'收工':'接下一单';
  if(S.resultT>1)button(next,W/2-90,505,180,52,()=>{S.phoneShown=false;
-  if(r.d.id===3){S.screen='upgrade';}else if(r.d.id===4){S.screen='end';}else{S.idx++;startOrder(S.idx);}},'#ffb53d');
+  if(r.d.id===3){S.screen='upgrade';}else if(r.d.id===4){S.screen='end';recordRun();}else{S.idx++;startOrder(S.idx);}},'#ffb53d');
 }
 function drawUpgrade(){
  panel(110,540);txt('五金店 · 老陈',W/2,145,15,'#7a5a48');txt('加压皮搋子',W/2,180,26,INK,'center','800');
@@ -524,17 +532,22 @@ function drawUpgrade(){
  txt('你有 ¥'+S.money,W/2,530,14,'#2f8a4a');
  button(can?`买！¥${cost}`:'钱不够',W/2-90,560,180,52,()=>{if(!can){S.money=cost;}S.money-=cost;S.upgraded=true;SFX.success();buzz([30,30,80]);doShake(6);S.idx++;startOrder(S.idx);},can?'#ffb53d':'#ccc');
 }
+function recordRun(){save.runs=save.runs||[];save.runs.push({at:new Date().toISOString(),t:{...S.times},money:S.money});save.runs=save.runs.slice(-20);persist();}
+function timesText(){const t=S.times;return '修马桶G1用时 '+[1,2,3,4].map(i=>`第${i}单 ${t[i]!=null?t[i].toFixed(1)+'s':'-'}`).join('，')+`（第${(save.runs||[]).length}次通关）`;}
+function copyTimes(){const s=timesText();const done=()=>{S.copied=2;};try{navigator.clipboard.writeText(s).then(done,()=>{prompt('复制这段发给我们',s);});}catch(e){prompt('复制这段发给我们',s);}}
 function drawEnd(){
  panel(140,470);txt('今天收工',W/2,180,26,INK,'center','800');
  txt('今日收入 ¥'+S.money,W/2,225,18,'#2f8a4a');
  txt('图鉴：'+(S.dex.length?'小黄鸭 ×1':'空'),W/2,260,15,INK);
- if(S.times[2]&&S.times[4])txt(`满水堵用时：${S.times[2].toFixed(1)}s → ${S.times[4].toFixed(1)}s`,W/2,292,15,INK);
- txt('手机亮了一下……',W/2,345,14,'#7a5a48');
- rr(50,365,W-100,64,12);fs('#2d2d33',2);txt('王阿姨：小师傅，我家门把手也',W/2,387,13,'#f1f1f1');txt('不太灵，下回顺便看看？',W/2,409,13,'#f1f1f1');
+ txt([1,2,3,4].map(i=>S.times[i]!=null?S.times[i].toFixed(1)+'s':'-').join(' · '),W/2,280,14,INK);
+ if(S.times[2]&&S.times[4])txt(`满水堵：${S.times[2].toFixed(1)}s → ${S.times[4].toFixed(1)}s`,W/2,301,14,'#2c5fb0');
+ button(S.copied>0?'已复制 ✔':'复制用时',W/2-55,314,110,28,copyTimes,'#fff8eb');
+ txt('手机亮了一下……',W/2,358,14,'#7a5a48');
+ rr(50,372,W-100,64,12);fs('#2d2d33',2);txt('王阿姨：小师傅，我家门把手也',W/2,394,13,'#f1f1f1');txt('不太灵，下回顺便看看？',W/2,416,13,'#f1f1f1');
  txt('（G2 将从这里继续）',W/2,455,13,'#7a5a48');
- button('再玩一遍',W/2-90,500,180,52,()=>{S.screen='title';O=null;},'#ffb53d');
+ button('再玩一遍',W/2-90,500,180,52,()=>{S.screen='title';O=null;S.copied=0;},'#ffb53d');
 }
 
 // 调试/测试钩子
-window.__G={S,get O(){return O;},ORDERS,startOrder,setUpgraded:v=>S.upgraded=v};
+window.__G={S,timesText,get save(){return save;},get O(){return O;},ORDERS,startOrder,setUpgraded:v=>S.upgraded=v};
 requestAnimationFrame(loop);
