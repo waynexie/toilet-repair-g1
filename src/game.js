@@ -636,7 +636,7 @@ function drawPhone(){if(!PH.open)return;
 function drawObserveHint(){
  if(!O||O.phase!=='observe'||O.anim||S.screen!=='play')return;
  const y=FLUSH.y+40+Math.sin(S.t*6)*6;g.font='34px sans-serif';g.textAlign='center';g.fillText('👆',FLUSH.x+30,y);
- if(O.d.id===1)txt('先冲一下水，看看什么情况',W/2,620,15,INK);
+ if(O.d.id===1&&!(O.hintT>0&&O.hint)){const t='先冲一下水，看看什么情况';g.font='700 14px "Noto Sans CJK SC","PingFang SC",sans-serif';const w=Math.min(240,g.measureText(t).width+32);rr(16,160,w,40,16);fs('#FFF8EC',2);txt(t,32,180,14,'#5A4030','left','700');} // ui-spec：气泡位 left16 top160
 }
 function drawFX(){
  for(const f of flashes){g.beginPath();g.ellipse(f.x,f.y,f.r,f.r*.55,0,0,7);g.strokeStyle=`rgba(255,255,255,${f.life*2})`;g.lineWidth=4;g.stroke();}
