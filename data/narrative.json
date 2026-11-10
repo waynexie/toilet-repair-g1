@@ -103,6 +103,57 @@
           "speaker": "hero",
           "text": "纸别一次扔太多。"
         }
+      },
+      "bubbles": {
+        "_note": "头像气泡。按触发事件出，mood 对应头像表情 p1..p4（p = 1 + 掉的格数）。同一时间只出一个，两条之间至少隔 4 秒；台词气泡出现时操作提示先藏。每条≤14字/行、≤2行。",
+        "arrive": {
+          "mood": "p1",
+          "text": "师傅，冲不下去了，你看看。"
+        },
+        "tutorial_observe": {
+          "mood": "p1",
+          "text": "你先冲一下，看看咋回事。",
+          "_note": "首单配合新手指引，替代系统提示「先冲一下水，看看什么情况」的口播；指引卡仍照常出。"
+        },
+        "idle_p1": {
+          "mood": "p1",
+          "text": "这么早就出来干活啦？",
+          "_note": "p1 阶段 6 秒无操作，只出一次"
+        },
+        "patience_p2": {
+          "mood": "p2",
+          "text": "师傅，好弄不？"
+        },
+        "patience_p3": {
+          "mood": "p3",
+          "text": "我九点还得去接孙子……"
+        },
+        "patience_p4": {
+          "mood": "p4",
+          "text": "哎呀，这可咋整……"
+        },
+        "wrong_tool": {
+          "mood": "p1",
+          "text": "不急不急，慢慢弄。"
+        },
+        "wrong_tool_late": {
+          "mood": "p3",
+          "text": "那个……是干这个的吗？",
+          "_note": "掉 2 格及以上时替换 wrong_tool"
+        },
+        "progress_hit": {
+          "mood": "p1",
+          "text": "哎，有动静了！",
+          "_note": "第一次疏通掉格时，只出一次"
+        },
+        "splash": {
+          "mood": "p2",
+          "text": "哎哟，溅着没？"
+        },
+        "done": {
+          "mood": "p1",
+          "text": "哎哟，比我儿子强。"
+        }
       }
     },
     "o2": {
@@ -114,7 +165,8 @@
       "lines": {
         "arrive": {
           "speaker": "xiao_xu",
-          "text": "快点啊，八点我得出车！"
+          "text": "师傅你可来了！就这个。",
+          "_note": "来电里已经说过八点出车，现场不重复"
         },
         "splash": {
           "speaker": "xiao_xu",
@@ -131,6 +183,37 @@
         "done_hero": {
           "speaker": "hero",
           "text": "门我帮你带上。"
+        }
+      },
+      "bubbles": {
+        "_note": "同 o1 规则。来电单 3 格，表情最多到 p3。",
+        "arrive": {
+          "mood": "p1",
+          "text": "师傅你可来了！就这个。"
+        },
+        "patience_p2": {
+          "mood": "p2",
+          "text": "还有二十分钟……"
+        },
+        "patience_p3": {
+          "mood": "p3",
+          "text": "我先给车队打个电话……"
+        },
+        "wrong_tool": {
+          "mood": "p2",
+          "text": "师傅……来得及吗？"
+        },
+        "progress_hit": {
+          "mood": "p1",
+          "text": "动了动了！"
+        },
+        "splash": {
+          "mood": "p2",
+          "text": "哎哟，我的布鞋！"
+        },
+        "done": {
+          "mood": "p1",
+          "text": "得救了！我先走了啊！"
         }
       }
     },
@@ -414,7 +497,38 @@
     "o2": {
       "type": "call",
       "caller": "xiao_xu",
-      "text": "师傅能马上来吗？八点我得出车！"
+      "text": "师傅能马上来吗？八点我得出车！",
+      "script": {
+        "_note": "首单完成后手机震动来电。接通后按顺序逐字出，caller 用语音气泡+波形，hero 用玩家侧气泡。每句停 1.6 秒或点击跳下一句。背景音建议货车怠速声。",
+        "ring_preview": "徐哥 来电",
+        "lines": [
+          {
+            "speaker": "xiao_xu",
+            "text": "喂，师傅？修马桶的师傅是吧？"
+          },
+          {
+            "speaker": "xiao_xu",
+            "text": "我家厕所堵死了，八点我得出车，能马上来不？"
+          },
+          {
+            "speaker": "hero",
+            "text": "能。地址发我。"
+          },
+          {
+            "speaker": "xiao_xu",
+            "text": "纺织厂家属院3栋2单元401，我开着门等你！"
+          },
+          {
+            "speaker": "xiao_xu",
+            "text": "快点啊师傅！"
+          }
+        ],
+        "missed_redial": {
+          "type": "weixin_msg",
+          "text": "师傅接下电话！急！",
+          "_note": "玩家 8 秒不接：挂断后来这条喂信，2 秒后再次来电。不扣耐心。"
+        }
+      }
     },
     "o3": {
       "type": "weixin_msg",
@@ -722,7 +836,9 @@
         "sender": "mom",
         "style": "weixin_preview",
         "text": "早饭吃了再出门。"
-      }
+      },
+      "skip_day1": true,
+      "_note": "第 1 天开局直接进王阿姨家厕所，不播早上过场；第 2 天起再播。"
     },
     "trans_road": {
       "bg": "trans_road",
