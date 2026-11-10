@@ -376,7 +376,7 @@
     "hero_status": "已读不回"
   },
   "calls": {
-    "_note": "普通单走喂信消息；来电每天最多1张（economy.json），第一天只给 o2。o4 是熟客回头，直接发喂信更自然。",
+    "_note": "普通单走喂信消息；o2/o4 为来电急单（第一天来电上限已在 economy.json 豁免）。",
     "o1": {
       "type": "weixin_msg",
       "caller": "wang_ayi",
@@ -393,9 +393,9 @@
       "text": "师傅，厕所堵了，孩子刚在里面玩。"
     },
     "o4": {
-      "type": "weixin_msg",
+      "type": "call",
       "caller": "xiao_xu",
-      "text": "师傅！又是我，又堵了，十点面试！！"
+      "text": "师傅，又是我！又堵了，我要去面试！"
     }
   },
   "call_master": {
