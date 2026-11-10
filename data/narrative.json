@@ -6,57 +6,71 @@
       "voice": "话少，不辩解，只说跟活有关的"
     },
     "mom": {
-      "name": "妈妈"
+      "name": "妈妈",
+      "look": "50多岁，围裙，头像是一盆绿萝"
     },
     "dad": {
-      "name": "爸爸"
+      "name": "爸爸",
+      "look": "话少，头像是一张山水风景图（默认图）"
     },
     "ajie": {
       "name": "阿杰",
-      "role": "表哥"
+      "role": "表哥",
+      "look": "头像是自己在车边的侧脸照，墨镜"
     },
     "dagu": {
-      "name": "大姑"
+      "name": "大姑",
+      "look": "头像是“家和万事兴”书法字"
     },
     "dazhuang": {
       "name": "大壮",
-      "role": "发小"
+      "role": "发小",
+      "look": "头像是自家烧烤摊招牌"
     },
     "wang_ayi": {
       "name": "王阿姨",
-      "role": "o1 客户，老小区独居，嘴碎热心"
+      "role": "o1 客户，老小区独居，嘴碎热心",
+      "look": "60出头，烫卷短发，碎花棉马甲，袖套；耐心降时叉腰，满意时拍你胳膊"
     },
     "xiao_xu": {
       "name": "小徐",
-      "role": "o2/o4 客户，出租屋，在备考"
+      "role": "o2/o4 客户，出租屋，在备考",
+      "look": "20出头，黑框眼镜，格子睡衣外套羽绒服，头发翘；着急时抱头看表"
     },
     "li_jie": {
       "name": "李姐",
-      "role": "o3 客户，带娃"
+      "role": "o3 客户，带娃",
+      "look": "30多岁，扎低马尾，抱着/牵着3岁小孩，围裙；耐心降时孩子开始哭"
     },
     "nainai": {
       "name": "奶奶",
-      "role": "群里最长辈，只发语音和早安图"
+      "role": "群里最长辈，只发语音和早安图",
+      "look": "头像是一朵荷花"
     },
     "sanyi": {
       "name": "三姨",
-      "role": "爱晒家里新东西（新马桶是后期伏笔）"
+      "role": "爱晒家里新东西（新马桶是后期伏笔）",
+      "look": "头像是孙子的照片"
     },
     "erjiu": {
       "name": "二舅",
-      "role": "爱钓鱼，发鱼照片"
+      "role": "爱钓鱼，发鱼照片",
+      "look": "头像是手举大鱼"
     },
     "biaomei": {
       "name": "表妹",
-      "role": "大学生，偶尔帮主角说话"
+      "role": "大学生，偶尔帮主角说话",
+      "look": "头像是动漫角色"
     },
     "lao_qian": {
       "name": "老钱",
-      "role": "带主角入行的老师傅，嘴硬心软，每次先嫌一句再给提示"
+      "role": "带主角入行的老师傅，嘴硬心软，每次先嫌一句再给提示",
+      "look": "50多岁，平头花白，耳朵夹木工铅笔、叼牙签，深蓝旧工装，手上老茧；默认嫌弃脸"
     },
     "zhao_jie": {
       "name": "赵姐",
-      "role": "第一位推荐客户，利落直爽"
+      "role": "第一位推荐客户，利落直爽",
+      "look": "40岁左右，短发利落，职业装外套，手里拿车钥匙"
     }
   },
   "orders": {
@@ -423,6 +437,144 @@
     "closer": [
       "行了，挂了。",
       "下回别打了。"
+    ]
+  },
+  "moments": {
+    "_note": "朋友圈（G2）。全部可忽略；评论区体现亲戚关系。主角可点赞但不评论。",
+    "posts": [
+      {
+        "id": "m1",
+        "author": "ajie",
+        "text": "周末带客户看房，顺路提了车。",
+        "image": "新车方向盘+车钥匙",
+        "likes": [
+          "dagu",
+          "sanyi",
+          "mom"
+        ],
+        "comments": [
+          {
+            "from": "dagu",
+            "text": "我儿子真能干"
+          },
+          {
+            "from": "biaomei",
+            "text": "表哥车贷多少年呀"
+          }
+        ]
+      },
+      {
+        "id": "m2",
+        "author": "sanyi",
+        "text": "新换的马桶，会自己冲水，孙子天天去按。",
+        "image": "智能马桶+小孩的手",
+        "likes": [
+          "nainai",
+          "dagu"
+        ],
+        "comments": [
+          {
+            "from": "erjiu",
+            "text": "这玩意坏了好修不？"
+          },
+          {
+            "from": "sanyi",
+            "text": "坏了找厂家呗"
+          }
+        ],
+        "_seed": "后期三姨家智能马桶出故障，厂家排队一周，最后找主角"
+      },
+      {
+        "id": "m3",
+        "author": "erjiu",
+        "text": "今天三斤二两。",
+        "image": "手举大鱼",
+        "likes": [
+          "dad",
+          "dazhuang"
+        ],
+        "comments": [
+          {
+            "from": "dad",
+            "text": "哪个塘"
+          }
+        ]
+      },
+      {
+        "id": "m4",
+        "author": "dazhuang",
+        "text": "今晚烧烤摊，老同学八折。",
+        "image": "烧烤架烟雾",
+        "likes": [
+          "hero"
+        ],
+        "comments": [
+          {
+            "from": "dazhuang",
+            "text": "@你 给你留了腰子"
+          }
+        ]
+      },
+      {
+        "id": "m5",
+        "author": "mom",
+        "text": "[转发] 冬季养生：这三种汤最暖胃",
+        "image": "文章卡片",
+        "likes": [
+          "nainai",
+          "dagu"
+        ],
+        "comments": []
+      }
+    ]
+  },
+  "workday_beats": {
+    "_note": "G2 营业日节奏文案。morning=早上开接单板；commute=路上随机冒（最多1条/段）；evening=收工结算后。全部可忽略。",
+    "morning": [
+      {
+        "sender": "nainai",
+        "channel": "family_group",
+        "text": "[图片] 早上好 平安喜乐"
+      },
+      {
+        "sender": "mom",
+        "channel": "dm_mom",
+        "text": "早饭吃了再出门。"
+      }
+    ],
+    "commute": [
+      {
+        "sender": "dagu",
+        "channel": "family_group",
+        "text": "[链接]这几种食物千万别隔夜吃"
+      },
+      {
+        "sender": "dazhuang",
+        "channel": "dm_dazhuang",
+        "text": "今天收工来摊上坐会儿？"
+      },
+      {
+        "sender": "erjiu",
+        "channel": "family_group",
+        "text": "[图片] 又是一条"
+      }
+    ],
+    "evening": [
+      {
+        "sender": "mom",
+        "channel": "dm_mom",
+        "text": "吃饭没？"
+      },
+      {
+        "sender": "mom",
+        "channel": "dm_mom",
+        "text": "锅里给你留了饭。"
+      },
+      {
+        "sender": "mom",
+        "channel": "dm_mom",
+        "text": "别太累了，早点睡。"
+      }
     ]
   }
 }
