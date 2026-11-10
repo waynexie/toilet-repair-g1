@@ -605,24 +605,28 @@
           "type": "item",
           "item": "两个苹果",
           "line": "拿着！不拿我生气了。",
-          "insist": "塞你兜里了啊。"
+          "insist": "塞你兜里了啊。",
+          "icon": "gift_apples"
         },
         {
           "type": "item",
           "item": "一罐自家腌的咸菜",
-          "line": "自己腌的，下饭。"
+          "line": "自己腌的，下饭。",
+          "icon": "gift_pickles"
         }
       ],
       "xiao_xu": [
         {
           "type": "cash",
           "line": "不用找了！",
-          "insist": "拿着拿着，我赶时间。"
+          "insist": "拿着拿着，我赶时间。",
+          "icon": "gift_cashroll"
         },
         {
           "type": "item",
           "item": "两个车上拉的橙子",
-          "line": "车上拉的，甜得很。"
+          "line": "车上拉的，甜得很。",
+          "icon": "gift_oranges"
         }
       ],
       "li_jie": [
@@ -631,18 +635,21 @@
           "item": "一颗糖（孩子递的）",
           "line": "宝宝，把糖给叔叔。",
           "insist": "他非要给你。",
-          "_note": "孩子递糖，主角蹲下接，不推辞"
+          "_note": "孩子递糖，主角蹲下接，不推辞",
+          "icon": "gift_candy"
         },
         {
           "type": "item",
           "item": "两盒酸奶",
-          "line": "带着路上喝。"
+          "line": "带着路上喝。",
+          "icon": "gift_yogurt"
         }
       ],
       "zhao_jie": [
         {
           "type": "cash",
-          "line": "我多转你十块，别推了。"
+          "line": "我多转你十块，别推了。",
+          "icon": "gift_cashroll"
         }
       ]
     },
@@ -656,14 +663,15 @@
       "type": "cash",
       "line": "不用找了！",
       "hero": "不用不用。",
-      "insist": "拿着拿着，我赶时间。"
+      "insist": "拿着拿着，我赶时间。",
+      "icon": "gift_cashroll"
     },
     "wang_apples": {
       "order": "o5",
       "client": "wang_ayi",
       "type": "item",
       "item": "两个苹果",
-      "icon": "apple_x2",
+      "icon": "gift_apples",
       "line": "拿着！不拿我生气了。",
       "hero": "这哪行。",
       "insist": "塞你兜里了啊。"
@@ -688,7 +696,8 @@
       "type": "cash",
       "line": "我多转你十块，别推了。",
       "hero": "这……",
-      "insist": "王阿姨说你实在，我也实在。"
+      "insist": "王阿姨说你实在，我也实在。",
+      "icon": "gift_cashroll"
     }
   }
 }
