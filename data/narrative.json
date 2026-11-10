@@ -593,7 +593,7 @@
   },
   "_scene_rule": "卫生间里只放卫生间会有的东西；小广告只在楼道、单元门口、电表箱",
   "gifts": {
-    "_note": "客户打赏（替代小费），概率与金额由 economy.json 定。结算后在场景内出：客户一句 + 主角推辞一句 + 客户坚持一句（可选），然后结算页单独一行显示。type=item 的不计钱，进“收到的东西”记录。",
+    "_note": "剧情固定打赏用 xu_no_change / wang_apples；随机打赏（economy.json 概率）从 by_client 里该客户的 cash 条目取台词，没有 cash 条目的客户用 random_cash_generic。item 条目留作后续剧情固定打赏备用。",
     "hero_decline": [
       "不用不用。",
       "这哪行。",
@@ -649,6 +649,28 @@
     "settle_row_label": {
       "cash": "客户硬塞",
       "item": "收到"
-    }
+    },
+    "xu_no_change": {
+      "order": "o2",
+      "client": "xiao_xu",
+      "type": "cash",
+      "line": "不用找了！",
+      "hero": "不用不用。",
+      "insist": "拿着拿着，我赶时间。"
+    },
+    "wang_apples": {
+      "order": "o5",
+      "client": "wang_ayi",
+      "type": "item",
+      "item": "两个苹果",
+      "icon": "gift_apples",
+      "line": "拿着！不拿我生气了。",
+      "hero": "这哪行。",
+      "insist": "塞你兜里了啊。"
+    },
+    "random_cash_generic": [
+      "师傅辛苦，多的拿着。",
+      "零头不用找了。"
+    ]
   }
 }
