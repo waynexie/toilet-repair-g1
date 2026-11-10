@@ -1,72 +1,293 @@
 {
   "_note": "叙事配置（叙事维护）。按 orders.json 的订单 id 对齐。所有 social 消息可忽略，不承载玩法解锁。家族群预览≤18字。{HERO} 为主角名占位，未定前显示“你”。",
   "characters": {
-    "hero":     { "name": "{HERO}", "voice": "话少，不辩解，只说跟活有关的" },
-    "mom":      { "name": "妈妈" },
-    "dad":      { "name": "爸爸" },
-    "ajie":     { "name": "阿杰", "role": "表哥" },
-    "dagu":     { "name": "大姑" },
-    "dazhuang": { "name": "大壮", "role": "发小" },
-    "wang_ayi": { "name": "王阿姨", "role": "o1 客户，老小区独居，嘴碎热心" },
-    "xiao_xu":  { "name": "小徐", "role": "o2/o4 客户，出租屋，在备考" },
-    "li_jie":   { "name": "李姐", "role": "o3 客户，带娃" }
+    "hero": {
+      "name": "{HERO}",
+      "voice": "话少，不辩解，只说跟活有关的"
+    },
+    "mom": {
+      "name": "妈妈"
+    },
+    "dad": {
+      "name": "爸爸"
+    },
+    "ajie": {
+      "name": "阿杰",
+      "role": "表哥"
+    },
+    "dagu": {
+      "name": "大姑"
+    },
+    "dazhuang": {
+      "name": "大壮",
+      "role": "发小"
+    },
+    "wang_ayi": {
+      "name": "王阿姨",
+      "role": "o1 客户，老小区独居，嘴碎热心"
+    },
+    "xiao_xu": {
+      "name": "小徐",
+      "role": "o2/o4 客户，出租屋，在备考"
+    },
+    "li_jie": {
+      "name": "李姐",
+      "role": "o3 客户，带娃"
+    },
+    "nainai": {
+      "name": "奶奶",
+      "role": "群里最长辈，只发语音和早安图"
+    },
+    "sanyi": {
+      "name": "三姨",
+      "role": "爱晒家里新东西（新马桶是后期伏笔）"
+    },
+    "erjiu": {
+      "name": "二舅",
+      "role": "爱钓鱼，发鱼照片"
+    },
+    "biaomei": {
+      "name": "表妹",
+      "role": "大学生，偶尔帮主角说话"
+    }
   },
   "orders": {
     "o1": {
       "client": "wang_ayi",
-      "props": ["红色塑料桶", "防盗窗上晾着袜子", "窗台一排腌菜坛"],
+      "props": [
+        "红色塑料桶",
+        "防盗窗上晾着袜子",
+        "窗台一排腌菜坛"
+      ],
       "lines": {
-        "arrive":     { "speaker": "wang_ayi", "text": "师傅，冲不下去了，你看看。" },
-        "wrong_tool": { "speaker": "wang_ayi", "text": "不急不急，慢慢弄。" },
-        "done":       { "speaker": "wang_ayi", "text": "哎哟，比我儿子强。" },
-        "done_hero":  { "speaker": "hero", "text": "纸别一次扔太多。" }
+        "arrive": {
+          "speaker": "wang_ayi",
+          "text": "师傅，冲不下去了，你看看。"
+        },
+        "wrong_tool": {
+          "speaker": "wang_ayi",
+          "text": "不急不急，慢慢弄。"
+        },
+        "done": {
+          "speaker": "wang_ayi",
+          "text": "哎哟，比我儿子强。"
+        },
+        "done_hero": {
+          "speaker": "hero",
+          "text": "纸别一次扔太多。"
+        }
       }
     },
     "o2": {
       "client": "xiao_xu",
-      "props": ["门边摞着外卖盒", "墙上贴着考试倒计时：1天"],
+      "props": [
+        "门边摞着外卖盒",
+        "墙上贴着考试倒计时：1天"
+      ],
       "lines": {
-        "arrive":     { "speaker": "xiao_xu", "text": "快点啊，九点要进考场！" },
-        "splash":     { "speaker": "xiao_xu", "text": "啊——我的拖鞋！" },
-        "wrong_tool": { "speaker": "xiao_xu", "text": "师傅……来得及吗？" },
-        "done":       { "speaker": "xiao_xu", "text": "得救了，我先走了！" },
-        "done_hero":  { "speaker": "hero", "text": "门我帮你带上。" }
+        "arrive": {
+          "speaker": "xiao_xu",
+          "text": "快点啊，九点要进考场！"
+        },
+        "splash": {
+          "speaker": "xiao_xu",
+          "text": "啊——我的拖鞋！"
+        },
+        "wrong_tool": {
+          "speaker": "xiao_xu",
+          "text": "师傅……来得及吗？"
+        },
+        "done": {
+          "speaker": "xiao_xu",
+          "text": "得救了，我先走了！"
+        },
+        "done_hero": {
+          "speaker": "hero",
+          "text": "门我帮你带上。"
+        }
       }
     },
     "o3": {
       "client": "li_jie",
-      "props": ["浴缸边一排洗澡玩具，少了一只", "门上贴着卡通身高尺"],
+      "props": [
+        "浴缸边一排洗澡玩具，少了一只",
+        "门上贴着卡通身高尺"
+      ],
       "lines": {
-        "arrive":     { "speaker": "li_jie", "text": "孩子刚在厕所玩了半天……" },
-        "wrong_tool": { "speaker": "li_jie", "text": "怎么一点都不动啊？" },
-        "done":       { "speaker": "li_jie", "text": "鸭鸭！我说找不着呢。" },
-        "done_hero":  { "speaker": "hero", "text": "洗洗还能用。" }
+        "arrive": {
+          "speaker": "li_jie",
+          "text": "孩子刚在厕所玩了半天……"
+        },
+        "wrong_tool": {
+          "speaker": "li_jie",
+          "text": "怎么一点都不动啊？"
+        },
+        "done": {
+          "speaker": "li_jie",
+          "text": "鸭鸭！我说找不着呢。"
+        },
+        "done_hero": {
+          "speaker": "hero",
+          "text": "洗洗还能用。"
+        }
       },
       "_clue": "arrive 台词 + 少一只的玩具 = 硬物线索，不额外提示"
     },
     "o4": {
       "client": "xiao_xu",
-      "props": ["倒计时撕掉了，换成一张面试通知"],
+      "props": [
+        "倒计时撕掉了，换成一张面试通知"
+      ],
       "lines": {
-        "arrive":     { "speaker": "xiao_xu", "text": "又是你啊师傅！这次是面试。" },
-        "wrong_tool": { "speaker": "xiao_xu", "text": "师傅你今天手感不行啊？" },
-        "done":       { "speaker": "xiao_xu", "text": "比上次还快！笔试我过了。" },
-        "done_hero":  { "speaker": "hero", "text": "面试也能过。" }
+        "arrive": {
+          "speaker": "xiao_xu",
+          "text": "又是你啊师傅！这次是面试。"
+        },
+        "wrong_tool": {
+          "speaker": "xiao_xu",
+          "text": "师傅你今天手感不行啊？"
+        },
+        "done": {
+          "speaker": "xiao_xu",
+          "text": "比上次还快！笔试我过了。"
+        },
+        "done_hero": {
+          "speaker": "hero",
+          "text": "面试也能过。"
+        }
       }
     }
   },
   "social": [
-    { "id": "s1", "after": "o1", "channel": "family_group", "sender": "ajie", "text": "哈哈 @你 专业对口了" },
-    { "id": "s2", "after": "o1", "channel": "family_group", "sender": "dagu", "text": "[捂脸]阿杰别闹" },
-    { "id": "s3", "after": "o1", "channel": "dm_mom",       "sender": "mom",  "text": "吃饭没？" },
-    { "id": "s4", "after": "o2", "channel": "dm_dazhuang",  "sender": "dazhuang", "text": "出山了？我家厕所也有情绪" },
-    { "id": "s5", "after": "o3", "channel": "family_group", "sender": "dagu", "text": "[链接]马桶里千万别扔这8样" },
-    { "id": "s6", "after": "o3", "channel": "dm_dad",       "sender": "dad",  "text": "工具别买太便宜的。" },
-    { "id": "s7", "after": "o4", "channel": "dm_mom",       "sender": "mom",  "text": "天冷了，秋裤穿上。" }
+    {
+      "id": "s1",
+      "after": "o1",
+      "channel": "family_group",
+      "sender": "ajie",
+      "text": "哈哈 @你 专业对口了"
+    },
+    {
+      "id": "s2",
+      "after": "o1",
+      "channel": "family_group",
+      "sender": "dagu",
+      "text": "[捂脸]阿杰别闹"
+    },
+    {
+      "id": "s3",
+      "after": "o1",
+      "channel": "dm_mom",
+      "sender": "mom",
+      "text": "吃饭没？"
+    },
+    {
+      "id": "s4",
+      "after": "o2",
+      "channel": "dm_dazhuang",
+      "sender": "dazhuang",
+      "text": "出山了？我家厕所也有情绪"
+    },
+    {
+      "id": "s5",
+      "after": "o3",
+      "channel": "family_group",
+      "sender": "dagu",
+      "text": "[链接]马桶里千万别扔这8样"
+    },
+    {
+      "id": "s6",
+      "after": "o3",
+      "channel": "dm_dad",
+      "sender": "dad",
+      "text": "工具别买太便宜的。"
+    },
+    {
+      "id": "s7",
+      "after": "o4",
+      "channel": "dm_mom",
+      "sender": "mom",
+      "text": "天冷了，秋裤穿上。"
+    }
   ],
   "g2_hooks": {
     "_note": "G2 用，G1 不接。门锁转折：第5单王阿姨回头单，修完被叫住，首次门锁维修；再完成2单后，王阿姨介绍的新客户以订单卡出现并开放门锁业务。详细稿见叙事侧 narrative_v0.json。",
-    "evt_doorlock_first": { "after": "o5", "client": "wang_ayi" },
-    "evt_doorlock_referral": { "afterOrdersSince": "evt_doorlock_first", "count": 2, "preview": "师傅，王阿姨介绍的，听说你会修门锁？" }
+    "evt_doorlock_first": {
+      "after": "o5",
+      "client": "wang_ayi"
+    },
+    "evt_doorlock_referral": {
+      "afterOrdersSince": "evt_doorlock_first",
+      "count": 2,
+      "preview": "师傅，王阿姨介绍的，听说你会修门锁？"
+    }
+  },
+  "app": {
+    "chat_app_name": "喂信",
+    "family_group_name": "相亲相爱一家人"
+  },
+  "family_group": {
+    "members": [
+      "nainai",
+      "dad",
+      "mom",
+      "dagu",
+      "ajie",
+      "sanyi",
+      "erjiu",
+      "biaomei",
+      "hero"
+    ],
+    "member_count_display": 23,
+    "_note": "成员条显示上面9人头像，其余折叠为“+14”。history 为开局前的已有记录，按时间顺序显示在群聊页顶部。",
+    "history": [
+      {
+        "sender": "nainai",
+        "text": "[语音] 6\""
+      },
+      {
+        "sender": "erjiu",
+        "text": "[图片] 今天这条有三斤"
+      },
+      {
+        "sender": "dagu",
+        "text": "二哥厉害👍"
+      },
+      {
+        "sender": "sanyi",
+        "text": "[图片] 新换的智能马桶，会自己开盖"
+      },
+      {
+        "sender": "ajie",
+        "text": "三姨这个牌子不错"
+      },
+      {
+        "sender": "mom",
+        "text": "大家早点睡"
+      }
+    ],
+    "hero_status": "已读不回"
+  },
+  "calls": {
+    "_note": "G1.5 接单改为来电/语音。每单开始前弹来电，接听后显示一句，自动生成订单卡。",
+    "o1": {
+      "type": "call",
+      "caller": "wang_ayi",
+      "text": "喂，师傅吗？我家马桶冲不下去了。"
+    },
+    "o2": {
+      "type": "voice",
+      "caller": "xiao_xu",
+      "text": "[语音] 师傅能马上来吗，我九点考试！"
+    },
+    "o3": {
+      "type": "call",
+      "caller": "li_jie",
+      "text": "师傅，厕所堵了，孩子刚在里面玩。"
+    },
+    "o4": {
+      "type": "voice",
+      "caller": "xiao_xu",
+      "text": "[语音] 师傅，又是我……又堵了。"
+    }
   }
 }
