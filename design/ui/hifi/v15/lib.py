@@ -71,7 +71,7 @@ def toolbox(tools, pro='locked', re=False):
         if tid in tools:
             s, pw, ph = TOOLIMG[tid]; o.append(tool_in_slot(s, pw, ph, x)); o.append(f'<div class="tbn" style="left:{x-32}px">{TOOLNAME[tid]}</div>')
         else:
-            o.append(L('ui_toolbox_lockplate', x=x, y=cy)); o.append(f'<div class="tbn" style="left:{x-32}px">升级解锁</div>')
+            o.append(L('ui_toolbox_lockplate', x=x, y=cy))  # 群里定：木牌只留挂锁，下方不写字（到时候送）
     x = TB['slots'][3]
     src = 'ui/v15/tool_plunger_pro_locked@2x.png' if pro == 'locked' else 'tools/tool_plunger_pro@2x.png'
     o.append(f'<div id="proSlot" class="G" style="position:absolute;left:{x-32}px;top:640px;width:64px;height:80px"></div>')

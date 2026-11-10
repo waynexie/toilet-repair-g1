@@ -117,20 +117,19 @@ def dayend(re):
             f'<div class="dday" id="dSub" style="margin-top:4px"><span id="dSubT">{DAYTXT}</span></div>' \
             f'<div class="dhr" id="hr1" style="margin-top:16px"></div><div id="rows" style="margin-top:8px">{rows}</div><div class="dhr" id="hr2" style="margin-top:8px"></div>' \
             f'<div class="dlab" id="dLab" style="margin-top:16px">今日收入</div><div class="damt" id="dAmt" style="margin-top:4px"><span id="dAmtT">+¥{tot}</span></div>' \
-            f'<div class="dbal" id="dBal" style="margin-top:4px">余额 ¥238</div>' + inbtn(DD['nextButton'], re, 16) + \
-            '<div class="dlink" id="dLink" style="margin-top:4px">再玩一遍</div>'
-    return img('screens/trans_evening@2x.jpg', 0, 0, 390, 780) + '<div class="scrim"></div>' + card(inner, 160, 460, re)
-screen('hifi_v15_day_end', f'第 {N} 天收工（G2 drawDayEnd，dayDisplay.settlement）：标题「收工」+ 副标题「{DAYTXT}」同卡片一起出现（不单独动画）；3 单明细（第 3 天 o8/o9 待定，金额用 o7/o6 示意）；今日收入 +¥135、余额 ¥238；主按钮「继续开工」；HUD 不显示天数',
-       dayend, [dict(t='pos', n='卡片', e='#card', k=['l', 't', 'r', 'h'], ex=dict(l=24, t=160, r=24, h=460)),
+            f'<div class="dbal" id="dBal" style="margin-top:4px">余额 ¥238</div>' + inbtn(DD['nextButton'], re, 16)
+    return img('screens/trans_evening@2x.jpg', 0, 0, 390, 780) + '<div class="scrim"></div>' + card(inner, 186, 408, re)
+screen('hifi_v15_day_end', f'第 {N} 天收工（G2 drawDayEnd，dayDisplay.settlement）：标题「收工」+ 副标题「{DAYTXT}」同卡片一起出现（不单独动画）；3 单明细（第 3 天 o8/o9 待定，金额用 o7/o6 示意）；今日收入 +¥135、余额 ¥238；主按钮「继续开工」（无「再玩一遍」）；遮罩 rgba(43,30,20,.6)；HUD 不显示天数',
+       dayend, [dict(t='pos', n='卡片', e='#card', k=['l', 't', 'r', 'h'], ex=dict(l=24, t=186, r=24, h=408)),
                 dict(t='center', n='标题「收工」', e='#dTitleT'), dict(t='center', n='副标题', e='#dSubT'),
                 dict(t='gap', n='标题→副标题', a='#dTitle', b='#dSub', ax='v', e=4), dict(t='style', n='副标题', e='#dSubT', ex=dict(fs='12px', lh='16px', fw='400', c='rgb(122, 90, 64)', num='tabular-nums')),
                 dict(t='gap', n='副标题→虚线（原标题→下一块 16，改从副标题下沿算）', a='#dSub', b='#hr1', ax='v', e=16),
                 dict(t='gap', n='虚线→明细', a='#hr1', b='#rows', ax='v', e=8), dict(t='gap', n='明细→虚线', a='#rows', b='#hr2', ax='v', e=8),
                 dict(t='gap', n='虚线→今日收入', a='#hr2', b='#dLab', ax='v', e=16), dict(t='gap', n='金额→余额', a='#dAmt', b='#dBal', ax='v', e=4),
                 dict(t='center', n='金额 T1', e='#dAmtT'), dict(t='gap', n='余额→主按钮', a='#dBal', b='#btn', ax='v', e=16),
-                dict(t='pos', n='主按钮', e='#btn', k=['h', 'w'], ex=dict(h=56, w=294)), dict(t='pos', n='「再玩一遍」点击区', e='#dLink', k=['h'], ex=dict(h=48)),
-                dict(t='pad', n='卡片(标题/再玩一遍)', c='#card', k='#dTitle', sides=[0, 1, 3], e=[24, 24, None, 24]),
-                dict(t='pad', n='卡片底', c='#card', k='#dLink', sides=[2], e=[None, None, 24, None])])
+                dict(t='pos', n='主按钮', e='#btn', k=['h', 'w'], ex=dict(h=56, w=294)),
+                dict(t='pad', n='卡片(标题行)', c='#card', k='#dTitle', sides=[0, 1, 3], e=[24, 24, None, 24]),
+                dict(t='pad', n='卡片底(到主按钮)', c='#card', k='#btn', sides=[2], e=[None, None, 24, None])])
 def settings(re):
     rows = '<div class="stg" id="sg0"><span class="k">声音</span><div class="sw"></div></div>' \
            '<div class="stg" id="sg1"><span><span class="k">省动效</span><span class="s">减少抖动和闪光</span></span><div class="sw off"></div></div>' \
@@ -139,7 +138,7 @@ def settings(re):
             f'<div id="sRows" style="margin-top:8px">{rows}</div><div class="stip" id="sTip" style="margin-top:16px">卡住了？问老钱 · 今日免费 1 次</div>' + inbtn('继续干活', re, 16) + \
             '<div class="sfoot" id="sFoot" style="margin-top:8px">点卡片外也能关闭 · 打开时游戏暂停</div>'
     return base(re, client='wang_ayi', money=238, pay='¥40', phone_on=False) + '<div class="scrim"></div>' + card(inner, 176, 400, re) + phone(False)
-screen('hifi_v15_settings', f'设置面板（dayDisplay.settingsPanel）：第 {N} 天某单进行中点齿轮打开，金币 238、本单 ¥40（示意）；标题「设置」居中，「第 {N} 天」在标题行右端、与标题基线对齐；手机在遮罩上方（弹层打开时不弹通知条）',
+screen('hifi_v15_settings', f'设置面板（dayDisplay.settingsPanel）：第 {N} 天某单进行中点齿轮打开，金币 238、本单 ¥40（示意）；标题「设置」居中，「第 {N} 天」在标题行右端、与标题基线对齐；遮罩 rgba(43,30,20,.6) 压住场景和 HUD，手机在遮罩上方（弹层打开时不弹通知条）',
        settings, [dict(t='pos', n='卡片', e='#card', k=['l', 't', 'r', 'h'], ex=dict(l=24, t=176, r=24, h=400)), dict(t='center', n='标题「设置」', e='#sTitle'),
                   dict(t='base', n='「第 N 天」与标题', a='#blA', b='#blB'), dict(t='style', n='「第 N 天」', e='#sDay', ex=dict(fs='12px', lh='16px', fw='400', c='rgb(122, 90, 64)', num='tabular-nums')),
                   dict(t='pad', n='卡片(「第 N 天」右)', c='#card', k='#sDay', sides=[1], e=[None, 24, None, None]), dict(t='pad', n='卡片(标题行)', c='#card', k='#sRow', sides=[0], e=[24, None, None, None]),
