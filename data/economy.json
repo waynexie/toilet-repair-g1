@@ -58,7 +58,10 @@
         "big_job"
       ],
       "maxPerDay": 1,
-      "note": "来电只给紧急单和大活儿，报酬高但耐心少一格"
+      "note": "来电只给紧急单和大活儿，报酬高但耐心少一格；第一天 o2、o4 两张来电单为教学固定单，不受每日上限限制",
+      "exemptDays": [
+        1
+      ]
     },
     "referral": {
       "payMultiplier": 1.2,
