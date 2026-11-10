@@ -53,6 +53,10 @@
     "lao_qian": {
       "name": "老钱",
       "role": "带主角入行的老师傅，嘴硬心软，每次先嫌一句再给提示"
+    },
+    "zhao_jie": {
+      "name": "赵姐",
+      "role": "第一位推荐客户，利落直爽"
     }
   },
   "orders": {
@@ -160,6 +164,34 @@
           "text": "面试也能过。"
         }
       }
+    },
+    "o5": {
+      "client": "wang_ayi",
+      "_g2": true,
+      "props": [
+        "门口鞋柜上放着备用钥匙",
+        "防盗门锁芯有点锈"
+      ],
+      "call": {
+        "type": "call",
+        "caller": "wang_ayi",
+        "text": "师傅，又是我，厨房下水慢。"
+      },
+      "lines": {
+        "arrive": {
+          "speaker": "wang_ayi",
+          "text": "又是我，熟人了啊。"
+        },
+        "wrong_tool": {
+          "speaker": "wang_ayi",
+          "text": "不急不急，慢慢弄。"
+        },
+        "done": {
+          "speaker": "wang_ayi",
+          "text": "还是你靠谱。"
+        }
+      },
+      "post_event": "evt_doorlock_first"
     }
   },
   "social": [
@@ -214,15 +246,87 @@
     }
   ],
   "g2_hooks": {
-    "_note": "G2 用，G1 不接。门锁转折：第5单王阿姨回头单，修完被叫住，首次门锁维修；再完成2单后，王阿姨介绍的新客户以订单卡出现并开放门锁业务。详细稿见叙事侧 narrative_v0.json。",
+    "_note": "门锁转折（Wen 已定稿台词）。o5 修完、主角收拾工具时触发，场景内对话，不走手机。",
     "evt_doorlock_first": {
       "after": "o5",
-      "client": "wang_ayi"
+      "blocking": true,
+      "dialogue": [
+        {
+          "speaker": "wang_ayi",
+          "text": "师傅，等一下。我家这门锁最近也不太灵，你会修不？"
+        },
+        {
+          "speaker": "hero",
+          "text": "这个……我主要是修水管的，不太懂。"
+        },
+        {
+          "speaker": "wang_ayi",
+          "text": "都差不多嘛，你工具也带着，帮我看看呗。修好了另外给你人工费。"
+        },
+        {
+          "speaker": "hero",
+          "text": "……行，那我试试，不保证能修好啊。"
+        }
+      ],
+      "gameplay": {
+        "target": "door_lock",
+        "tutorial": true,
+        "fail_penalty": "none"
+      },
+      "lines": {
+        "wrong_tool": {
+          "speaker": "wang_ayi",
+          "text": "不急，我又不赶着出门。"
+        },
+        "done": {
+          "speaker": "wang_ayi",
+          "text": "哎，顺了！你看，我就说差不多嘛。"
+        },
+        "done_hero": {
+          "speaker": "hero",
+          "text": "锁芯有点锈，平时滴点油。"
+        }
+      },
+      "reward": {
+        "label": "人工费",
+        "amount_from": "economy.json"
+      }
     },
     "evt_doorlock_referral": {
-      "afterOrdersSince": "evt_doorlock_first",
-      "count": 2,
-      "preview": "师傅，王阿姨介绍的，听说你会修门锁？"
+      "trigger": {
+        "afterOrdersSince": "evt_doorlock_first",
+        "count": 2,
+        "_note": "=几天后；营业日上线后可改成第N天早上"
+      },
+      "as": "order_card_on_board",
+      "channel_preview": "weixin_dm",
+      "sender": {
+        "name": "赵姐",
+        "role": "王阿姨介绍的新客户"
+      },
+      "preview": "师傅，王阿姨介绍的，听说你会修门锁？我家的也坏了，明天能来看看吗？",
+      "unlocks": [
+        "business_door_lock"
+      ],
+      "_rule": "必须以接单板卡片出现，不读消息也能接；消息只是同步预览"
+    },
+    "order_lock_001": {
+      "client": "zhao_jie",
+      "lines": {
+        "arrive": {
+          "speaker": "zhao_jie",
+          "text": "王阿姨说你人实在。"
+        },
+        "done": {
+          "speaker": "zhao_jie",
+          "text": "我存你电话了，以后有事还找你。"
+        }
+      }
+    },
+    "social_after_referral": {
+      "channel": "dm_mom",
+      "sender": "mom",
+      "text": "听说你还会修锁了？也得按时吃饭。"
     }
   },
   "app": {
