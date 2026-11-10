@@ -184,10 +184,91 @@ SET_ANN = [dict(t='pos', n='卡片（垂直居中）', e='#card', k=['l', 't', '
 screen('hifi_v15_settings', f'设置面板（dayDisplay.settingsPanel + settingsReplay）：第 {N} 天最后一单 o5（王阿姨，本单 ¥{order_info("o5")["pay"]}）刚疏通完、钱已入账时点齿轮：金币 {DAY3_END}（= 收工余额）≥ ¥{PRO_PRICE} → 第 4 格可解锁态；三件工具都已到手；「第 {N} 天」在标题行右端、与标题基线对齐；震动行后新增「重新看新手引导」+「重看」（常态）；遮罩 rgba(43,30,20,.6) 压住场景和 HUD，手机在遮罩上方（弹层打开时不弹通知条）；玩家版不画「复制用时」（仅 ?debug=1）',
        settings_fn(False), SET_ANN)
 screen('hifi_v15_settings_replayed', f'设置面板：点「重看」后（已清 tutorialDone）：按钮禁用，行内说明「下次开工时重新引导」T5 #7A5A40；不弹确认框；其余同常态',
-       settings_fn(True), SET_ANN + [dict(t='style', n='行内说明', e='#rpS', ex=dict(fs='12px', lh='16px', fw='400', c='rgb(122, 90, 64)'))])# 参考图（不进 qa/pixel）：S4 用 shock 表情
+       settings_fn(True), SET_ANN + [dict(t='style', n='行内说明', e='#rpS', ex=dict(fs='12px', lh='16px', fw='400', c='rgb(122, 90, 64)'))])
+# ===== ② 单子结算页 v1.5：打赏行 / 看广告翻倍（赵姐转介绍单 lock_referral_1，第 3 天）=====
+import re as _re
+from PIL import Image as _I
+G2SRC = open(ROOT + '/src/g2.js').read()
+PLACE = dict(_re.findall(r"(\w+):'([^']+)'", _re.search(r"const PLACE=\{([^}]*)\}", G2SRC).group(1)))   # 地点取 src/g2.js PLACE（数据里没有）
+DBL = ECO['rewardedAds']['doublePay']        # target basePay，×multiplier；gifts.rules.adDoubleApplies=false → 打赏不翻
+def settle_info(oid, doubled=False):
+    oi = order_info(oid); o = _ord(oid)
+    sg = [g for g in ECO['gifts']['scripted'] if g['order'] == oid]
+    gift = None
+    if sg:
+        g = sg[0]; nk = g['lineKey'].split('.', 1)[1]; ng = NAR['gifts'][nk]
+        kind = 'cash' if g['kind'] == 'cash' else 'item'
+        gift = dict(key=nk, kind=kind, amount=g['amount'] if kind == 'cash' else 0, icon=ng['icon'], label=NAR['gifts']['settle_row_label'][kind], item=ng.get('item'))
+    mult_src = ECO['orderSources'][oi['src']]['payMultiplier']; base_pay = o.get('basePay') or ECO['laborFees'][oid]['basePay']
+    dm = DBL['multiplier'] if doubled else 1
+    wage = oi['pay'] * dm
+    cash = gift['amount'] if gift else 0
+    gift_x = dm if (doubled and ECO['gifts']['rules'].get('adDoubleApplies')) else 1
+    day = next(d for d in G2J['days'] if oid in (d.get('board') or []))
+    seq = DAY3 if day['day'] == 3 else day['board']; last = seq.index(oid) == day['pickCount'] - 1
+    hk = NAR['g2_hooks'][oid]['lines']
+    return dict(oi=oi, base=base_pay, srcmult=mult_src, dm=dm, wage=wage, gift=gift, cash=cash * gift_x, total=wage + cash * gift_x, day=day['day'], pick=day['pickCount'], pos=seq.index(oid) + 1,
+                last=last, button='收工' if last else '接下一单', line=hk['done']['text'], place=PLACE[oid])
+def quote_lines(t, maxw=294, fs=20):   # T2 一行最多 14 字（294/20）；超了在最后一个能让两行都放下的逗号后断
+    q = '“' + t + '”'
+    if len(q) * fs <= maxw: return [q]
+    cut = [i for i, c in enumerate(q) if c in '，。！？' and (i + 1) * fs <= maxw and (len(q) - i - 1) * fs <= maxw]
+    assert cut, f'客户台词两行放不下：{q}'
+    i = cut[-1]; return [q[:i + 1], q[i + 1:]]
+SETTLE_ID = 'lock_referral_1'
+def settle_fn(doubled):
+    si = settle_info(SETTLE_ID, doubled); oi = si['oi']; g = si['gift']
+    H = 488 - (0 if not doubled else 64); TOP = (780 - H) // 2
+    def fn(re):
+        ql = quote_lines(si['line'])
+        wage_v = f'<span class="vb"><span id="vWage">¥{si["wage"]}<i class="blm" id="blW"></i></span>' + (f'<span class="x2" id="x2">×{DBL["multiplier"]}<i class="blm" id="blX"></i></span>' if doubled else '') + '</span>'
+        rows = f'<div class="kv3" id="rWage"><span class="k">工钱</span><span class="v">{wage_v}</span></div>' \
+               f'<div class="kv3" id="rTime"><span class="k">用时</span><span class="v">14.2 秒</span></div>'
+        if g:
+            gv = f'¥{g["amount"]}' if g['kind'] == 'cash' else g['item']
+            rows += f'<div class="kv3" id="rGift"><span class="k">{g["label"]}</span><span class="v" id="vGiftBox"><img class="gi" id="gIcon" src="{A}ui/gifts/{g["icon"]}_24@2x.png" data-icon="{g["icon"]}" data-nw="{_I.open(ROOT + "/assets/ui/gifts/" + g["icon"] + "_24@2x.png").size[0]}"><span id="vGift">{gv}</span></span></div>'
+        inner = f'<div class="cav" id="cav" style="background-image:url({A}characters/avatar_{oi["client"]}_p1@2x.png)"></div>' \
+                f'<div class="sq" id="sQ" style="margin-top:32px">' + ''.join(f'<span class="ln2"><span id="sQ{i}">{l}</span></span>' for i, l in enumerate(ql)) + '</div>' \
+                f'<div class="sloc" id="sLoc" style="margin-top:4px"><span id="sLocT">{si["place"]}</span></div>' \
+                f'<div class="dhr" id="hr1" style="margin-top:16px"></div><div id="rows" style="margin-top:8px">{rows}</div><div class="dhr" id="hr2" style="margin-top:8px"></div>' \
+                f'<div class="damt" id="dAmt" style="margin-top:16px"><span id="dAmtT">+¥{si["total"]}</span></div>' + inbtn(si['button'], re, 16) + \
+                ('' if doubled else btn2('看广告 工钱翻倍', 'normal', re))
+        c = card(inner, TOP, H, re).replace('class="card', f'data-wage0="{oi["pay"]}" data-base="{si["base"]}" data-srcmult="{si["srcmult"]}" data-dm="{si["dm"]}" data-gift="{si["cash"]}" data-icon="{g["icon"] if g else ""}" data-total="{si["total"]}" data-doubled="{int(doubled)}" data-button="{si["button"]}" class="card', 1)
+        return img('screens/doorway_zhao@2x.jpg', 0, 0, 390, 780) + '<div class="scrim"></div>' + c + phone(False)
+    return fn, si, H, TOP
+def SETTLE_ANN(H, TOP, doubled, nq):
+    a = [dict(t='pos', n='卡片（垂直居中）', e='#card', k=['l', 't', 'r', 'h', 'b'], ex=dict(l=24, t=TOP, r=24, h=H, b=780 - TOP - H)),
+         dict(t='pos', n='头像 80（一半压卡片顶边）', e='#cav', k=['t', 'w', 'h'], ex=dict(t=TOP - 40, w=80, h=80)), dict(t='center', n='头像', e='#cav'),
+         dict(t='gap', n='头像→台词', a='#cav', b='#sQ', ax='v', e=16)] + [dict(t='center', n=f'台词第 {i+1} 行', e=f'#sQ{i}') for i in range(nq)] + \
+        [dict(t='style', n='客户台词 T2', e='#sQ', ex=dict(fs='20px', lh='28px', fw='700', c='rgb(90, 64, 48)')),
+         dict(t='gap', n='台词→地点', a='#sQ', b='#sLoc', ax='v', e=4), dict(t='center', n='地点', e='#sLocT'), dict(t='style', n='地点 T5', e='#sLoc', ex=dict(fs='12px', lh='16px', fw='400', c='rgb(122, 90, 64)')),
+         dict(t='gap', n='地点→虚线', a='#sLoc', b='#hr1', ax='v', e=16), dict(t='gap', n='虚线→明细', a='#hr1', b='#rows', ax='v', e=8),
+         dict(t='pos', n='明细行高', e='#rWage', k=['h'], ex=dict(h=32)), dict(t='pos', n='打赏行高', e='#rGift', k=['h'], ex=dict(h=32)),
+         dict(t='pad', n='卡片(明细左右)', c='#card', k='#rows', sides=[1, 3], e=[None, 24, None, 24]),
+         dict(t='pos', n='打赏图标 24', e='#gIcon', k=['w', 'h'], ex=dict(w=24, h=24)), dict(t='gap', n='打赏图标→数值', a='#gIcon', b='#vGift', ax='h', e=8),
+         dict(t='vc', n='打赏图标与数值', a='#gIcon', b='#vGift'), dict(t='vc', n='打赏图标与行', a='#gIcon', b='#rGift'),
+         dict(t='gap', n='明细→虚线', a='#rows', b='#hr2', ax='v', e=8), dict(t='gap', n='虚线→金额', a='#hr2', b='#dAmt', ax='v', e=16), dict(t='center', n='金额 T1', e='#dAmtT'),
+         dict(t='style', n='金额 T1', e='#dAmt', ex=dict(fs='40px', lh='48px', fw='700')),
+         dict(t='gap', n='金额→主按钮', a='#dAmt', b='#btn', ax='v', e=16), dict(t='pos', n='主按钮', e='#btn', k=['h', 'w'], ex=dict(h=56, w=294))]
+    if doubled:
+        a += [dict(t='gap', n='¥84→×2', a='#vWage', b='#x2', ax='h', e=4), dict(t='base', n='「×2」与工钱数值', a='#blW', b='#blX'),
+              dict(t='style', n='「×2」T5', e='#x2', ex=dict(fs='12px', lh='16px', fw='700', c='rgb(122, 90, 64)')),
+              dict(t='pad', n='卡片底(到主按钮，无广告按钮)', c='#card', k='#btn', sides=[2], e=[None, None, 24, None])]
+    else:
+        a += [dict(t='gap', n='主按钮→广告次按钮', a='#btn', b='#btn2', ax='v', e=16), dict(t='pos', n='广告次按钮', e='#btn2', k=['h', 'w'], ex=dict(h=48, w=294)),
+              dict(t='gap', n='▶→字', a='#btn2 .play', b='#btn2T', ax='h', e=8), dict(t='center', n='▶+字 整组', e='#btn2 .play', cx=None),
+              dict(t='pad', n='卡片底(到广告次按钮)', c='#card', k='#btn2', sides=[2], e=[None, None, 24, None])]
+    return [x for x in a if not (x['t'] == 'center' and x.get('cx', 0) is None)]
+for _d in (False, True):
+    _fn, _si, _H, _T = settle_fn(_d); _g = _si['gift']
+    _st = (f'② 单子结算 第 {_si["day"]} 天 {_si["oi"]["id"]}（赵姐 · {_ord(_si["oi"]["id"])["boardHint"]}）：工钱 {_si["base"]}×{_si["srcmult"]:g}（转介绍）= ¥{_si["oi"]["pay"]}'
+           + (f' → 看广告 ×{DBL["multiplier"]} = ¥{_si["wage"]}（只翻工钱，打赏不翻）' if _d else '') + f'；剧本打赏 {_g["key"]}：{_g["label"]} ¥{_g["amount"]}（图标 {_g["icon"]}_24）；合计 +¥{_si["total"]}；'
+           + f'第 {_si["pos"]}/{_si["pick"]} 单 → 主按钮「{_si["button"]}」；' + ('广告按钮去掉，卡片缩短 64 仍垂直居中' if _d else '次按钮「▶ 看广告 工钱翻倍」') + f'；无对比条（只第 4 单）；卡片 top {_T} 高 {_H}；遮罩 rgba(43,30,20,.6)')
+    screen('hifi_v15_settle_gift' + ('_doubled' if _d else ''), _st, _fn, SETTLE_ANN(_H, _T, _d, len(quote_lines(_si['line']))))
+# 参考图（不进 qa/pixel）：S4 用 shock 表情
 REF = {}
 
-TAILJS = '''(()=>{const S=window.STATE||'';const cn=document.querySelector('#coinNum');const m=S.match(/金币 (\\d+)/);if(m&&cn)chk(m[1]===cn.textContent.trim(),`状态说明「金币 ${m[1]}」= HUD ${cn.textContent.trim()}`);const pm=S.match(/本单 ¥(\\d+)/),vv=document.querySelector('.tg .vv');if(pm&&vv)chk('¥'+pm[1]===vv.textContent.trim(),`状态说明「本单 ¥${pm[1]}」= HUD ${vv.textContent.trim()}`);const tm=S.match(/通话中 (\\d\\d:\\d\\d)/),cs=document.querySelector('#cstat');if(tm&&cs)chk(cs.textContent.includes(tm[1]),`状态说明「通话中 ${tm[1]}」= 界面「${cs.textContent.trim()}」`);const pt=S.match(/耐心剩? ?(\\d)/),w=document.querySelector('[data-order]');if(pt&&w)chk(pt[1]===w.dataset.pat,`状态说明「耐心 ${pt[1]}」= HUD ${w.dataset.pat}`);const dm=S.match(/第 (\\d+) 天/),dd=document.querySelector('#dSubT,#sDay');if(dm&&dd)chk(dd.textContent.includes('第 '+dm[1]+' 天'),`状态说明「第 ${dm[1]} 天」= 界面「${dd.textContent}」`);const am=S.match(/今日收入 \\+¥(\\d+)/),at=document.querySelector('#dAmtT');if(am&&at){const sum=[...document.querySelectorAll('.kv2 .v')].reduce((a,e)=>a+parseInt(e.textContent.slice(1)),0);chk(at.textContent==='+¥'+am[1]&&sum===+am[1],`今日收入 ${at.textContent} = 明细合计 ¥${sum}`)}})();(()=>{const ps=document.querySelector('#proSlot'),cn=document.querySelector('#coinNum');if(!ps||!cn)return;const m=parseInt(cn.textContent),pr=+ps.dataset.price,st=ps.dataset.state;const exp=st==='bought'?'bought':(m>=pr?'ready':'locked');chk(st===exp,`第 4 格状态 ${st}（由金币 ${m} ${m>=pr?'≥':'<'} 价格 ${pr} 推导应为 ${exp}）`);if(st!=='bought'){const lb=Q('#proLabel').textContent,bd=Q('#lockBadge').classList.contains('rdy');const okl=st==='locked'?(lb==='¥'+pr+' 解锁'&&!bd):(lb==='点击解锁'&&bd);chk(okl,`第 4 格标签「${lb}」/ 角标 ${bd?'金色开锁':'黄铜锁'} 与状态 ${st} 一致`)}})();(()=>{const w=document.querySelector('[data-order]');if(!w)return;const pat=+w.dataset.pat,mx=+w.dataset.patmax;const segs=[...w.querySelectorAll('.pat i')];const on=segs.filter(i=>!i.classList.contains('lost')&&!i.classList.contains('lk')).length;const lk=segs.filter(i=>i.classList.contains('lk')).length;chk(on===pat&&lk===4-mx,`耐心 ${on} 格亮 / 锁 ${lk} 格（订单 ${w.dataset.order} 上限 ${mx}）`);const av=(w.querySelector('.av').style.backgroundImage.match(/avatar_[a-z_]+?_(p\\d|shock)@2x/)||[])[1];const pl=Math.max(1,Math.min(4,1+(mx-pat)));const ea=w.dataset.mood==='shock'?'shock':'p'+pl;chk(av===ea,`表情 ${av}（耐心掉 ${mx-pat} 格→${ea}${w.dataset.mood?'，剧本 mood '+w.dataset.mood:''}）`);const pay=Q('.tg .vv').textContent;chk(pay===w.dataset.pay,`本单 ${pay}（订单 ${w.dataset.order} 数据推导 ${w.dataset.pay}）`)})();ANN.filter(a=>a.t==='base').forEach(a=>{const A=R(Q(a.a)),B=R(Q(a.b));chk(eqv(A.t,B.t),`${a.n} 基线 y ${f(A.t)} / ${f(B.t)}（应相同）`);if(SHOW)hseg(A.l-4,B.l+4,A.t,'基线 '+f(A.t))});ANN.filter(a=>a.t==='style').forEach(a=>{const c=getComputedStyle(Q(a.e));const v={fs:c.fontSize,lh:c.lineHeight,fw:c.fontWeight,c:c.color,num:c.fontVariantNumeric};const ok=Object.keys(a.ex).every(k=>v[k]===a.ex[k]);chk(ok,`${a.n} 字 ${v.fs}/${v.lh} 字重 ${v.fw} ${v.c} ${v.num}`)});ANN.filter(a=>a.t==='inset').forEach(a=>{const r=R(Q(a.e));const ir=a.fr-r.r,it=r.t-a.ft;chk(eqv(ir,a.ex)&&eqv(it,a.ex),`${a.n}：右 ${f(ir)} / 上 ${f(it)}（应 ${a.ex}；内沿实测 x ${a.fr}、y ${a.ft}；角标完全在格内，不压箱沿）`);if(SHOW){hseg(r.r,a.fr,r.t+12,f(ir));vseg(a.ft,r.t,r.l+12,f(it))}});ANN.filter(a=>a.t==='tail').length&&(()=>{const b=R(Q('.bb')),s=R(Q('.bb .tail'));const base=s.l+2-b.l,apex=s.t;chk(eqv(base,24)&&eqv(apex,152),`尖角：底边起点离气泡左边 ${f(base)}（应 24），宽 16，尖顶 y ${f(apex)}（贴客户卡底 152）`);if(SHOW){hseg(b.l,s.l+2,b.t-12,f(base))}})();'''
+TAILJS = '''(()=>{const S=window.STATE||'';const cn=document.querySelector('#coinNum');const m=S.match(/金币 (\\d+)/);if(m&&cn)chk(m[1]===cn.textContent.trim(),`状态说明「金币 ${m[1]}」= HUD ${cn.textContent.trim()}`);const pm=S.match(/本单 ¥(\\d+)/),vv=document.querySelector('.tg .vv');if(pm&&vv)chk('¥'+pm[1]===vv.textContent.trim(),`状态说明「本单 ¥${pm[1]}」= HUD ${vv.textContent.trim()}`);const tm=S.match(/通话中 (\\d\\d:\\d\\d)/),cs=document.querySelector('#cstat');if(tm&&cs)chk(cs.textContent.includes(tm[1]),`状态说明「通话中 ${tm[1]}」= 界面「${cs.textContent.trim()}」`);const pt=S.match(/耐心剩? ?(\\d)/),w=document.querySelector('[data-order]');if(pt&&w)chk(pt[1]===w.dataset.pat,`状态说明「耐心 ${pt[1]}」= HUD ${w.dataset.pat}`);const dm=S.match(/第 (\\d+) 天/),dd=document.querySelector('#dSubT,#sDay');if(dm&&dd)chk(dd.textContent.includes('第 '+dm[1]+' 天'),`状态说明「第 ${dm[1]} 天」= 界面「${dd.textContent}」`);const am=S.match(/今日收入 \\+¥(\\d+)/),at=document.querySelector('#dAmtT');if(am&&at){const sum=[...document.querySelectorAll('.kv2 .v')].reduce((a,e)=>a+parseInt(e.textContent.slice(1)),0);chk(at.textContent==='+¥'+am[1]&&sum===+am[1],`今日收入 ${at.textContent} = 明细合计 ¥${sum}`)}})();(()=>{const ps=document.querySelector('#proSlot'),cn=document.querySelector('#coinNum');if(!ps||!cn)return;const m=parseInt(cn.textContent),pr=+ps.dataset.price,st=ps.dataset.state;const exp=st==='bought'?'bought':(m>=pr?'ready':'locked');chk(st===exp,`第 4 格状态 ${st}（由金币 ${m} ${m>=pr?'≥':'<'} 价格 ${pr} 推导应为 ${exp}）`);if(st!=='bought'){const lb=Q('#proLabel').textContent,bd=Q('#lockBadge').classList.contains('rdy');const okl=st==='locked'?(lb==='¥'+pr+' 解锁'&&!bd):(lb==='点击解锁'&&bd);chk(okl,`第 4 格标签「${lb}」/ 角标 ${bd?'金色开锁':'黄铜锁'} 与状态 ${st} 一致`)}})();(()=>{const w=document.querySelector('[data-order]');if(!w)return;const pat=+w.dataset.pat,mx=+w.dataset.patmax;const segs=[...w.querySelectorAll('.pat i')];const on=segs.filter(i=>!i.classList.contains('lost')&&!i.classList.contains('lk')).length;const lk=segs.filter(i=>i.classList.contains('lk')).length;chk(on===pat&&lk===4-mx,`耐心 ${on} 格亮 / 锁 ${lk} 格（订单 ${w.dataset.order} 上限 ${mx}）`);const av=(w.querySelector('.av').style.backgroundImage.match(/avatar_[a-z_]+?_(p\\d|shock)@2x/)||[])[1];const pl=Math.max(1,Math.min(4,1+(mx-pat)));const ea=w.dataset.mood==='shock'?'shock':'p'+pl;chk(av===ea,`表情 ${av}（耐心掉 ${mx-pat} 格→${ea}${w.dataset.mood?'，剧本 mood '+w.dataset.mood:''}）`);const pay=Q('.tg .vv').textContent;chk(pay===w.dataset.pay,`本单 ${pay}（订单 ${w.dataset.order} 数据推导 ${w.dataset.pay}）`)})();ANN.filter(a=>a.t==='vc').forEach(a=>{const A=R(Q(a.a)),B=R(Q(a.b));const d=(A.t+A.b)/2-(B.t+B.b)/2;chk(Math.abs(d)<=0.5,`${a.n} 垂直居中（中心差 ${f(d)}）`)});(()=>{const c=document.querySelector('#card[data-wage0]');if(!c)return;const D=c.dataset,dm=+D.dm,w=(+D.wage0)*dm,gi=+D.gift;chk(+D.wage0===Math.round(+D.base*(+D.srcmult)),`工钱 ¥${D.wage0} = 底价 ${D.base} × 来源 ${D.srcmult}（economy.json）`);chk(Q('#vWage').textContent.trim()==='¥'+w,`工钱行 ${Q('#vWage').textContent.trim()} = ¥${D.wage0}×${dm}`);const x2=document.querySelector('#x2');chk((dm>1)===!!x2&&(!x2||x2.textContent.trim()==='×'+dm),`「×${dm}」标签${x2?'有':'无'}（翻倍 ${D.doubled}）`);const ad=document.querySelector('#btn2');chk((D.doubled==='1')!==!!ad,`广告次按钮${ad?'有':'无'}（翻倍后去掉）`);const gv=document.querySelector('#vGift');if(gv)chk(gv.textContent.trim()==='¥'+gi,`打赏行 ${gv.textContent.trim()} = economy.json scripted ¥${gi}（翻倍不变）`);const ic=document.querySelector('#gIcon');if(ic)chk(ic.getAttribute('src').endsWith('/'+D.icon+'_24@2x.png')&&+ic.dataset.nw===48,`打赏图标 ${D.icon}_24@2x（narrative.json icon；源图 ${ic.dataset.nw}px = 24×2，不缩放）`);chk(Q('#dAmtT').textContent==='+¥'+(w+gi)&&+D.total===w+gi,`合计 ${Q('#dAmtT').textContent} = 工钱 ¥${w} + 现金打赏 ¥${gi}`);chk(Q('#btn').textContent.trim()===D.button,`主按钮「${Q('#btn').textContent.trim()}」`)})();ANN.filter(a=>a.t==='base').forEach(a=>{const A=R(Q(a.a)),B=R(Q(a.b));chk(eqv(A.t,B.t),`${a.n} 基线 y ${f(A.t)} / ${f(B.t)}（应相同）`);if(SHOW)hseg(A.l-4,B.l+4,A.t,'基线 '+f(A.t))});ANN.filter(a=>a.t==='style').forEach(a=>{const c=getComputedStyle(Q(a.e));const v={fs:c.fontSize,lh:c.lineHeight,fw:c.fontWeight,c:c.color,num:c.fontVariantNumeric};const ok=Object.keys(a.ex).every(k=>v[k]===a.ex[k]);chk(ok,`${a.n} 字 ${v.fs}/${v.lh} 字重 ${v.fw} ${v.c} ${v.num}`)});ANN.filter(a=>a.t==='inset').forEach(a=>{const r=R(Q(a.e));const ir=a.fr-r.r,it=r.t-a.ft;chk(eqv(ir,a.ex)&&eqv(it,a.ex),`${a.n}：右 ${f(ir)} / 上 ${f(it)}（应 ${a.ex}；内沿实测 x ${a.fr}、y ${a.ft}；角标完全在格内，不压箱沿）`);if(SHOW){hseg(r.r,a.fr,r.t+12,f(ir));vseg(a.ft,r.t,r.l+12,f(it))}});ANN.filter(a=>a.t==='tail').length&&(()=>{const b=R(Q('.bb')),s=R(Q('.bb .tail'));const base=s.l+2-b.l,apex=s.t;chk(eqv(base,24)&&eqv(apex,152),`尖角：底边起点离气泡左边 ${f(base)}（应 24），宽 16，尖顶 y ${f(apex)}（贴客户卡底 152）`);if(SHOW){hseg(b.l,s.l+2,b.t-12,f(base))}})();'''
 def write(name, body, state, ann, mode):
     js = open('layout.js').read()
     if mode == 'ann':

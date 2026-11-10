@@ -20,6 +20,9 @@ for st in ['normal', 'pressed', 'disabled']:
 for st in ['normal', 'pressed', 'disabled']:
     cls = {'normal': '', 'pressed': 'pressed', 'disabled': 'disabled'}[st]
     add(f'btn_secondary_s_{st}', 84, 64, 16, f'<div class="sbtn L {cls}" style="left:16px;top:16px;width:52px"></div>', NS['sbtn']['slice'], note='小号次按钮 高 32（瓷面，圆角 12，2px 描边；字 T5 Bold 由代码画，左右内边距 12 含描边外 10+2）；按下态已含下移 2px；禁用字色 #A8957E。点击区上下各扩 8 → 高 48')
+for st in ['normal', 'pressed', 'disabled']:
+    cls = {'normal': '', 'pressed': 'pressed', 'disabled': 'disabled'}[st]
+    add(f'btn_secondary_{st}', 152, 80, 16, f'<div class="btn2 L {cls}" style="left:16px;top:16px;width:120px"></div>', NS['btn']['slice'], note='次按钮 48（瓷面，圆角 16，2px 描边；字 T3 Bold #5A4030 由代码画；广告用法前面放 12×12 绿三角 #3F7F3A（代码画，路径见 code_drawn.ad_play），和字隔 8）；按下态已含下移 2px；禁用字色 #A8957E')
 add('icon_phone_32', 32, 32, 0, f'<div style="position:absolute;left:0;top:0;width:32px;height:32px">{PHONE}</div>')
 add('icon_phone_32_disabled', 32, 32, 0, f'<div style="position:absolute;left:0;top:0;width:32px;height:32px;opacity:.45">{PHONE}</div>')
 add('icon_coin_40', 40, 40, 0, f'<div class="coinbig" style="left:0;top:0">{COIN}</div>')
@@ -50,6 +53,7 @@ J['reuse_v14'] = {'hud_tag_c': '操作提示底（radius 16）和来电标签条
 J['code_drawn'] = {
  'day_subtitle': {'text': 'dayDisplay.settlement.format → 「第 {n} 天」', 'font': '400 12px/16px，等宽数字', 'color': '#7A5A40', 'pos': '结算卡「收工」(T2 20/28 Bold) 下方 4，水平居中；下一块（虚线）从副标题下沿隔 16', 'anim': '无，随卡片一起出现'},
  'settings_day': {'text': 'dayDisplay.settingsPanel.format', 'font': '400 12px/16px，等宽数字', 'color': '#7A5A40', 'pos': '设置标题行（高 28）右端，右边距卡片内沿 24（= 卡片右沿 −24），与「设置」T2 基线对齐；Canvas 用 textBaseline=alphabetic，两者基线 y 222.5（卡片顶 176 +24 +22.5，DOM 实测），右对齐 x 342'},
+ 'ad_play': {'size_1x': [12, 12], 'path': 'M2.5 1.2 L10.6 6 L2.5 10.8 Z', 'fill': '#3F7F3A', 'stroke': '1.4 #3F7F3A round', 'gap_to_text': 8, 'note': '不用 ▶ 字符（部分机型会渲染成 emoji）'},
  'dash_line': {'h': 2, 'dash': [6, 4], 'color': '#E6D6BC'},
  'switch': {'size_1x': [48, 28], 'on': '#5DBB63', 'off': '#D8C8AD', 'stroke': '2px #5A4030', 'knob': '20 白，内缩 2', 'disabled': '整行 opacity .45'},
  'avatar_bubble': {'pos_1x': [16, 160], 'padding_1x': [12, 16, 12, 16], 'font': '700 16px/24px Noto Sans CJK SC', 'color': '#5A4030', 'text_max_w': 160, 'text_max_w_fallback': 176, 'max_lines': 2,

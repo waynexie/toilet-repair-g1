@@ -96,3 +96,10 @@ def sbtn(label, state='normal', re=False, idd='sbtn'):
     cls = {'normal': '', 'pressed': 'pressed', 'disabled': 'disabled'}[state]
     col = 'color:#A8957E;' if state == 'disabled' else ''
     return f'<div class="sbtn {cls} {"re" if re else ""}" id="{idd}" style="{st}{col}"><span id="{idd}T">{label}</span></div>'
+
+def btn2(label, state='normal', re=False, idd='btn2', mt=16, play=True):
+    """次按钮 48（瓷面，圆角 16，2px 描边）；play=True 时前面放代码画的绿三角（广告）"""
+    st = bimg('btn', f'{V15}btn_secondary_{state}@2x.png') if re else ''
+    cls = {'normal': '', 'pressed': 'pressed', 'disabled': 'disabled'}[state]
+    if re: cls += ' re'
+    return f'<div class="btn2 {cls}" id="{idd}" style="margin-top:{mt}px;{st}">{PLAY if play else ""}<span id="{idd}T">{label}</span></div>'
