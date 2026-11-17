@@ -1,11 +1,20 @@
 // 正式素材接入：按 assets/manifest_art.json 叠图层。素材没加载完或缺图时，game.js 继续画占位。
 const ART={ok:false,img:{},L:{},homes:{wang_ayi:['home_wang_windowsill','home_wang_washboard']},covers:{wang_ayi:'home_wang_seatcover'}};
 const TB={x:16,y:636,w:288,h:128,slots:[56,125,192,262],slotTop:640,slotBot:721}; // ui-spec v1.1：288×128，left16 bottom16；箱体图直接缩放到这个尺寸 // 工具箱，按 ui-spec v1.1 + 美术箱体实测
-function artLoad(){fetch('assets/manifest_art.json').then(r=>r.json()).then(m=>{
- const list=m.layers.filter(l=>l.file);let left=list.length;
- list.forEach(l=>{const nm=l.name||l.file.split('/').pop().replace('@2x.png','');ART.L[nm]=l;const im=new Image();
-  im.onload=()=>{ART.img[nm]=im;if(--left===0)artReady();};im.onerror=()=>{if(--left===0)artReady();};im.src=l.file;});}).catch(()=>{});}
-function artReady(){if(!ART.img.bg_bathroom_base||!ART.img.toilet_bowl)return;ART.ok=true;
+// 正式画面必须这些图层都解码完成，且像素尺寸和清单一致（避免把头像当成桶）。
+const ART_NEED=['bg_bathroom_base','toilet_bowl','toilet_bowl_inner','scene_bucket_empty','ui_toolbox_body_lv1','ui_toolbox_lid_lv1'];
+function spriteOk(nm){const im=ART.img[nm],l=ART.L[nm];if(!im||im.naturalWidth<2||!l)return false;const ps=l.pixel_size;return !ps||(im.naturalWidth===ps[0]&&im.naturalHeight===ps[1]);}
+function loadImg(src,cb){let n=0;const go=()=>{const im=new Image();
+ im.onload=()=>{if(im.naturalWidth>0)cb(im);else if(++n<4)setTimeout(go,200*n);else cb(null);};
+ im.onerror=()=>{if(++n<4)setTimeout(go,300*n);else cb(null);};
+ im.src=n?src+(src.includes('?')?'&':'?')+'retry='+n:src;};go();}
+function artLoad(){let n=0;const go=()=>{fetch('assets/manifest_art.json').then(r=>{if(!r.ok)throw new Error(String(r.status));return r.json();}).then(m=>{
+ const list=m.layers.filter(l=>l.file);
+ list.forEach(l=>{const nm=l.name||l.file.split('/').pop().replace('@2x.png','');ART.L[nm]=l;
+  if(spriteOk(nm)){artReady();return;}
+  loadImg(l.file,im=>{const ps=l.pixel_size;if(im&&(!ps||(im.naturalWidth===ps[0]&&im.naturalHeight===ps[1])))ART.img[nm]=im;artReady();});});
+ }).catch(()=>{if(++n<4)setTimeout(go,400*n);});};go();}
+function artReady(){if(ART.ok||!ART_NEED.every(spriteOk))return;ART.ok=true;
  // 玩法几何跟着正式马桶走：碗口内圈约 x127–264、y426–580
  Object.assign(BOWL,{x:195,y:500,rx:100,ry:96});Object.assign(INNER,{rx:66,ry:74});WATER_Y=505;TRAY_Y=622;SLOTS=TB.slots.slice(0,3);Object.assign(FLUSH,{x:195,y:240,r:18});Object.assign(BUCKET,{x:328,y:520,r:34});}
 function A(nm,opt={}){const im=ART.img[nm],l=ART.L[nm];if(!im||!l)return;const w=opt.w||im.width/2*(opt.s||1),h=opt.h||im.height/2*(opt.s||1);
@@ -52,7 +61,7 @@ function artTray(ids){A('ui_toolbox_lid_lv1',{x:TB.x+(TB.w-270)/2,y:TB.y-14});A(
   txt(TOOLS[id]?TOOLS[id].name:id,x,742,12,'#fff3d8','center','700');});}
 artLoad();
 // —— 头像 / 老钱按钮 / 手机（portraits_v1）——
-const PIMG={};function pimg(src){if(!(src in PIMG)){PIMG[src]=null;const im=new Image();im.onload=()=>{PIMG[src]=im;};im.src=src;}return PIMG[src];}
+const PIMG={};function pimg(src){if(!(src in PIMG)){PIMG[src]=null;loadImg(src,im=>{if(im)PIMG[src]=im;});}return PIMG[src];}
 const PORTRAIT_IDS=['wang_ayi','xiao_xu','li_jie','zhao_jie'];
 function portrait(id,n,big){if(id==='lao_qian')return pimg('assets/characters/avatar_lao_qian'+(big?'_256.png':'@2x.png'));
  if(!PORTRAIT_IDS.includes(id))return null;n=Math.max(1,Math.min(4,n||1));return pimg(`assets/characters/avatar_${id}_p${n}`+(big?'_256.png':'@2x.png'));}
