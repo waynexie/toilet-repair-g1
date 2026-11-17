@@ -269,8 +269,11 @@ function playDown(p){
   if(O.phase==='work'){ if(O.water>.8){say('别冲！会漫出来的');O.face='😱';SFX.wrong();} else {noise(.6,.2,900);say('冲不下去，还堵着');} return;}
  }
  if(p.y>TRAY_Y){ // 托盘
+  const x4=TB.slots[3];if(Math.abs(p.x-x4)<=32&&p.y>=TB.slotTop&&p.y<=TB.slotTop+80){
+   if(!S.upgraded){S.jig={x:x4,t:0};const price=(CFG&&CFG.tools&&CFG.tools.plunger_pro&&CFG.tools.plunger_pro.price)||100;
+    const key=S.money>=price?'locked_tool_pro_ready':'locked_tool_pro';const t=NAR&&NAR.hints&&NAR.hints[key];if(t)say(t,2.4);SFX.wrong&&SFX.wrong();}return;}
   const i=SLOTS.findIndex(x=>Math.abs(p.x-x)<(ART.ok?35:50));if(i<0)return;
-  const id=['plunger','scoop','snake'][i];if(!id||!O.d.tools.includes(id)){if(ART.ok){say('这格还锁着，攒钱升级工具箱');SFX.wrong&&SFX.wrong();}return;}
+  const id=['plunger','scoop','snake'][i];if(!id||!O.d.tools.includes(id)){if(ART.ok){S.jig={x:SLOTS[i],t:0};const t=NAR&&NAR.hints&&NAR.hints.locked_tool_later;if(t)say(t,2.4);SFX.wrong&&SFX.wrong();}return;}
   if(held&&held.id===id&&held.attached){held=null;SFX.click();return;}
   pickTool(id);return;}
  if(held&&held.attached){
@@ -303,7 +306,7 @@ function loop(now){
  update(dt);draw();requestAnimationFrame(loop);
 }
 function update(dt){
- shake=Math.max(0,shake-dt*40);if(S.copied>0)S.copied-=dt;
+ shake=Math.max(0,shake-dt*40);if(S.jig){S.jig.t+=dt;if(S.jig.t>=.3)S.jig=null;}if(S.copied>0)S.copied-=dt;
  parts=parts.filter(p=>{p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=(p.g||400)*dt;return p.life>0;});
  floats=floats.filter(f=>{f.life-=dt;f.y-=40*dt;return f.life>0;});
  flashes=flashes.filter(f=>{f.life-=dt;f.r+=260*dt;return f.life>0;});
@@ -780,8 +783,8 @@ function drawEnd(){
  txt('图鉴：'+(S.dex.length?'小黄鸭 ×1':'空'),W/2,260,15,INK);
  if(S.times[2]&&S.times[4])txt(`满水堵：${S.times[2].toFixed(1)}s → ${S.times[4].toFixed(1)}s`,W/2,290,14,'#2c5fb0');
   if(/[?&]debug=1/.test(location.search))button(S.copied>0?'已复制 ✔':'复制用时',W/2-55,314,110,28,copyTimes,'#fff8eb');
- txt('第 1 天',W/2,400,13,'#7a5a48');
- button('第 2 天 ▶',W/2-90,440,180,52,()=>G2nextDay(),'#4fc26f','#fff');
+ 
+ primaryBtn('继续开工',W/2-90,440,180,()=>G2nextDay());
  button('再玩一遍',W/2-70,510,140,40,()=>{S.screen='title';O=null;S.copied=0;},'#ffb53d');
 }
 

@@ -159,11 +159,11 @@ function G2draw(sx,sy){
  g.save();g.translate(sx,sy);drawLockScene();drawFX();g.restore();drawHUD();drawHintBubble();
  if(S.screen==='reveal')drawReveal();}
 function drawBoardBg(){g.fillStyle='#efe2c4';g.fillRect(0,0,W,H);g.fillStyle='#a9d3c0';g.fillRect(0,H*.62,W,H*.38);
- rr(10,10,W-20,64,16);fs('rgba(255,248,235,.95)');txt('¥'+S.money,30,30,20,'#2f8a4a','left','800');txt(`第 ${G2.day} 天`,30,55,13,INK,'left','600');gearBtn(W-54,78);
+ rr(10,10,W-20,64,16);fs('rgba(255,248,235,.95)');txt('¥'+S.money,30,30,20,'#2f8a4a','left','800');gearBtn(W-54,78);
  rr(336,628,40,56,7);fs('#2d2d33');rr(340,634,32,40,4);g.fillStyle='#4a6a80';g.fill();
  if(PH.unread>0){g.beginPath();g.arc(374,630,9,0,7);g.fillStyle='#e8453c';g.fill();txt(String(PH.unread),374,630,11,'#fff');}}
 function drawBoard(){const left=G2.pick-G2.done.filter(k=>G2.board.includes(k)).length;
- txt('接单板',W/2,112,22,INK,'center','800');txt(`今天还能接 ${left} 单`,W/2,140,14,'#7a5a48','center','600');
+ txt('接单板',W/2,112,22,INK,'center','800');txt(`还能接 ${left} 单`,W/2,140,14,'#7a5a48','center','600');
  const cards=[...G2.board].sort((a,b)=>(G2.ord[b].src==='call')-(G2.ord[a].src==='call'));
  cards.forEach((id,i)=>{const d=G2.ord[id],y=165+i*140,done=G2.done.includes(id),gone=!done&&left<=0;
   const wob=d.src==='call'&&!done?Math.sin(S.t*10)*Math.max(0,Math.sin(S.t*1.5))*2:0;g.save();g.translate(wob,0);
@@ -179,9 +179,8 @@ function drawBoard(){const left=G2.pick-G2.done.filter(k=>G2.board.includes(k)).
   else buttons.push({x:28,y,w:W-56,h:124,fn:()=>acceptCard(id)});
   g.restore();});}
 function drawDayEnd(){const earned=S.money-(G2.dayStartMoney||0)+(S.spent||0)-(G2.dayStartSpent||0);
- panel(140,470);txt(`第 ${G2.day} 天 · 收工`,W/2,185,26,INK,'center','800');txt('今日收入 ¥'+earned,W/2,230,18,'#2f8a4a');txt('余额 ¥'+S.money,W/2,258,14,'#7a5a48');
+ panel(140,470);txt('收工',W/2,185,26,INK,'center','800');txt('今日收入 ¥'+earned,W/2,230,18,'#2f8a4a');txt('余额 ¥'+S.money,W/2,258,14,'#7a5a48');
  G2.done.forEach((k,i)=>{const d=G2.ord[k];if(d)txt('✔ '+(d.client?cname(d.client):'新客户')+' · '+d.boardHint,W/2,300+i*24,14,INK);});
  const next=(G2.data.days||[]).some(x=>x.day===G2.day+1);
- if(next)button(`第 ${G2.day+1} 天 ▶`,W/2-90,470,180,52,()=>G2nextDay(),'#4fc26f','#fff');
- else txt('G2 骨架到这里（第 3 天）',W/2,470,14,'#7a5a48');
+ if(next)primaryBtn('继续开工',W/2-90,470,180,()=>G2nextDay());
  button('再玩一遍',W/2-70,540,140,40,()=>{S.screen='title';O=null;S.copied=0;},'#fff8eb');}

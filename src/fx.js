@@ -174,7 +174,7 @@ drawReveal=function(){const d=O.d;if(revealImg(d.key))return _drawReveal();const
 // ---------- 早上 / 晚上 ----------
 drawBoardBg=function(){if(!fullBg(S.screen==='board'?'trans_morning':'trans_evening')){g.fillStyle='#efe2c4';g.fillRect(0,0,W,H);}
  rr(16,48,W-32-56,48,24);g.fillStyle='#FFF8EC';g.fill();g.strokeStyle=BROWN;g.lineWidth=2;g.stroke();
- g.beginPath();g.arc(40,72,16,0,7);g.fillStyle='#FFC83D';g.fill();g.stroke();T('¥',40,73,4);T(String(S.money),64,73,2,BROWN,'left');T(`第 ${G2.day} 天`,W-16-56-16,73,4,'#8A6F5A','right');
+ g.beginPath();g.arc(40,72,16,0,7);g.fillStyle='#FFC83D';g.fill();g.stroke();T('¥',40,73,4);T(String(S.money),64,73,2,BROWN,'left');
  gearCircle(W-16-24,72);};
 const _drawEnd=drawEnd;drawEnd=function(){if(S.day===1)fullBg('trans_evening');_drawEnd();};
 // ---------- 首页 ----------
