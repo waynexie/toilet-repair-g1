@@ -27,10 +27,27 @@ function artToilet(){A('toilet_bowl');A('toilet_bowl_inner');if(!O)return;const 
  if(O.d.clog==='hard'&&O.hp>0&&!O.objOut)A('clog_duck_silhouette',{a:O.observed?.55+.15*Math.sin(S.t*2):.25});}
 function artToolIcon(id,x,yBottom,sel){const nm=id==='plunger'?(S.upgraded?'tool_plunger_pro':'tool_plunger_old'):'tool_'+id;const im=ART.img[nm];if(!im)return false;
  const maxH=72,maxW=64,sc=Math.min(maxH/(im.height/2),maxW/(im.width/2),1),w=im.width/2*sc,h=im.height/2*sc;g.drawImage(im,x-w/2,yBottom-h-(sel?8:0),w,h);return true;}
+function jigAng(t){return Math.sin(Math.min(t,.3)/.3*Math.PI*6)*8*Math.PI/180;}
+function artLockPlate(x){const cy=(TB.slotTop+TB.slotBot)/2;g.save();
+ if(S.jig&&S.jig.x===x&&S.jig.t<.3){g.translate(x,cy);g.rotate(jigAng(S.jig.t));g.translate(-x,-cy);}
+ A('ui_toolbox_lockplate',{x,y:cy});g.restore();}
+// 第 4 格：v1.5 专业皮搋子锁定预览（灰图 + 黄铜角标 +「¥100 解锁」/钱够「点击解锁」）。第 2、3 格只留挂锁，不写字。
+function artProSlot(x){const price=(CFG&&CFG.tools&&CFG.tools.plunger_pro&&CFG.tools.plunger_pro.price)||100;
+ if(S.upgraded){artLockPlate(x);return;}
+ const ready=S.money>=price;
+ const im=pimg(ready?'assets/tools/tool_plunger_pro@2x.png':'assets/ui/v15/tool_plunger_pro_locked@2x.png');
+ if(im){const maxH=72,maxW=64,sc=Math.min(maxH/(im.height/2),maxW/(im.width/2),1),w=im.width/2*sc,h=im.height/2*sc;
+  g.save();g.globalAlpha=ready?.85:.6;g.drawImage(im,(x-6)-w/2,TB.slotBot-2-h,w,h);g.restore();}
+ let by=636.5;if(ready){const hop=(S.t*1000)%2400;if(hop<160)by-=4*(1-Math.pow(1-hop/160,2));else if(hop<320){const k=(hop-160)/160;by-=4*(1-k*k);}}
+ const bim=pimg('assets/ui/v15/'+(ready?'badge_unlock':'badge_lock')+'@2x.png');
+ const bx=x-7.5;if(bim){g.save();g.translate(bx+20,by+20);if(S.jig&&S.jig.x===x&&S.jig.t<.3)g.rotate(jigAng(S.jig.t));g.drawImage(bim,-20,-20,40,40);g.restore();}
+ txt(ready?'点击解锁':'¥'+price+' 解锁',x,742,12,ready?'#FFFFFF':'#FFE27A','center','700');}
 function artTray(ids){A('ui_toolbox_lid_lv1',{x:TB.x+(TB.w-270)/2,y:TB.y-14});A('ui_toolbox_body_lv1',{x:TB.x,y:TB.y,w:TB.w,h:TB.h});
- TB.slots.forEach((x,i)=>{const id=ids[i];
-  if(!id){A('ui_toolbox_lockplate',{x,y:(TB.slotTop+TB.slotBot)/2});txt('升级解锁',x,742,12,'#fff3d8','center','700');return;}
-  const sel=held&&held.id===id;const ok=artToolIcon(id,x,TB.slotBot-2,sel);
+ TB.slots.forEach((x,i)=>{
+  if(i===3){artProSlot(x);return;}
+  const id=ids[i];
+  if(!id){artLockPlate(x);return;}
+  const sel=held&&held.id===id;artToolIcon(id,x,TB.slotBot-2,sel);
   if(sel){rr(x-34,TB.slotTop-10,68,TB.slotBot-TB.slotTop+12,12);g.strokeStyle='#FFE27A';g.lineWidth=3;g.stroke();}
   txt(TOOLS[id]?TOOLS[id].name:id,x,742,12,'#fff3d8','center','700');});}
 artLoad();
@@ -51,3 +68,4 @@ function phoneArt(){const im=pimg(PH.unread>0?'assets/ui/phone_floor_notify@2x.p
  g.save();g.translate(W-16-32,H-32-48);g.rotate(-10*Math.PI/180);g.drawImage(im,-32,-48,64,96);g.restore();return true;}
 function callBgArt(){const im=pimg('assets/characters/laoqian_call@2x.png');if(!im)return false;const s=Math.max(W/(im.width/2),H/(im.height/2)),w=im.width/2*s,h=im.height/2*s;g.drawImage(im,(W-w)/2,(H-h)/2,w,h);return true;}
 ['btn_laoqian','btn_laoqian_pressed','phone_floor_idle','phone_floor_notify'].forEach(n=>pimg('assets/ui/'+n+'@2x.png'));pimg('assets/characters/laoqian_call@2x.png');
+['assets/ui/v15/tool_plunger_pro_locked@2x.png','assets/ui/v15/badge_lock@2x.png','assets/ui/v15/badge_unlock@2x.png','assets/tools/tool_plunger_pro@2x.png'].forEach(pimg);
