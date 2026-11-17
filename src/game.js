@@ -10,7 +10,23 @@ addEventListener('resize',resize);resize();
 // ---------- 存档 / 设置 ----------
 const SAVE_KEY='toilet_g1_v1';
 let save=JSON.parse(localStorage.getItem(SAVE_KEY)||'null')||{muted:false,reduced:false,best:{}};
-function persist(){localStorage.setItem(SAVE_KEY,JSON.stringify(save));}
+function snapshotProgress(){
+ save.money=Math.max(0,Math.round(S.money)||0);
+ save.spent=Math.max(0,Math.round(S.spent||0)||0);
+ save.upgraded=!!S.upgraded;
+}
+function persist(){snapshotProgress();localStorage.setItem(SAVE_KEY,JSON.stringify(save));}
+function syncProgress(){
+ const m=Math.max(0,Math.round(S.money)||0),sp=Math.max(0,Math.round(S.spent||0)||0),up=!!S.upgraded;
+ if(save.money===m&&save.spent===sp&&!!save.upgraded===up)return;
+ save.money=m;save.spent=sp;save.upgraded=up;
+ try{localStorage.setItem(SAVE_KEY,JSON.stringify(save));}catch(e){}
+}
+function applySaveProgress(){
+ if(typeof save.money==='number'&&isFinite(save.money)&&save.money>=0)S.money=Math.round(save.money);
+ if(typeof save.spent==='number'&&isFinite(save.spent)&&save.spent>=0)S.spent=Math.round(save.spent);
+ if(save.upgraded===true)S.upgraded=true;
+}
 
 // ---------- 音效（Web Audio 合成，无素材依赖） ----------
 let AC=null;
@@ -118,6 +134,7 @@ let TRAY_Y=690,SLOTS=[85,195,305];
 
 // ---------- 全局状态 ----------
 const S={screen:'title',money:0,idx:0,upgraded:false,skipUp:false,dex:[],times:{},phoneQueue:[],t:0};
+applySaveProgress();
 let O=null; // 当前订单运行态
 let held=null; // 正在拿的工具
 let parts=[],floats=[],shake=0,hitstop=0,flashes=[];
@@ -303,7 +320,7 @@ let last=performance.now();
 function loop(now){
  let dt=Math.min(.05,(now-last)/1000);last=now;S.t+=dt;
  if(hitstop>0){hitstop-=dt;dt*=.05;}
- update(dt);draw();requestAnimationFrame(loop);
+ update(dt);syncProgress();draw();requestAnimationFrame(loop);
 }
 function update(dt){
  shake=Math.max(0,shake-dt*40);if(S.jig){S.jig.t+=dt;if(S.jig.t>=.3)S.jig=null;}if(S.copied>0)S.copied-=dt;
@@ -683,7 +700,7 @@ function drawTitle(){
  g.fillStyle='#efe2c4';g.fillRect(0,0,W,H);g.fillStyle='#a9d3c0';g.fillRect(0,H*.55,W,H*.45);
  otxt('重生之我在',W/2,170,30,'#fff8eb');otxt('澳洲修马桶',W/2,215,42,'#ffcf3f');
  drawPlunger(W/2,470+Math.sin(S.t*3)*6,(Math.sin(S.t*3)+1)/2*.6,false,1.4);
- button('开 工',W/2-90,560,180,60,()=>{S.money=0;S.spent=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);},'#ffb53d');
+ button('开 工',W/2-90,560,180,60,()=>{S.idx=0;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);},'#ffb53d');
  txt('建议用手机竖屏打开，戴耳机体验更好',W/2,650,13,'#6b4a36','center','500');
  gearBtn(W/2-22,686);
 }
