@@ -181,7 +181,7 @@ const _drawEnd=drawEnd;drawEnd=function(){if(S.day===1)fullBg('trans_evening');_
 const _drawTitle=drawTitle;
 drawTitle=function(){if(!fullBg('title_bg'))return _drawTitle();const logo=uiImg('logo_title');
  if(logo)g.drawImage(logo,195-170,175-100,340,200);else{otxt('重生之我在',W/2,170,30,'#fff8eb');otxt('澳洲修马桶',W/2,215,42,'#ffcf3f');}
- primaryBtn('开工',W/2-90,560,180,()=>{S.money=0;S.spent=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);goTrans('trans_morning',()=>{S.screen='brief';});});
+ primaryBtn('开工',W/2-90,560,180,()=>{S.idx=0;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);goTrans('trans_morning',()=>{S.screen='brief';});});
  T('建议用手机竖屏打开，戴耳机体验更好',W/2,656,5,'#FFF3DA','center',false);
  gearCircle(W/2,712);};
 // ---------- 美术 bowl_geometry_v2：积水贴合碗、纸团、鸭子、皮搋子落点、水桶 ----------
