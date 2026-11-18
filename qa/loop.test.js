@@ -128,12 +128,35 @@ function fail(m){console.error('FAIL',m);process.exitCode=1;throw new Error(m);}
  await scoop(p);await scoop(p);
  await p.mouse.move(56,690);await p.mouse.down();await p.mouse.move(195,480,{steps:6});await p.mouse.up();
  const hp0=(await snap(p)).hp;await plunge(p);const hit=await snap(p);
- if(hit.dmg!==2||hit.win!==260||hp0-hit.hp!==2)fail('升级效果 '+hp0+' -> '+JSON.stringify(hit));
+ if(hit.dmg!==2||hp0-hit.hp!==2)fail('升级伤害 '+hp0+' -> '+JSON.stringify(hit));
  await p.screenshot({path:OUT+'/loop-3-o4.png'});
+ await pump(p,6);
+ s=await until(p,x=>x.phase==='verify'||x.screen==='result',8000,'o4clear');
+ if(s.screen!=='result'){await tap(p,195,240);await until(p,x=>x.screen==='result',6000,'o4result');}
+ s=await until(p,x=>x.money===108&&x.total===45,5000,'o4pay');
+ await p.waitForTimeout(700);
+ for(let i=0;i<6&&(await snap(p)).screen==='result';i++){await tap(p,195,531);await p.waitForTimeout(250);}
+ for(let i=0;i<8;i++){s=await snap(p);if(s.screen==='end')break;if(s.screen==='trans')await tap(p,195,400);await p.waitForTimeout(300);}
+ s=await until(p,x=>x.screen==='end',6000,'dayend');
+ if(s.money!==108||s.spent!==100)fail('收工 '+JSON.stringify(s));
+ await p.screenshot({path:OUT+'/loop-5-end.png'});
+ await tap(p,195,468);
+ for(let i=0;i<8;i++){s=await snap(p);if(s.screen==='board')break;if(s.screen==='trans')await tap(p,195,400);await p.waitForTimeout(300);}
+ s=await until(p,x=>x.screen==='board',6000,'board');
+ await p.screenshot({path:OUT+'/loop-6-board.png'});
+ await tap(p,195,227);
+ s=await until(p,x=>x.key==='o5',8000,'o5');
+ await toWork(p,'o5');
+ await p.mouse.move(56,690);await p.mouse.down();await p.mouse.move(195,480,{steps:6});await p.mouse.up();
+ await pump(p,6);
+ s=await until(p,x=>x.phase==='verify'||x.screen==='result',8000,'o5clear');
+ if(s.screen!=='result'){await tap(p,195,240);await until(p,x=>x.screen==='result',6000,'o5result');}
+ s=await until(p,x=>x.money===148&&x.total===40&&x.key==='o5',5000,'o5pay');
+ await p.screenshot({path:OUT+'/loop-7-o5.png'});
  await p.reload({waitUntil:'domcontentloaded'});
  await p.waitForTimeout(700);
  s=await snap(p);
- if(s.screen!=='title'||s.money!==63||!s.upgraded||s.save.money!==63||s.save.upgraded!==true||s.save.tutorialDone!==true)fail('刷新丢档 '+JSON.stringify(s));
+ if(s.screen!=='title'||s.money!==148||!s.upgraded||s.save.money!==148||s.save.upgraded!==true||s.save.tutorialDone!==true)fail('刷新丢档 '+JSON.stringify(s));
  await tap(p,195,588);
  s=await until(p,x=>x.key==='o1'&&(x.screen==='brief'||x.screen==='play'||x.screen==='reveal'||x.screen==='trans'),8000,'next');
  for(let i=0;i<8&&!((s=await snap(p)).screen==='play'&&s.key==='o1');i++){
@@ -141,10 +164,10 @@ function fail(m){console.error('FAIL',m);process.exitCode=1;throw new Error(m);}
   await p.waitForTimeout(400);
  }
  s=await until(p,x=>x.screen==='play'&&x.key==='o1',6000,'next-play');
- if(s.money!==63||!s.upgraded)fail('下一轮开工清掉进度 '+JSON.stringify(s));
+ if(s.money!==148||!s.upgraded)fail('下一轮开工清掉进度 '+JSON.stringify(s));
  await p.screenshot({path:OUT+'/loop-4-kept.png'});
  if(natural.errs.length)fail('控制台 '+natural.errs.join('|'));
- console.log('natural ok',JSON.stringify({o1:30,o2:103,o3:163,afterBuy:63,o4dmg:2,reload:s.money}));
+ console.log('natural ok',JSON.stringify({o1:30,o2:103,o3:163,afterBuy:63,o4:108,o5:148,reload:s.money}));
  await natural.ctx.close();
 
  // 隔离种子：旧档余额和已购。不是本轮购买证据。
@@ -152,6 +175,10 @@ function fail(m){console.error('FAIL',m);process.exitCode=1;throw new Error(m);}
  const old=await open(seed);
  s=await old.p.waitForTimeout(400).then(()=>snap(old.p));
  if(s.money!==80||!s.upgraded||s.screen!=='title'||s.step)fail('种子读档 '+JSON.stringify(s));
+ await old.p.reload({waitUntil:'domcontentloaded'});
+ await old.p.waitForTimeout(500);
+ s=await snap(old.p);
+ if(s.money!==80||!s.upgraded||s.save.money!==80||s.save.upgraded!==true||s.save.best.o1!==22.4)fail('旧档刷新 '+JSON.stringify(s));
  await tap(old.p,195,588);
  s=await until(old.p,x=>x.key==='o1',8000,'seed-start');
  if(s.money!==80||!s.upgraded||s.step)fail('种子开工被清 '+JSON.stringify(s));

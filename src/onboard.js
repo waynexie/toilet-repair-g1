@@ -196,7 +196,7 @@ draw=(function(orig){return function(){
  if(st==='S5'&&!held){const c=(S.t%1.6)/1.6,e=ease(clamp(c/.75,0,1));const x=lerp(56,195,e),y=lerp(690,500,e);g.save();g.globalAlpha=c>.85?(1-c)/.15:1;
   g.setLineDash([6,6]);g.strokeStyle='rgba(255,243,218,.8)';g.lineWidth=3;g.beginPath();g.moveTo(56,690);g.lineTo(195,500);g.stroke();g.setLineDash([]);
   ringPulse(56,680,64);hand(x-4,y-4,c<.1);g.restore();}
- if(st==='S6'&&OB.hits<3)drawHint(nget('hints.ring_match')||'');
+ if((st==='S5'||st==='S6')&&OB.hits<3){const t=plungerCue();if(t)drawHint(t);}
  drawBubble();
  if(st==='S8')drawCoin();
  if(st==='S2'&&OB.card)drawTaskCard();};})(draw);

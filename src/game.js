@@ -350,9 +350,7 @@ function update(dt){
    if(O.d.clog==='soft'&&O.d.water<.8)O.water=O.d.water+Math.sin(Math.min(1,k)*Math.PI)*.2;
    else if(O.d.water>=.8)O.water=Math.min(.97,O.d.water+Math.sin(Math.min(1,k)*Math.PI)*.09);
    else O.water=O.d.water+Math.min(1,k*2)*.08;
-   if(k>=1){O.anim=null;O.phase='work';O.observed=true;if(O.d.clog==='hard')O.wTarget=O.water;else O.water=O.wTarget;
-    if(O.d.id===1)say('皮搋子拖到马桶上，压到底，圈变绿时松手',4);
-    if(O.d.id===2)say('',0);}}
+   if(k>=1){O.anim=null;O.phase='work';O.observed=true;if(O.d.clog==='hard')O.wTarget=O.water;else O.water=O.wTarget;}}
   if(a.type==='win'){O.water=lerp(.36,.2,Math.sin(Math.min(1,k)*Math.PI));O.swirl=2;
    if(k>.3&&!a.sp){a.sp=1;SFX.success();burst(BOWL.x,WATER_Y,30,'#fff6a8',260,4);O.face='👍';}
    if(k>=1){O.anim=null;finishOrder();}}
@@ -806,7 +804,8 @@ function drawEnd(){
 }
 
 // 调试/测试钩子
-window.__G={get G2(){return G2;},G2nextDay:()=>G2nextDay(),get ORDERS(){return ORDERS;},S,askMaster,masterReady,PH,openPhone,win,get CFG(){return CFG;},timesText,get save(){return save;},get O(){return O;},startOrder,setUpgraded:v=>S.upgraded=v};
+window.__G={get G2(){return G2;},G2nextDay:()=>G2nextDay(),get ORDERS(){return ORDERS;},S,askMaster,masterReady,PH,openPhone,win,get CFG(){return CFG;},timesText,get save(){return save;},get O(){return O;},startOrder,setUpgraded:v=>S.upgraded=v,
+ get held(){return held?{id:held.id,attached:!!held.attached,x:held.x,y:held.y}:null;},bowl(){return {x:BOWL.x,y:BOWL.y};}};
 requestAnimationFrame(loop);
 
 // ---- 耐心 / 好评 / 打赏 ----
