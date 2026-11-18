@@ -1,0 +1,182 @@
+{
+  "version": "art-prototype-01",
+  "canvasPx": [
+    512,
+    768
+  ],
+  "nominalDisplayPx": [
+    128,
+    192
+  ],
+  "trim": false,
+  "premultipliedAlpha": false,
+  "light": "fixed upper-left warm key",
+  "contactAnchorPx": [
+    256.0,
+    628.89
+  ],
+  "frames": [
+    {
+      "file": "plunger_00.png",
+      "compression": 0,
+      "durationMs": 0,
+      "contactAnchorPx": [
+        256.0,
+        628.89
+      ],
+      "gripAnchorPx": [
+        256.0,
+        207.88
+      ]
+    },
+    {
+      "file": "plunger_01.png",
+      "compression": 0.18,
+      "durationMs": 40,
+      "contactAnchorPx": [
+        256.0,
+        628.89
+      ],
+      "gripAnchorPx": [
+        256.0,
+        218.27
+      ]
+    },
+    {
+      "file": "plunger_02.png",
+      "compression": 0.45,
+      "durationMs": 40,
+      "contactAnchorPx": [
+        256.0,
+        628.89
+      ],
+      "gripAnchorPx": [
+        256.0,
+        233.86
+      ]
+    },
+    {
+      "file": "plunger_03.png",
+      "compression": 0.75,
+      "durationMs": 40,
+      "contactAnchorPx": [
+        256.0,
+        628.89
+      ],
+      "gripAnchorPx": [
+        256.0,
+        251.19
+      ]
+    },
+    {
+      "file": "plunger_04.png",
+      "compression": 1,
+      "durationMs": 45,
+      "contactAnchorPx": [
+        256.0,
+        628.89
+      ],
+      "gripAnchorPx": [
+        256.0,
+        265.62
+      ]
+    },
+    {
+      "file": "plunger_05.png",
+      "compression": 0.72,
+      "durationMs": 35,
+      "contactAnchorPx": [
+        256.0,
+        628.89
+      ],
+      "gripAnchorPx": [
+        256.0,
+        249.45
+      ]
+    },
+    {
+      "file": "plunger_06.png",
+      "compression": 0.28,
+      "durationMs": 35,
+      "contactAnchorPx": [
+        256.0,
+        628.89
+      ],
+      "gripAnchorPx": [
+        256.0,
+        224.05
+      ]
+    },
+    {
+      "file": "plunger_07.png",
+      "compression": -0.08,
+      "durationMs": 45,
+      "contactAnchorPx": [
+        256.0,
+        628.89
+      ],
+      "gripAnchorPx": [
+        256.0,
+        203.26
+      ]
+    },
+    {
+      "file": "plunger_08.png",
+      "compression": 0,
+      "durationMs": 0,
+      "contactAnchorPx": [
+        256.0,
+        628.89
+      ],
+      "gripAnchorPx": [
+        256.0,
+        207.88
+      ]
+    }
+  ],
+  "animationNote": "frames 1-4 compression driven by input; 5-8 feedback return; frame 0/8 idle. Timing is provisional, not gameplay judgement.",
+  "gripNote": "Shared grip axis; grip coordinate intentionally moves during compression. Free drag uses idle grip; contact phase locks contact anchor, never also locks grip y.",
+  "layers": [
+    "bathroom back",
+    "contact shadow (contact only)",
+    "plunger",
+    "front rim occluder",
+    "feedback and finger"
+  ],
+  "limitations": [
+    "fixed viewpoint and light",
+    "no arbitrary rotation",
+    "no claim of phone runtime validation"
+  ],
+  "contactShadow": {
+    "file": "contact_shadow.png",
+    "canvasPx": [
+      256,
+      128
+    ],
+    "anchorPx": [
+      128,
+      64
+    ],
+    "displaySizePx": [
+      72,
+      36
+    ],
+    "visibleOnlyWhenContact": true,
+    "note": "Provisional painted contact blob, not accurate dynamic cast shadow"
+  },
+  "fixture": {
+    "canvasPx": [
+      390,
+      780
+    ],
+    "background": "fixture_background.png",
+    "frontRim": "fixture_front_rim.png",
+    "toolScale": 0.25,
+    "targetContactPx": [
+      199,
+      504
+    ],
+    "note": "Static concept fixture only. Includes concept tray tool; not a finished game scene or validated collision mask."
+  }
+}
