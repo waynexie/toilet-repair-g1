@@ -1,10 +1,10 @@
 {
   "manifest": "art/plunger_manifest.json",
-  "view": { "x": 0, "y": 72, "w": 390, "h": 548 },
-  "dockTop": 624,
+  "view": { "x": 0, "y": 0, "w": 390, "h": 780 },
+  "dockTop": 780,
   "dockColor": "#E7D7C4",
-  "homeGrip": [312, 652],
+  "homeGrip": [94, 636.75],
   "snapRadiusPx": 52,
   "press": { "travelPx": 110, "bottomAt": 0.86, "releaseAt": 0.35, "rebounceMs": 420, "windowMs": 160 },
-  "notice": "验证视窗只含马桶（y 72–620），不含托盘。fixture_background.png 仍把托盘上的搋子烤在画面里，没有取出工具后的空托盘层，所以视窗把托盘裁掉，独立搋子从视窗下方的停放位拖入。不是王阿姨正式全场景。"
+  "notice": "完整 390×780 机位。底图是空托盘，托盘上的搋子是独立层，拖走后原位清空。自由拖动和提起画在前沿上面，贴上马桶后才到前沿下面并显示阴影。不是王阿姨正式场景。"
 }

@@ -171,7 +171,6 @@
     if (!report.ok) { showGate(report.errors); window.ClayDemo = { ok: false, report: report }; return; }
     gate.hidden = true;
     const session = createPlay(manifest, demo);
-    const view = demo.view;
     let last = performance.now();
     function pos(e) {
       const r = cv.getBoundingClientRect();
@@ -189,28 +188,24 @@
       last = now;
       g.setTransform(SC * DPR, 0, 0, SC * DPR, 0, 0);
       g.fillStyle = demo.dockColor; g.fillRect(0, 0, STAGE_W, STAGE_H);
-      g.save(); g.beginPath(); g.rect(view.x, view.y, view.w, view.h); g.clip();
       blit(images[manifest.fixture.background], 0, 0, STAGE_W, STAGE_H);
-      g.restore();
-      if (session.shadow) {
+      const lay = session.layout();
+      const tool = () => blit(images[manifest.frames[session.frame].file], lay.top[0], lay.top[1], manifest.nominalDisplayPx[0], manifest.nominalDisplayPx[1]);
+      const rim = () => blit(images[manifest.fixture.frontRim], 0, 0, STAGE_W, STAGE_H);
+      const shadow = () => {
+        if (!session.shadow) return;
         const sh = manifest.contactShadow;
         const dw = sh.displaySizePx[0], dh = sh.displaySizePx[1];
         const ax = sh.anchorPx[0] * dw / sh.canvasPx[0], ay = sh.anchorPx[1] * dh / sh.canvasPx[1];
         const t = manifest.fixture.targetContactPx;
         blit(images[sh.file], t[0] - ax, t[1] - ay, dw, dh);
-      }
-      const lay = session.layout();
-      blit(images[manifest.frames[session.frame].file], lay.top[0], lay.top[1], manifest.nominalDisplayPx[0], manifest.nominalDisplayPx[1]);
-      g.save(); g.beginPath(); g.rect(view.x, view.y, view.w, view.h); g.clip();
-      blit(images[manifest.fixture.frontRim], 0, 0, STAGE_W, STAGE_H);
-      g.restore();
+      };
+      if (session.locked) { shadow(); tool(); rim(); }
+      else { rim(); tool(); }
       if (session.down) {
         g.beginPath(); g.arc(session.finger[0], session.finger[1], 16, 0, 7);
         g.fillStyle = 'rgba(243,210,176,.92)'; g.fill(); g.lineWidth = 2; g.strokeStyle = '#5A4030'; g.stroke();
       }
-      g.fillStyle = '#5A4030'; g.font = '13px "Noto Sans CJK SC","PingFang SC",sans-serif';
-      g.fillText('视窗只含马桶，托盘已裁掉。', 16, 30);
-      g.fillText('背景仍烤着托盘搋子，缺空托盘层。不是正式场景。', 16, 50);
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);

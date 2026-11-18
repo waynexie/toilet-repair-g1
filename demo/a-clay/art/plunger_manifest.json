@@ -1,5 +1,5 @@
 {
-  "version": "art-prototype-01",
+  "version": "art-prototype-02",
   "canvasPx": [
     512,
     768
@@ -177,6 +177,11 @@
       199,
       504
     ],
-    "note": "Static concept fixture only. Includes concept tray tool; not a finished game scene or validated collision mask."
+    "note": "Clean tray background; all plunger pixels must come from independent transparent sprite. Front rim mask is provisional.",
+    "trayContactPx": [
+      94,
+      742
+    ],
+    "occlusionMode": "contact: front rim above tool; lifted/free drag: tool above rim; shadow hidden off-contact"
   }
 }
