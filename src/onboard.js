@@ -52,7 +52,7 @@ function drawHoleMask(cx,cy,r,a,bounce){if(a<=0)return;g.save();g.beginPath();g.
  g.beginPath();g.arc(cx,cy,(r+4)*bounce,0,Math.PI*2);g.strokeStyle=`rgba(90,64,48,${a})`;g.lineWidth=8;g.stroke();g.strokeStyle=`rgba(255,243,218,${a})`;g.lineWidth=4;g.stroke();g.restore();}
 function hand(x,y,tap){const im=uiImg(tap?'ui_guide_hand_tap':'ui_guide_hand');if(im)g.drawImage(im,x,y+(tap?4:0),40*(tap?.92:1),48*(tap?.92:1));}
 // ---------- 首次启动：跳过首页直进 o1 ----------
-function obStart(){S.money=0;S.spent=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();
+function obStart(){S.idx=0;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();
  startOrder(0);O.callAccepted=true;O.msgIn=true;S.screen='play';OB={step:'S1',t:0,st:0,hits:0,bub:null};}
 // 引导期间：旧的 o1 say() 教学句、观察提示不出；不掉耐心；节奏放宽
 say=(function(orig){return function(t,d){if(obOn())return;return orig(t,d);};})(say);
@@ -196,7 +196,7 @@ draw=(function(orig){return function(){
  if(st==='S5'&&!held){const c=(S.t%1.6)/1.6,e=ease(clamp(c/.75,0,1));const x=lerp(56,195,e),y=lerp(690,500,e);g.save();g.globalAlpha=c>.85?(1-c)/.15:1;
   g.setLineDash([6,6]);g.strokeStyle='rgba(255,243,218,.8)';g.lineWidth=3;g.beginPath();g.moveTo(56,690);g.lineTo(195,500);g.stroke();g.setLineDash([]);
   ringPulse(56,680,64);hand(x-4,y-4,c<.1);g.restore();}
- if(st==='S6'&&OB.hits<3)drawHint(nget('hints.ring_match')||'');
+ if((st==='S5'||st==='S6')&&OB.hits<3){const t=plungerCue();if(t)drawHint(t);}
  drawBubble();
  if(st==='S8')drawCoin();
  if(st==='S2'&&OB.card)drawTaskCard();};})(draw);

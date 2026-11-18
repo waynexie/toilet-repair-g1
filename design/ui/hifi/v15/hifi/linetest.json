@@ -261,13 +261,13 @@
  },
  {
   "name": "提示 ring_match",
-  "text": "金圈套上绿圈时按下去",
-  "chars": 10,
+  "text": "金圈套上绿圈时松手",
+  "chars": 9,
   "lines": 1,
-  "maxLineW": 160.0,
+  "maxLineW": 144.0,
   "textArea": 208,
   "ok": true,
-  "layout": "金圈套上绿圈时按下去"
+  "layout": "金圈套上绿圈时松手"
  },
  {
   "name": "提示 too_full_scoop",

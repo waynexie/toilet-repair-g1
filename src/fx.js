@@ -85,7 +85,7 @@ function tapGuide(x,y,r=32){const c=(S.t%1.2)/1.2;const ring=uiImg('ui_guide_rin
  else{g.font='34px sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText('👆',fx+12,fy+18+(tap?4:0));}}
 drawObserveHint=function(){if(!O||S.screen!=='play')return;drawClogBar();
  if(O.anim||(O.phase!=='observe'&&O.phase!=='verify'))return;tapGuide(FLUSH.x,FLUSH.y);
- if(O.phase==='observe'&&O.d.id===1&&!(O.hintT>0&&O.hint))bubble('先冲一下水，看看什么情况',false);};
+ if(O.phase==='observe'&&O.d.id===1&&!(O.hintT>0&&O.hint)){const t=NAR&&NAR.hints&&NAR.hints.flush_first;if(t)bubble(t,false);}};
 drawToilet=(function(orig){return function(){if(!ART.ok)return orig();artToilet();drawWater();};})(drawToilet);
 // ---------- 落点高亮 + 节奏引导 ----------
 const _drawHeld=drawHeld;
@@ -181,7 +181,7 @@ const _drawEnd=drawEnd;drawEnd=function(){if(S.day===1)fullBg('trans_evening');_
 const _drawTitle=drawTitle;
 drawTitle=function(){if(!fullBg('title_bg'))return _drawTitle();const logo=uiImg('logo_title');
  if(logo)g.drawImage(logo,195-170,175-100,340,200);else{otxt('重生之我在',W/2,170,30,'#fff8eb');otxt('澳洲修马桶',W/2,215,42,'#ffcf3f');}
- primaryBtn('开工',W/2-90,560,180,()=>{S.money=0;S.spent=0;S.idx=0;S.upgraded=false;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);goTrans('trans_morning',()=>{S.screen='brief';});});
+ primaryBtn('开工',W/2-90,560,180,()=>{S.idx=0;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();startOrder(0);goTrans('trans_morning',()=>{S.screen='brief';});});
  T('建议用手机竖屏打开，戴耳机体验更好',W/2,656,5,'#FFF3DA','center',false);
  gearCircle(W/2,712);};
 // ---------- 美术 bowl_geometry_v2：积水贴合碗、纸团、鸭子、皮搋子落点、水桶 ----------
@@ -221,7 +221,24 @@ function drawTrans(){const tr=S.trans;const a=Math.min(1,tr.t/.3);g.fillStyle='#
   g.restore();}}
  buttons.push({x:0,y:0,w:W,h:H,fn:()=>{if(tr.t>.15){SFX.click();endTrans();}}});}
 draw=(function(orig){return function(){if(S.screen==='trans'&&S.trans){buttons=[];g.setTransform(SC*DPR,0,0,SC*DPR,0,0);g.clearRect(0,0,W,H);drawTrans();return;}orig();};})(draw);
-update=(function(orig){return function(dt){if(S.screen==='trans'&&S.trans){S.trans.t+=dt;return;}orig(dt);};})(update);
+function plungerCue(){
+ if(!O||!held||held.id!=='plunger'||O.phase!=='work')return null;
+ const h=(NAR&&NAR.hints)||{};
+ if(!held.attached)return h.plunger_drag||null;
+ const p=O.plunger,w=win(!!S.upgraded);
+ if(p.bottom&&p.bt>=w.ws&&p.bt<=w.ws+w.wl)return h.ring_match||null;
+ return h.plunger_press||null;
+}
+function syncPlungerHint(){
+ if(!O||(typeof obOn==='function'&&obOn()))return;
+ const h=(NAR&&NAR.hints)||{};
+ const ops=[h.plunger_drag,h.plunger_press,h.ring_match].filter(Boolean);
+ const cue=plungerCue();
+ const showingOp=!!(O.hint&&ops.indexOf(O.hint)>=0&&O.hintT>0);
+ if(cue){if(showingOp||!(O.hintT>0)){O.hint=cue;O.hintT=.4;}}
+ else if(showingOp){O.hint='';O.hintT=0;}
+}
+update=(function(orig){return function(dt){if(S.screen==='trans'&&S.trans){S.trans.t+=dt;return;}orig(dt);syncPlungerHint();};})(update);
 // 早上：开工 / 新的一天；路上：上门；晚上：收工前
 G2nextDay=(function(orig){return function(){orig();goTrans('trans_morning',()=>{S.screen='board';S.boardT=0;});};})(G2nextDay);
 G2dayEnd=(function(orig){return function(){orig();goTrans('trans_evening',()=>{S.screen='end';});};})(G2dayEnd);
