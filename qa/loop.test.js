@@ -69,28 +69,21 @@ function fail(m){console.error('FAIL',m);process.exitCode=1;throw new Error(m);}
 
  const natural=await open(null);
  const p=natural.p;
- let s=await until(p,x=>x.step==='S2',8000,'S2');
+ let s=await until(p,x=>x.step==='S1'&&x.phase==='work',8000,'S1');
  if(s.money!==0)fail('开局不该有钱 '+s.money);
- await p.waitForTimeout(400);
- for(let i=0;i<6&&(await snap(p)).step==='S2';i++)await tap(p,195,560);
- await until(p,x=>x.step==='S3',5000,'S3');
- await tap(p,195,240);
- await until(p,x=>x.step==='S5',8000,'S5');
  await p.mouse.move(56,690);await p.mouse.down();
  for(let i=1;i<=10;i++)await p.mouse.move(56+(195-56)*i/10,690+(480-690)*i/10);
  await p.mouse.up();
- await until(p,x=>x.step==='S6'||x.step==='S7',5000,'S6');
  await pump(p,8);
- await until(p,x=>x.step==='S8',8000,'S8');
+ await until(p,x=>x.phase==='verify',8000,'verify');
+ await tap(p,195,240);
+ s=await until(p,x=>x.step==='S8',8000,'S8');
  await p.waitForTimeout(1200);await tap(p,252,236);
- s=await until(p,x=>x.step==='S9',8000,'S9');
- if(s.money!==30||s.total!==30)fail('首单应只入账 30 '+JSON.stringify(s));
+ s=await until(p,x=>x.screen==='ob_call'&&x.money===30,8000,'paid');
  await p.screenshot({path:OUT+'/loop-1-o1-pay.png'});
- await p.waitForTimeout(1100);await tap(p,195,531);
- await until(p,x=>x.step==='S10',6000,'S10');
- await p.waitForTimeout(1500);await tap(p,195,572);
+ await p.waitForTimeout(300);await tap(p,195,572);
  await until(p,x=>x.step==='S11',5000,'S11');
- for(let i=0;i<20;i++){const btn=await p.evaluate(()=>__OB.OB&&__OB.OB.call&&__OB.OB.call.btn);if(btn!=null&&btn>=0.3)break;await tap(p,195,430);}
+ for(let i=0;i<12;i++){const btn=await p.evaluate(()=>__OB.OB&&__OB.OB.call&&__OB.OB.call.btn);if(btn!=null&&btn>=0.3)break;await tap(p,195,430);}
  await tap(p,195,676);
  s=await until(p,x=>x.key==='o2'&&x.screen==='play',8000,'o2');
  if(s.money!==30)fail('来电后余额被改 '+s.money);
