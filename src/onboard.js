@@ -53,16 +53,18 @@ function drawHoleMask(cx,cy,r,a,bounce){if(a<=0)return;g.save();g.beginPath();g.
 function hand(x,y,tap){const im=uiImg(tap?'ui_guide_hand_tap':'ui_guide_hand');if(im)g.drawImage(im,x,y+(tap?4:0),40*(tap?.92:1),48*(tap?.92:1));}
 // ---------- 首次启动：跳过首页直进 o1 ----------
 function obStart(){S.idx=0;S.dex=[];S.times={};phoneReset();S.masterFree=0;S.doubleToday=0;S.giftToday=0;G2reset();
- startOrder(0);O.callAccepted=true;O.msgIn=true;S.screen='play';OB={step:'S1',t:0,st:0,hits:0,bub:null};}
+ startOrder(0);O.callAccepted=true;O.msgIn=true;O.phase='work';O.observed=true;O.startT=S.t;S.screen='play';
+ OB={step:'S1',t:0,st:0,hits:0,bub:null,paid:false,collecting:false,armed:false,downSeq:0,armSeq:0,gestureOpen:false,thanks:false,sawWin:false,greet:false};}
 // 引导期间：旧的 o1 say() 教学句、观察提示不出；不掉耐心；节奏放宽
-say=(function(orig){return function(t,d){if(obOn())return;return orig(t,d);};})(say);
+say=(function(orig){return function(t,d){if(obOn()){if(O&&O.water>.8){showBubble('dont_flush',1600);return;}if(t){OB.bub={key:'react',text:String(t).replace(/[“”]/g,''),mood:'p1',style:'urge',t:0,dur:d||1.6};}return;}return orig(t,d);};})(say);
 patLose=(function(orig){return function(){if(obOn()&&OB.hits<3)return;return orig();};})(patLose);
 rhythm=(function(orig){return function(up){const r=orig(up);if(!obOn()||OB.hits>=3)return r;const a=(OBC.steps||[]).find(s=>s.id==='S6_guide_rhythm');const k=(a&&a.tutorialAssist)||{rebounceScale:1.3,windowScale:1.5};
  return Object.assign({},r,{rebounceMs:r.rebounceMs*k.rebounceScale,windowMs:r.windowMs*k.windowScale});};})(rhythm);
 fxText=(function(orig){return function(q){if(obOn())OB.hits++;return orig(q);};})(fxText);
 drawObserveHint=(function(orig){return function(){if(obOn()){drawClogBar();return;}return orig();};})(drawObserveHint);
 portrait=(function(orig){return function(id,n,big){if(OB&&OB.bub&&OB.bub.mood==='shock'&&!big){const m=((OBC&&OBC.avatarBubbles&&OBC.avatarBubbles.moodAssets)||{})[id];if(m&&m.shock){const im=pimg(m.shock);if(im)return im;}}return orig(id,n,big);};})(portrait);
-clogCleared=(function(orig){return function(){orig();if(obOn()&&OB.step!=='S8'){OB.step='S7';OB.st=0;showBubble('thanks');}};})(clogCleared);
+clogCleared=(function(orig){return function(){orig();};})(clogCleared);
+finishOrder=(function(orig){return function(){if(obOn()){O.phase='verify';return;}return orig();};})(finishOrder);
 // o1 结算后的「接下一单」：引导里改走来电
 startOrder=(function(orig){return function(i){if(OB&&i===1&&OB.step==='S9'){OB.step='S10';OB.st=0;S.screen='ob_call';return;}return orig(i);};})(startOrder);
 function step(id){return ((OBC&&OBC.steps)||[]).find(s=>s.id===id)||{};}
@@ -71,15 +73,11 @@ update=(function(orig){return function(dt){
  if(!OB&&OBC&&ORDERS.length&&NAR&&S.screen==='title'&&!save.tutorialDone&&!S.obChecked){S.obChecked=true;if(!OBC.firstLaunch||OBC.firstLaunch.skipTitle!==false)obStart();}
  orig(dt);if(!OB)return;OB.t+=dt;OB.st+=dt;if(OB.bub)OB.bub.t+=dt;if(OB.edgeT!=null){OB.edgeT+=dt;if(OB.edgeT>=.2)OB.edgeT=null;}
  if(S.screen==='play'&&O&&O.d.id===1){
-  if(OB.step==='S1'&&OB.st>=(step('S1_need_bubble').delayMs||400)/1000&&!OB.s1){OB.s1=1;showBubble('need');}
-  if(OB.step==='S1'&&OB.st>=1.2){OB.step='S2';OB.st=0;OB.card={t:0,out:-1};if(OB.bub)OB.bub.dur=Math.min(OB.bub.dur,OB.bub.t);}
-  if(OB.step==='S3'){if(O.anim&&O.anim.type==='obs'){OB.flushed=1;if(OB.s3outAt==null)OB.s3outAt=OB.st;}if(OB.flushed&&!O.anim&&O.observed){OB.step='S4';OB.st=0;showBubble('dont_flush',step('S4_react').autoHideMs||2000);}}
-  if(OB.step==='S4'&&OB.st>=(step('S5_guide_tool').delayMs||600)/1000){OB.step='S5';OB.st=0;}
-  if(OB.step==='S5'&&held&&held.attached){OB.step='S6';OB.st=0;}
-  if(OB.step==='S7'&&OB.st>=(step('S8_coins').delayMs||800)/1000){OB.step='S8';OB.st=0;OB.coin={t:0,tap:-1,fly:-1,start:S.money,pay:O.d.base,added:0};}
-  if(OB.step==='S7'||OB.step==='S8'){if(O.phase==='verify')O.phase='done';}
-  if(OB.step==='S8')coinUpdate(dt);
-  if(O.phase==='work'&&!O.anim&&OB.step==='S3')O.idleT=0;}
+  if(!OB.greet&&OB.st>=(step('S1_need_bubble').delayMs||400)/1000){OB.greet=true;showBubble('need');}
+  if(held&&OB.bub&&OB.bub.key==='need')OB.bub=null;
+  if(O.anim&&O.anim.type==='win'&&!OB.thanks){OB.thanks=true;OB.sawWin=true;showBubble('thanks',2000);}
+  if(OB.sawWin&&!O.anim&&!OB.coin&&!OB.paid&&!OB.collecting){OB.step='S8';OB.st=0;OB.coin={t:0,tap:-1,fly:-1,start:S.money,pay:O.d.base,added:0};if(OB.bub&&OB.bub.key==='thanks')OB.bub=null;}
+  if(OB.step==='S8')coinUpdate(dt);}
  if(S.screen==='ob_call')callUpdate(dt);};})(update);
 // ---------- S2 任务卡 ----------
 function drawTaskCard(){const c=OB.card;c.t+=1/60;const d=O.d;let a,s;
@@ -96,14 +94,15 @@ function drawTaskCard(){const c=OB.card;c.t+=1/60;const d=O.d;let a,s;
  if(bi)nineA(bi,48-16,532-16,294+32,56+32,64,64,64,64);T('开始',195,560+(pr?2:0),2);g.restore();
  buttons.push({x:0,y:0,w:W,h:H,fn:()=>{if(c.out<0&&c.t>.2){audioInit();SFX.click();c.out=0;}}});}
 // ---------- S8 金币 ----------
-function coinUpdate(dt){const c=OB.coin;c.t+=dt;const auto=(step('S8_coins').autoCollectMs||4000)/1000;
- if(c.fly<0&&c.t>1.12+auto){c.fly=0;}
+function beginCollect(){if(!OB||!OB.coin||OB.paid||OB.collecting||OB.coin.fly>=0)return;OB.collecting=true;OB.coin.tap=0;OB.coin.fly=0;}
+function creditO1(){if(!OB||OB.paid)return;const c=OB.coin,pay=c?c.pay:O.d.base,want=(c?c.start:0)+pay;
+ S.money=want;OB.paid=true;OB.collecting=false;OB.coin=null;OB.step='S10';OB.st=0;OB.rt=0;OB.ring=true;S.screen='ob_call';
+ OB.armed=!ptr.down&&!OB.gestureOpen;OB.armSeq=OB.armed?(OB.downSeq||0):null;O.elapsed=S.t-(O.startT||S.t);S.times[1]=O.elapsed;save.best=save.best||{};if(save.best.o1==null||O.elapsed<save.best.o1)save.best.o1=O.elapsed;persist();}
+function coinUpdate(dt){const c=OB.coin;if(!c||OB.paid)return;c.t+=dt;const auto=(step('S8_coins').autoCollectMs||4000)/1000;
+ if(c.fly<0&&!OB.collecting&&c.t>1.12+auto)beginCollect();
  if(c.tap>=0)c.tap+=dt;
- if(c.fly>=0){c.fly+=dt;const first=.52;if(c.fly>=first){const k=clamp((c.fly-first)/.6,0,1),e=1-Math.pow(1-k,3);const want=Math.round(c.pay*e);if(want>c.added){S.money+=want-c.added;c.added=want;if(Math.floor(c.fly*20)%2===0)SFX.coin();}}
-  if(c.fly>=first+.6+.3&&c.added>=c.pay){obFinishO1();}}}
-function obFinishO1(){OB.coin=null;OB.step='S9';OB.st=0;O.elapsed=S.t-(O.startT??S.t);O.phase='done';buzz([30,40,60]);SFX.success();
- finishOrder();const r=S.result;r.paid=true;r.coinsShown=r.total;r.doubled=true;
- if(r.total>r.base){S.money+=r.total-r.base;}}
+ if(c.fly>=0){c.fly+=dt;const first=.52;if(c.fly>=first){const k=clamp((c.fly-first)/.6,0,1),e=1-Math.pow(1-k,3);const want=Math.round(c.pay*e);if(want>c.added){S.money=c.start+want;c.added=want;if(Math.floor(c.fly*20)%2===0)SFX.coin();}}
+  if(c.added>=c.pay&&c.fly>=first+.6)creditO1();}}
 function drawCoin(){const c=OB.coin;if(!c)return;const im=v15('icon_coin_40');const t=c.t*1000;let x=232,y=216,sx=1,sy=1;
  if(c.fly>=0){for(let i=0;i<5;i++){const k=clamp((c.fly-i*.06)/.52,0,1);if(k<=0||k>=1)continue;const e=k*k*k;const bx=(1-e)*(1-e)*252+2*(1-e)*e*320+e*e*230,by=(1-e)*(1-e)*236+2*(1-e)*e*150+e*e*72;
    const s=32*(1-.2*e);if(im)g.drawImage(im,bx-s/2,by-s/2,s,s);}
@@ -112,7 +111,7 @@ function drawCoin(){const c=OB.coin;if(!c)return;const im=v15('icon_coin_40');co
  else if(t<560){sx=1.1;sy=.85;}else if(t<880){const k=(t-560)/320;y=216-12*Math.sin(k*Math.PI);}else if(t<1120){const k=(t-880)/240;y=216-4*Math.sin(k*Math.PI);}
  if(t>=1120){const br=.8+.2*Math.sin(S.t*2*Math.PI/1.2);const gr=g.createRadialGradient(252,236,0,252,236,36);gr.addColorStop(0,'rgba(255,212,94,.55)');gr.addColorStop(.6,'rgba(255,212,94,.25)');gr.addColorStop(1,'rgba(255,212,94,0)');
   g.save();g.globalAlpha=br;g.fillStyle=gr;g.fillRect(216,200,72,72);g.restore();ringPulse(252,236,56,true);
-  buttons.push({x:224,y:208,w:56,h:56,fn:()=>{if(c.tap<0){c.tap=0;c.fly=-1;SFX.coin();buzz(15);setTimeout(()=>{if(OB&&OB.coin===c)c.fly=0;},80);}}});}
+  buttons.push({x:224,y:208,w:56,h:56,fn:()=>{beginCollect();buzz(15);}});}
  const ps=c.tap>=0&&c.tap<.08?.88:1;if(im){g.save();g.translate(252,y+20);g.scale(sx*ps,sy*ps);g.drawImage(im,-20,-20,40,40);g.restore();}
  if(c.tap>=0)coinLabel(c);}
 function coinLabel(c){const k=clamp(c.tap/.72,0,1);if(k>=1)return;const a=c.tap<.48?1:1-(c.tap-.48)/.24;const y=200-8-12-16*ease(c.tap/.48);
@@ -123,7 +122,7 @@ function callPay(){const d=ORDERS[1];return d?d.base:0;}
 function callMult(){return ((ECO&&ECO.orderSources&&ECO.orderSources.call)||{}).payMultiplier||1.5;}
 function callLines(){return (nget('calls.o2.script.lines')||[]).map(l=>({who:l.speaker==='hero'?'hero':'caller',text:l.text}));}
 function callUpdate(dt){const st=OB.step;
- if(st==='S10'&&OB.st>=(step('S10_ring').delayMs||600)/1000){OB.rt=(OB.rt||0)+dt;const cyc=Math.floor(OB.rt/.6);if(cyc!==OB.rc){OB.rc=cyc;SFX.ring&&cyc%2===0&&SFX.ring();buzz([60]);}}
+ if(st==='S10'){OB.rt=(OB.rt||0)+dt;const cyc=Math.floor(OB.rt/.6);if(cyc!==OB.rc){OB.rc=cyc;SFX.ring&&cyc%2===0&&SFX.ring();buzz([60]);}}
  if(st==='S11'){const c=OB.call;c.t+=dt;c.lt+=dt;const L=c.lines[c.i];if(!L){return;}
   if(c.phase==='type'){const ms=c.lt*1000;c.shown=charsAt(L.text,ms-160);if(c.shown>=[...L.text].length){c.phase='hold';c.lt=0;}}
   else if(c.phase==='hold'){const last=c.i>=c.lines.length-1;if(last){if(c.lt>=.4&&!c.btn){c.btn=0;}}else if(c.lt>=1.6)callNext(c);}
@@ -132,7 +131,9 @@ function callUpdate(dt){const st=OB.step;
 function charsAt(text,ms){const ch=[...text];let t=0;for(let i=0;i<ch.length;i++){t+=60;if(ms<t)return i;if('，。？！、…'.includes(ch[i])&&i<ch.length-1)t+=120;}return ch.length;}
 function callNext(c){if(c.i<c.lines.length-1){c.i++;c.lt=0;c.phase='type';c.shown=0;}}
 function callTap2(){const c=OB.call;if(!c||c.end!=null)return;const L=c.lines[c.i];if(c.phase==='type'){c.shown=[...L.text].length;c.phase='hold';c.lt=0;}else if(c.i<c.lines.length-1)callNext(c);}
-function answer(){if(OB.step!=='S10'||OB.ans!=null)return;OB.ans=0;audioInit();SFX.click();buzz(15);
+window.__obGesture=function(kind){if(!OB)return;if(kind==='down'){OB.downSeq=(OB.downSeq||0)+1;OB.gestureOpen=true;return;}
+ OB.gestureOpen=false;if(OB.paid&&!OB.armed){OB.armed=true;OB.armSeq=OB.downSeq||0;}};
+function answer(){if(!OB||OB.step!=='S10'||OB.ans!=null||!OB.armed)return;if((OB.downSeq||0)<=(OB.armSeq||0))return;OB.ans=0;audioInit();SFX.click();buzz(15);
  setTimeout(()=>{if(!OB)return;OB.step='S11';OB.st=0;OB.call={t:0,lt:0,i:0,phase:'type',shown:0,lines:callLines(),btn:null,end:null};},200);}
 function obToO2(){OB=null;save.tutorialDone=true;persist();S.idx=1;startOrderD(ORDERS[1]);O.callAccepted=true;O.msgIn=true;S.screen='play';}
 function drawPhoneRing(){const t=OB.rt||0,cyc=t%.6,on=cyc<.36;const im=pimg(on?'assets/ui/phone_floor_notify@2x.png':'assets/ui/phone_floor_idle@2x.png');
@@ -147,16 +148,15 @@ function callHead(status,glow){const av=pimg('assets/characters/avatar_xiao_xu_c
  T(cname('xiao_xu'),195,270,2,'#FFFFFF');g.font=`400 14px ${FXF}`;g.textAlign='center';g.textBaseline='middle';g.fillStyle='#E9D9C0';g.fillText(status,195,302);}
 function drawPill(){const ut='加急 ×'+callMult(),pl='工钱',pv='¥'+callPay();const uw=TW(ut,5)+16,lw=TW(pl,5),vw=TW(pv,3);const w=4+uw+8+lw+4+vw+12,x=195-w/2,y=328;
  slice('hud_tag_c',x,y,w,32,12,56);rr(x+4,y+4,uw,24,12);g.fillStyle='#C8372F';g.fill();T(ut,x+4+uw/2,y+16,5,'#FFFFFF');T(pl,x+4+uw+8,y+16,5,'#E9D9C0','left');T(pv,x+4+uw+8+lw+4,y+16,3,'#FFD45E','left');}
-function drawRing(){const t=OB.st-(step('S10_ring').delayMs||600)/1000;if(t<0){phoneArt();return;}
- if(t>=.8){const k=t-.8;dimIn(k);g.save();g.globalAlpha=clamp(k/.24,0,1);g.translate(0,8*(1-clamp(k/.24,0,1)));
+function drawRing(){const t=OB.rt||0;const k=clamp(t/.24,0,1);dimIn(k);g.save();g.globalAlpha=k;g.translate(0,8*(1-k));
   g.save();g.globalAlpha*=.5+.5*Math.sin(S.t*2*Math.PI/1.2)*.5+.25;g.shadowColor='rgba(255,212,94,.35)';g.shadowBlur=32;g.strokeStyle='rgba(255,212,94,.35)';g.lineWidth=16;g.strokeRect(-8,-8,W+16,H+16);g.restore();
   callHead('来电中',true);drawPill();
   const c=(S.t%1.2)/1.2;g.beginPath();g.arc(195,572,36+16*c,0,7);g.strokeStyle=`rgba(93,187,99,${.6*(1-c)})`;g.lineWidth=2;g.stroke();
   const pr=OB.ans!=null||(ptr.down&&dist(ptr.x,ptr.y,195,572)<36);const bs=pr?1:1+.06*Math.sin(c*Math.PI);
   const bi=v15(pr?'btn_answer_pressed':'btn_answer_normal'),ic=v15('icon_phone_32');g.save();g.translate(195,572);g.scale(bs,bs);g.translate(-195,-572);
   if(bi)g.drawImage(bi,143,520,104,104);if(ic)g.drawImage(ic,179,556+(pr?2:0),32,32);g.restore();
-  if(k>=4-.8&&OB.ans==null)hand(219,596,c<.15);
-  g.restore();buttons.push({x:159,y:536,w:72,h:72,fn:answer});}
+  if(t>=3.2&&OB.ans==null)hand(219,596,c<.15);
+  g.restore();buttons.push({x:159,y:536,w:72,h:72,fn:answer});
  drawPhoneRing();}
 function drawWave(c){const L=c.lines[c.i],talking=c.phase==='type'&&c.end==null;const hero=L&&L.who==='hero';
  const ch=L?[...L.text]:[],cur=ch[Math.max(0,c.shown-1)]||'';const pause=talking&&'，。？！、…'.includes(cur);
@@ -182,23 +182,12 @@ draw=(function(orig){return function(){
  if(S.screen==='ob_call'){S.screen='play';const h=held;held=null;try{orig();}finally{S.screen='ob_call';held=h;}buttons=[];
   if(OB.step==='S10')drawRing();else if(OB.step==='S11'&&OB.call)drawCall();return;}
  orig();if(!OB||!O||S.screen!=='play'||O.d.id!==1)return;
- const st=OB.step;
- if(st==='S3'){const k=OB.st,s3=step('S3_guide_flush'),maskAt=(s3.maskAfterIdleMs||6000)/1000,handAt=(s3.handAfterIdleMs||3000)/1000;
-  const out=OB.s3outAt!=null?clamp((k-OB.s3outAt)/.16,0,1):0,ga=1-out;let hole=null;
-  if(k>=maskAt){const e=bez(clamp((k-maskAt)/.32,0,1),.2,.8,.2,1);hole=lerp(96,32,e);if(out>0)hole=lerp(hole,96,out);
-   const bounce=OB.edgeT!=null&&OB.edgeT<.2?1+.1*Math.sin(OB.edgeT/.2*Math.PI):1;const ma=clamp((k-maskAt)/.24,0,1)*ga;
-   drawHoleMask(195,240,hole,ma,bounce);OB.s3hole=out>0?null:hole;
-   if(out===0&&ma>.05)buttons.push({x:0,y:0,w:W,h:H,fn:()=>{const hr=OB.s3hole||32;if(dist(ptr.x,ptr.y,195,240)<=hr){if(O&&O.phase==='observe'&&!O.anim){audioInit();observeFlush();if(OB&&OB.s3outAt==null)OB.s3outAt=OB.st;}}else OB.edgeT=0;}});}
-  else OB.s3hole=null;
-  g.save();g.globalAlpha=ga;const hint=nget('hints.flush_first')||'';
-  if(hole!=null){const {w}=obWrap(hint,208),bw=w+32,x=clamp(195-bw/2,16,W-16-bw);drawHint(hint,x,320);}else drawHint(hint);
-  if(k>=handAt){g.globalAlpha=ga*clamp((k-handAt)/.2,0,1);ringPulse(195,240,hole!=null?(hole+8)*2:64);hand(211,256,(S.t%1.2)/1.2<.15);}g.restore();}
- if(st==='S5'&&!held){const c=(S.t%1.6)/1.6,e=ease(clamp(c/.75,0,1));const x=lerp(56,195,e),y=lerp(690,500,e);g.save();g.globalAlpha=c>.85?(1-c)/.15:1;
-  g.setLineDash([6,6]);g.strokeStyle='rgba(255,243,218,.8)';g.lineWidth=3;g.beginPath();g.moveTo(56,690);g.lineTo(195,500);g.stroke();g.setLineDash([]);
-  ringPulse(56,680,64);hand(x-4,y-4,c<.1);g.restore();}
- if((st==='S5'||st==='S6')&&OB.hits<3){const t=plungerCue();if(t)drawHint(t);}
+ if(O.phase==='work'&&O.hp>0&&!held)hand(40,640,false);
+ if(O.phase==='verify'&&!O.anim)hand(211,256,(S.t%1.2)/1.2<.15);
+ const greet=OB.bub&&OB.bub.key==='need'&&!held;
+ const cue=greet?null:(plungerCue()||(!held&&O.phase==='work'&&O.hp>0?nget('hints.plunger_drag'):null));
+ if(cue)drawHint(cue);
  drawBubble();
- if(st==='S8')drawCoin();
- if(st==='S2'&&OB.card)drawTaskCard();};})(draw);
+ if(OB.step==='S8')drawCoin();};})(draw);
 // 气泡要在提示之后：S3/S6 提示显示时气泡让位
 window.__OB={get OB(){return OB;},obStart};

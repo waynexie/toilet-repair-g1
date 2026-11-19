@@ -38,10 +38,7 @@ function fail(m){console.error('FAIL',m);process.exitCode=1;throw new Error(m);}
  if(!info||!info.artOk) fail('stayed on fallback '+JSON.stringify(info)+' aborted '+failed.length);
  if(info.bw!==142||info.bh!==170) fail('bucket identity '+JSON.stringify(info));
  if(info.aw!==128) fail('portrait identity '+info.aw);
- await p.waitForFunction(()=>__OB.OB&&__OB.OB.step==='S2',{timeout:8000});
- await p.waitForTimeout(400);
- await p.mouse.click(195,560);
- await p.waitForFunction(()=>__OB.OB&&__OB.OB.step==='S3',{timeout:4000});
+ await p.waitForFunction(()=>__OB.OB&&__OB.OB.step==='S1'&&__G.O&&__G.O.phase==='work',{timeout:8000});
  await p.waitForTimeout(400);
  await p.screenshot({path:OUT+'local-mobile-after.png'});
  const px=await p.evaluate(()=>{

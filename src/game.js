@@ -207,6 +207,8 @@ function tryAttach(){
 function plungerUpdate(dt){
  const p=O.plunger;
  if(!p.ctrl)p.comp=Math.max(0,p.comp-dt*3.2);
+ if(p.ctrl){if(p.comp>(p.sndCom||0)+.2){p.sndCom=p.comp;noise(.035,.1,380+p.comp*700,'lowpass');}}
+ else if(p.comp<.05)p.sndCom=0;
  const {ws,wl,ps,pl}=win(S.upgraded);const R=rhythm(S.upgraded);
  if(O.water>splashAbove()&&p.comp>.45){ // 满水直接按：溅
   SFX.splash();buzz([40,30,60]);doShake(10);for(let i=0;i<40;i++)parts.push({x:BOWL.x+rnd(-90,90),y:WATER_Y-10,vx:rnd(-260,260),vy:rnd(-420,-150),life:rnd(.6,1.1),color:'#8fd3f4',r:rnd(3,7),g:900});
@@ -267,13 +269,15 @@ function scoopMove(){
 // ---------- 输入 ----------
 function toLogical(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/SC,y:(e.clientY-r.top)/SC};}
 cv.addEventListener('pointerdown',e=>{e.preventDefault();audioInit();if(AC&&AC.state==='suspended')AC.resume();
- const p=toLogical(e);ptr={down:true,x:p.x,y:p.y,sx:p.x,sy:p.y};
+ const p=toLogical(e);ptr={down:true,x:p.x,y:p.y,sx:p.x,sy:p.y,seq:(ptr.seq||0)+1};
+ if(window.__obGesture)window.__obGesture('down');
  for(const b of buttons.slice().reverse()){if(p.x>b.x&&p.x<b.x+b.w&&p.y>b.y&&p.y<b.y+b.h){b.fn();return;}}
  if(S.screen==='play')playDown(p);else if(S.screen==='lock')lockDown(p);
 });
 cv.addEventListener('pointermove',e=>{e.preventDefault();const p=toLogical(e);ptr.x=p.x;ptr.y=p.y;if(S.screen==='play'&&ptr.down)playMove(p);else if(S.screen==='lock'&&ptr.down)lockMove(p);});
-const up=e=>{e.preventDefault();ptr.down=false;if(S.screen==='play')playUp();else if(S.screen==='lock')lockUp();};
+const up=e=>{if(e)e.preventDefault();const was=ptr.down;ptr.down=false;if(was&&window.__obGesture)window.__obGesture('up');if(S.screen==='play')playUp();else if(S.screen==='lock')lockUp();};
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+addEventListener('blur',()=>{if(!ptr.down)return;ptr.down=false;if(window.__obGesture)window.__obGesture('cancel');if(S.screen==='play')playUp();else if(S.screen==='lock')lockUp();});
 document.addEventListener('gesturestart',e=>e.preventDefault());
 
 function playDown(p){
